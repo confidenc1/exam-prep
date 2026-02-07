@@ -3,288 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMB/WAEC CBT PRO 2026 - ULTIMATE</title>
+    <title>JAMB-PRO 2026 | Ultimate CBT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .hidden { display: none; }
-        .active-opt { border-color: #2563eb; background-color: #eff6ff; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .tab-active { color: #16a34a !important; font-weight: 800; }
         @keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .low-time { color: #ff0000; animation: pulse-red 1s infinite; }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .low-time { color: #dc2626; animation: pulse-red 1s infinite; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans text-slate-800">
+<body class="bg-gray-50 text-slate-900 pb-20">
 
-    <nav class="bg-slate-900 text-white p-4 shadow-xl flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-2">
-            <h1 class="font-black italic text-xl">JAMB-PRO <span class="text-green-400">2026</span></h1>
-        </div>
-        <div id="examTimer" class="hidden flex items-center gap-3">
-            <button onclick="toggleCalc()" class="bg-slate-700 p-2 rounded-lg hover:bg-slate-600"><i class="fas fa-calculator"></i></button>
-            <div class="bg-red-600 px-4 py-1 rounded-full text-sm font-black shadow-lg">
-                <i class="fas fa-clock mr-1"></i> <span id="timer">02:00:00</span>
+    <nav class="sticky top-0 z-50 glass border-b border-gray-100 p-4 flex justify-between items-center">
+        <h1 class="font-black italic text-xl tracking-tighter">JAMB-PRO <span class="text-green-600">2026</span></h1>
+        <div id="examTimerNav" class="hidden flex items-center gap-3">
+            <button onclick="toggleCalc()" class="bg-slate-100 p-2 rounded-xl text-slate-600"><i class="fas fa-calculator"></i></button>
+            <div class="bg-red-600 text-white px-4 py-1 rounded-full text-xs font-black shadow-lg">
+                <span id="timerText">02:00:00</span>
             </div>
         </div>
     </nav>
 
     <div id="calculator" class="hidden fixed right-4 top-20 w-64 glass shadow-2xl rounded-3xl p-4 z-[100] border border-gray-200">
-        <div class="flex justify-between items-center mb-4">
-            <span class="text-xs font-black text-slate-400 tracking-widest">SYSTEM CALC</span>
-            <button onclick="toggleCalc()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
-        </div>
-        <input type="text" id="calcDisplay" readonly class="w-full text-right p-3 bg-slate-100 rounded-xl mb-3 font-mono text-xl text-slate-700">
+        <input type="text" id="calcDisplay" readonly class="w-full text-right p-3 bg-slate-100 rounded-xl mb-3 font-mono text-xl">
         <div class="grid grid-cols-4 gap-2">
-            <button onclick="calcInput('7')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">7</button>
-            <button onclick="calcInput('8')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">8</button>
-            <button onclick="calcInput('9')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">9</button>
-            <button onclick="calcInput('/')" class="p-3 bg-orange-100 text-orange-600 rounded-lg">/</button>
-            <button onclick="calcInput('4')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">4</button>
-            <button onclick="calcInput('5')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">5</button>
-            <button onclick="calcInput('6')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">6</button>
-            <button onclick="calcInput('*')" class="p-3 bg-orange-100 text-orange-600 rounded-lg">×</button>
-            <button onclick="calcInput('1')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">1</button>
-            <button onclick="calcInput('2')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">2</button>
-            <button onclick="calcInput('3')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">3</button>
-            <button onclick="calcInput('-')" class="p-3 bg-orange-100 text-orange-600 rounded-lg">-</button>
-            <button onclick="clearCalc()" class="p-3 bg-red-100 text-red-600 rounded-lg font-bold">C</button>
-            <button onclick="calcInput('0')" class="p-3 bg-white shadow-sm rounded-lg hover:bg-gray-50">0</button>
-            <button onclick="calculate()" class="p-3 bg-green-500 text-white rounded-lg font-bold col-span-2">=</button>
+            <button onclick="calcIn('7')" class="p-3 bg-white rounded-lg shadow-sm">7</button>
+            <button onclick="calcIn('8')" class="p-3 bg-white rounded-lg shadow-sm">8</button>
+            <button onclick="calcIn('9')" class="p-3 bg-white rounded-lg shadow-sm">9</button>
+            <button onclick="calcIn('/')" class="p-3 bg-orange-100 text-orange-600 rounded-lg">/</button>
+            <button onclick="calcIn('4')" class="p-3 bg-white rounded-lg shadow-sm">4</button>
+            <button onclick="calcIn('5')" class="p-3 bg-white rounded-lg shadow-sm">5</button>
+            <button onclick="calcIn('6')" class="p-3 bg-white rounded-lg shadow-sm">6</button>
+            <button onclick="calcIn('*')" class="p-3 bg-orange-100 text-orange-600 rounded-lg">×</button>
+            <button onclick="calcRes()" class="col-span-2 p-3 bg-green-600 text-white rounded-lg">=</button>
+            <button onclick="calcClear()" class="col-span-2 p-3 bg-red-100 text-red-600 rounded-lg">C</button>
         </div>
     </div>
 
-    <main class="container mx-auto px-4 py-8">
-        
-        <div id="countdownBanner" class="hidden max-w-4xl mx-auto bg-gradient-to-r from-blue-700 to-indigo-900 text-white p-6 rounded-3xl mb-8 flex justify-between items-center shadow-xl">
-            <div>
-                <p class="text-xs font-bold uppercase tracking-widest opacity-70">2026 UTME Exam Countdown</p>
-                <h3 id="jambCountdown" class="text-3xl font-black mt-1 tracking-tighter">--d : --h : --m</h3>
-            </div>
-            <i class="fas fa-rocket text-4xl opacity-20"></i>
-        </div>
+    <main class="container mx-auto px-4 mt-6">
 
-        <div id="previewSection" class="max-w-2xl mx-auto p-8 bg-white rounded-3xl shadow-xl">
-            <div class="flex justify-between items-center mb-6">
-                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">SAMPLE TEST</span>
-                <span id="qCount" class="text-sm font-bold text-gray-400">Question 1/3</span>
+        <section id="lockSection" class="max-w-md mx-auto text-center py-12">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                <i class="fas fa-lock"></i>
             </div>
-            <h2 id="trialText" class="text-2xl font-bold text-slate-800 mb-8">...</h2>
-            <div id="trialOptions" class="grid gap-4"></div>
-        </div>
+            <h2 class="text-2xl font-black mb-2">Unlock 2026 Questions</h2>
+            <p class="text-gray-500 text-sm mb-8">Enter your license key to access the full CBT environment and digital library.</p>
+            <input type="text" id="keyInput" placeholder="ENTER KEY (PREP26)" class="w-full p-5 bg-white border border-gray-200 rounded-3xl text-center font-black tracking-widest mb-4 outline-none focus:ring-2 focus:ring-green-500 shadow-sm">
+            <button onclick="unlockApp()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black shadow-xl hover:bg-black transition-all">ACTIVATE SYSTEM</button>
+            <p class="mt-6 text-xs font-bold text-gray-400">WHATSAPP ADMIN FOR KEY: <a href="https://wa.me/2349131546480" class="text-green-600 underline">09131546480</a></p>
+        </section>
 
-        <div id="lockSection" class="hidden max-w-md mx-auto p-8 bg-white rounded-3xl shadow-2xl text-center">
-            <div class="text-blue-600 text-5xl mb-4"><i class="fas fa-shield-alt"></i></div>
-            <h2 class="text-2xl font-black">Activation Required</h2>
-            <p class="text-gray-500 mb-8 text-sm">Accessing 2026 database. Please enter your license key.</p>
-            <input type="text" id="keyInput" placeholder="ENTER KEY" class="w-full p-4 mb-4 bg-gray-50 border-2 border-gray-100 rounded-2xl text-center font-black text-xl tracking-widest outline-none focus:border-blue-500">
-            <button onclick="verifyKey()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-black transition-all">ACTIVATE NOW</button>
-            <div class="mt-8 pt-6 border-t border-gray-100">
-                <p class="text-xs text-gray-400 font-bold mb-2 uppercase">WhatsApp Admin For Key</p>
-                <a href="https://wa.me/2349131546480" class="text-green-600 font-black text-lg underline">09131546480</a>
+        <section id="homeTab" class="hidden max-w-2xl mx-auto animate-in">
+            <div class="mb-6">
+                <h2 class="text-2xl font-black text-slate-800">Hi, Scholar 👋</h2>
+                <p class="text-sm text-gray-500">The 2026 UTME is approaching fast.</p>
             </div>
-        </div>
 
-        <div id="dashSection" class="hidden max-w-5xl mx-auto">
-            <div class="grid lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 min-h-[400px]">
-                        <p id="examQCount" class="text-xs font-black text-blue-600 uppercase mb-2">Question 1</p>
-                        <h2 id="examQText" class="text-xl font-bold text-slate-800 mb-8 leading-relaxed">...</h2>
-                        <div id="examOptions" class="grid gap-3"></div>
-                        <div class="flex justify-between mt-12 pt-6 border-t border-gray-100">
-                            <button onclick="prevQ()" class="px-6 py-2 bg-gray-100 rounded-xl font-bold hover:bg-gray-200">Previous</button>
-                            <button onclick="toggleSubmitModal()" class="px-6 py-2 bg-red-100 text-red-600 rounded-xl font-bold hover:bg-red-200">Submit Exam</button>
-                            <button onclick="nextQ()" class="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700">Next</button>
+            <div class="bg-green-600 p-6 rounded-[2.5rem] text-white shadow-xl mb-8">
+                <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-4 flex items-center gap-2">
+                    <i class="fas fa-hourglass-half"></i> Exam Countdown
+                </p>
+                <div class="grid grid-cols-4 gap-3 text-center">
+                    <div class="bg-white/20 p-3 rounded-2xl"><p id="d-day" class="text-xl font-black">--</p><p class="text-[8px] uppercase opacity-70">Days</p></div>
+                    <div class="bg-white/20 p-3 rounded-2xl"><p id="d-hr" class="text-xl font-black">--</p><p class="text-[8px] uppercase opacity-70">Hrs</p></div>
+                    <div class="bg-white/20 p-3 rounded-2xl"><p id="d-min" class="text-xl font-black">--</p><p class="text-[8px] uppercase opacity-70">Mins</p></div>
+                    <div class="bg-white/20 p-3 rounded-2xl"><p id="d-sec" class="text-xl font-black">--</p><p class="text-[8px] uppercase opacity-70">Secs</p></div>
+                </div>
+            </div>
+
+            <h3 class="font-black text-slate-800 mb-4">Today's Plan</h3>
+            <div class="space-y-3">
+                <div onclick="openDeptSelection()" class="p-5 bg-white border border-gray-100 rounded-3xl shadow-sm flex items-center justify-between cursor-pointer hover:border-green-500 transition-all group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><i class="fas fa-pencil-alt"></i></div>
+                        <div><p class="font-black text-sm">Full Mock Simulation</p><p class="text-[10px] text-gray-400">180 Questions • 2 Hours</p></div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-200 group-hover:text-green-500"></i>
+                </div>
+            </div>
+        </section>
+
+        <section id="deptTab" class="hidden max-w-2xl mx-auto text-center py-8">
+            <h2 class="text-2xl font-black mb-6">Select Department</h2>
+            <div class="grid gap-4">
+                <button onclick="startFullExam('Science')" class="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm text-left flex items-center gap-4 hover:border-blue-500">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-atom"></i></div>
+                    <div><p class="font-black">Science Bundle</p><p class="text-xs text-gray-400">English, Physics, Chemistry, Biology</p></div>
+                </button>
+                <button onclick="startFullExam('Art')" class="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm text-left flex items-center gap-4 hover:border-purple-500">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-scroll"></i></div>
+                    <div><p class="font-black">Arts Bundle</p><p class="text-xs text-gray-400">English, Government, Literature, CRS</p></div>
+                </button>
+            </div>
+        </section>
+
+        <section id="libraryTab" class="hidden max-w-2xl mx-auto">
+            <h2 class="text-2xl font-black mb-6">Digital Library</h2>
+            <div class="flex gap-4 overflow-x-auto pb-6 no-scrollbar">
+                <div class="min-w-[200px] bg-indigo-600 p-5 rounded-3xl text-white">
+                    <p class="text-[8px] font-bold opacity-70 mb-1 uppercase">Lekki Headmaster</p>
+                    <h4 class="font-black mb-2">Ponderously</h4>
+                    <p class="text-[10px] opacity-90 leading-relaxed">Meaning: Moving slowly and heavily. Describes Bepo's walk when troubled.</p>
+                </div>
+                <div class="min-w-[200px] bg-orange-500 p-5 rounded-3xl text-white">
+                    <p class="text-[8px] font-bold opacity-70 mb-1 uppercase">Lion & Jewel</p>
+                    <h4 class="font-black mb-2">Archaic</h4>
+                    <p class="text-[10px] opacity-90 leading-relaxed">Meaning: Very old or old-fashioned. Lakunle's view of bride price.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div onclick="readBook('The Lekki Headmaster')" class="bg-white p-4 rounded-3xl shadow-sm border border-gray-50 cursor-pointer">
+                    <div class="aspect-[3/4] bg-green-700 rounded-2xl mb-3 flex items-center justify-center text-white font-black text-center text-sm p-4">The Lekki Headmaster</div>
+                    <p class="font-bold text-xs">Recommended 2026</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="examTab" class="hidden max-w-5xl mx-auto">
+            <div class="grid lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-3">
+                    <div class="bg-white p-8 rounded-3xl shadow-lg min-h-[400px]">
+                        <div class="flex justify-between items-center mb-6">
+                            <span id="subLabel" class="text-blue-600 font-black text-xs uppercase tracking-widest">ENGLISH</span>
+                            <span id="qLabel" class="text-gray-400 font-bold text-xs">Question 1/180</span>
+                        </div>
+                        <h2 id="qContent" class="text-xl font-bold text-slate-800 mb-8 leading-relaxed">...</h2>
+                        <div id="optGrid" class="grid gap-3"></div>
+                        <div class="flex justify-between mt-12 pt-6 border-t border-gray-50">
+                            <button onclick="prevQ()" class="px-6 py-3 bg-gray-100 rounded-2xl font-bold">PREV</button>
+                            <button onclick="confirmSubmit()" class="px-6 py-3 bg-red-100 text-red-600 rounded-2xl font-bold">SUBMIT</button>
+                            <button onclick="nextQ()" class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold">NEXT</button>
                         </div>
                     </div>
                 </div>
                 <div class="lg:col-span-1">
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 sticky top-24">
-                        <h3 class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-widest">Question Grid</h3>
-                        <div id="navGrid" class="grid grid-cols-5 gap-2"></div>
+                    <div class="bg-white p-6 rounded-3xl shadow-sm sticky top-24">
+                        <div id="subjectTabs" class="flex flex-col gap-2 mb-6"></div>
+                        <div id="numGrid" class="grid grid-cols-5 gap-2 h-[200px] overflow-y-auto pr-2 no-scrollbar"></div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <section id="resultTab" class="hidden max-w-md mx-auto text-center py-12">
+            <div class="w-32 h-32 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl font-black shadow-inner">
+                <span id="finalScore">--</span>
+            </div>
+            <h2 class="text-2xl font-black mb-2">Exam Result</h2>
+            <div id="resultBreakdown" class="text-left space-y-3 mt-8"></div>
+            <button onclick="location.reload()" class="w-full mt-10 bg-slate-900 text-white py-5 rounded-3xl font-black">LOG OUT</button>
+        </section>
+
     </main>
 
-    <div id="resultModal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 text-center">
-            <div class="w-24 h-24 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-black" id="finalPercent">0%</div>
-            <h2 class="text-2xl font-black text-slate-800 mb-6">Exam Completed!</h2>
-            <div class="grid grid-cols-2 gap-4 mb-8">
-                <div class="bg-green-50 p-4 rounded-2xl"><p class="text-xs font-bold text-green-600">CORRECT</p><p id="correctCount" class="text-xl font-black">0</p></div>
-                <div class="bg-red-50 p-4 rounded-2xl"><p class="text-xs font-bold text-red-600">WRONG</p><p id="wrongCount" class="text-xl font-black">0</p></div>
-            </div>
-            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">RE-PRACTICE</button>
-        </div>
+    <div id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-8 py-4 flex justify-between items-center z-50">
+        <button onclick="tab('home')" class="text-gray-400 text-center"><i class="fas fa-home block text-lg mb-1"></i><span class="text-[8px] font-bold">HOME</span></button>
+        <button onclick="tab('library')" class="text-gray-400 text-center"><i class="fas fa-book block text-lg mb-1"></i><span class="text-[8px] font-bold">LIBRARY</span></button>
+        <button onclick="openDeptSelection()" class="bg-green-600 w-12 h-12 rounded-full text-white shadow-lg -mt-10 flex items-center justify-center border-4 border-gray-50"><i class="fas fa-pencil-alt"></i></button>
+        <button onclick="tab('reports')" class="text-gray-400 text-center"><i class="fas fa-chart-bar block text-lg mb-1"></i><span class="text-[8px] font-bold">REPORT</span></button>
+        <button onclick="alert('Community coming soon!')" class="text-gray-400 text-center"><i class="fas fa-users block text-lg mb-1"></i><span class="text-[8px] font-bold">FORUM</span></button>
     </div>
 
-    <div id="submitModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[150] flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-8 text-center">
-            <i class="fas fa-exclamation-circle text-orange-500 text-4xl mb-4"></i>
-            <h2 class="text-xl font-black">Final Submission?</h2>
-            <p id="submitWarning" class="text-gray-500 mt-2 mb-8">Check your unanswered questions first!</p>
-            <div class="flex flex-col gap-3">
-                <button onclick="finishExam()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">YES, SUBMIT</button>
-                <button onclick="toggleSubmitModal()" class="w-full bg-gray-100 text-gray-600 py-4 rounded-2xl font-bold">CANCEL</button>
-            </div>
+    <div id="reader" class="hidden fixed inset-0 bg-white z-[200] overflow-y-auto p-6">
+        <div class="flex justify-between items-center mb-8 sticky top-0 bg-white py-4 border-b">
+            <button onclick="closeReader()"><i class="fas fa-arrow-left text-xl"></i></button>
+            <h2 id="bookTitle" class="font-black">Novel Reader</h2>
+            <i class="fas fa-bookmark text-gray-300"></i>
         </div>
+        <div id="bookContent" class="prose leading-relaxed text-slate-700"></div>
     </div>
 
     <script>
-        // QUESTION DATABASE
-        const trials = [
-            { q: "A body of mass 5kg is acted upon by a force of 20N. Calculate the acceleration.", o: ["4.0 m/s²", "0.25 m/s²", "100 m/s²", "15 m/s²"], a: 0 },
-            { q: "Which of the following is a scalar quantity?", o: ["Force", "Velocity", "Distance", "Momentum"], a: 2 },
-            { q: "The process whereby a liquid turns to gas at all temperatures is?", o: ["Boiling", "Evaporation", "Sublimation", "Melting"], a: 1 },
-            { q: "Choose the option nearest in meaning to 'METICULOUS'.", o: ["Careless", "Thorough", "Angry", "Long"], a: 1 },
-            { q: "Which of these is the power house of the cell?", o: ["Nucleus", "Ribosome", "Mitochondria", "Wall"], a: 2 }
-        ];
-
-        let currentTrial = 0;
-        let answersState = new Array(trials.length).fill(null);
-        let examTime = 7200;
-
-        // INITIAL LOAD
-        window.onload = () => {
-            startJambCountdown();
-            if(localStorage.getItem('jambActivated')) {
-                activateApp();
-            } else {
-                loadTrial();
-            }
+        // --- DATA & STATE ---
+        const SYLLABUS = {
+            'Science': ['English', 'Physics', 'Chemistry', 'Biology'],
+            'Art': ['English', 'Government', 'Literature', 'CRS']
         };
 
-        // COUNTDOWN
-        function startJambCountdown() {
-            const examDate = new Date("April 18, 2026 08:00:00").getTime();
-            setInterval(() => {
-                const now = new Date().getTime();
-                const gap = examDate - now;
-                const d = Math.floor(gap / (1000 * 60 * 60 * 24));
-                const h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
-                document.getElementById('jambCountdown').innerText = `${d}d : ${h}h : ${m}m`;
-            }, 1000);
+        const DB = {
+            'English': [
+                { q: "In 'The Lekki Headmaster', what describes Bepo's internal conflict?", o: ["Financial greed", "Japa syndrome pressure", "Political ambition", "Family hatred"], a: 1, type: 'novel' },
+                { q: "Choose the option opposite in meaning: The man was METICULOUS.", o: ["Careful", "Slothful", "Thorough", "Sloppy"], a: 3, type: 'interpretation' }
+            ],
+            'Physics': [ { q: "Calculate force when mass is 10kg and acceleration is 5m/s².", o: ["2N", "15N", "50N", "500N"], a: 2 } ]
+        };
+
+        let activeDept = [];
+        let userChoices = {}; // { Subject: [null, null...] }
+        let timePerSub = {}; // { Subject: 0 }
+        let curSubIdx = 0;
+        let curQIdx = 0;
+        let timerSeconds = 7200;
+        let timerActive = false;
+
+        // --- CORE LOGIC ---
+        function unlockApp() {
+            if(document.getElementById('keyInput').value.toUpperCase() === 'PREP26') {
+                localStorage.setItem('activated', 'true');
+                document.getElementById('lockSection').classList.add('hidden');
+                document.getElementById('homeTab').classList.remove('hidden');
+                document.getElementById('bottomNav').classList.remove('hidden');
+                startJambCountdown();
+            } else { alert("Invalid Key!"); }
         }
 
-        // TRIAL LOGIC
-        function loadTrial() {
-            const q = trials[currentTrial];
-            document.getElementById('qCount').innerText = `Trial ${currentTrial + 1}/${trials.length}`;
-            document.getElementById('trialText').innerText = q.q;
-            const container = document.getElementById('trialOptions');
+        function tab(t) {
+            ['homeTab', 'libraryTab', 'deptTab', 'examTab', 'resultTab'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById(t + 'Tab').classList.remove('hidden');
+        }
+
+        function openDeptSelection() { tab('dept'); }
+
+        function startFullExam(dept) {
+            activeDept = SYLLABUS[dept];
+            activeDept.forEach(sub => {
+                userChoices[sub] = new Array(DB[sub]?.length || 10).fill(null);
+                timePerSub[sub] = 0;
+            });
+            tab('exam');
+            document.getElementById('examTimerNav').classList.remove('hidden');
+            timerActive = true;
+            renderSubjectTabs();
+            loadQ();
+            startExamTimer();
+        }
+
+        function renderSubjectTabs() {
+            const container = document.getElementById('subjectTabs');
             container.innerHTML = '';
-            q.o.forEach((opt, i) => {
-                container.innerHTML += `<button onclick="nextTrial()" class="w-full p-4 text-left border-2 border-gray-100 rounded-2xl hover:border-blue-500 font-semibold">${String.fromCharCode(65+i)}. ${opt}</button>`;
+            activeDept.forEach((sub, i) => {
+                const active = i === curSubIdx ? 'bg-blue-600 text-white' : 'bg-gray-100';
+                container.innerHTML += `<button onclick="switchSub(${i})" class="p-3 rounded-xl text-left font-bold text-xs ${active}">${sub}</button>`;
             });
         }
 
-        function nextTrial() {
-            if(currentTrial < trials.length - 1) {
-                currentTrial++;
-                loadTrial();
-            } else {
-                document.getElementById('previewSection').classList.add('hidden');
-                document.getElementById('lockSection').classList.remove('hidden');
-            }
-        }
-
-        // ACTIVATION
-        function verifyKey() {
-            const key = document.getElementById('keyInput').value.toUpperCase();
-            if(key === "PREP26") {
-                localStorage.setItem('jambActivated', 'true');
-                activateApp();
-            } else {
-                alert("Invalid License Key!");
-            }
-        }
-
-        function activateApp() {
-            document.getElementById('lockSection').classList.add('hidden');
-            document.getElementById('previewSection').classList.add('hidden');
-            document.getElementById('dashSection').classList.remove('hidden');
-            document.getElementById('examTimer').classList.remove('hidden');
-            document.getElementById('countdownBanner').classList.remove('hidden');
-            currentTrial = 0;
-            loadExamQuestion();
-            startTimer();
-        }
-
-        // EXAM CORE
-        function loadExamQuestion() {
-            const q = trials[currentTrial];
-            document.getElementById('examQCount').innerText = `Question ${currentTrial + 1}`;
-            document.getElementById('examQText').innerText = q.q;
-            const container = document.getElementById('examOptions');
-            container.innerHTML = '';
+        function loadQ() {
+            const sub = activeDept[curSubIdx];
+            const qData = DB[sub] ? DB[sub][curQIdx] : { q: `Sample ${sub} Question ${curQIdx+1}`, o: ["A","B","C","D"], a: 0 };
             
-            q.o.forEach((opt, i) => {
-                const isSelected = answersState[currentTrial] === i;
-                const css = isSelected ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-100' : 'border-gray-100';
-                container.innerHTML += `<button onclick="selectOption(${i})" class="w-full p-4 text-left border-2 rounded-2xl hover:border-blue-400 font-semibold transition-all ${css}">${String.fromCharCode(65+i)}. ${opt}</button>`;
+            document.getElementById('subLabel').innerText = sub;
+            document.getElementById('qLabel').innerText = `Question ${curQIdx + 1}`;
+            document.getElementById('qContent').innerText = qData.q;
+            
+            const grid = document.getElementById('optGrid');
+            grid.innerHTML = '';
+            qData.o.forEach((opt, i) => {
+                const selected = userChoices[sub][curQIdx] === i;
+                const css = selected ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-100' : 'border-gray-100';
+                grid.innerHTML += `<button onclick="selectOpt(${i})" class="p-4 text-left border-2 rounded-2xl font-bold transition-all ${css}">${String.fromCharCode(65+i)}. ${opt}</button>`;
             });
             renderNavGrid();
         }
 
-        function selectOption(i) {
-            answersState[currentTrial] = i;
-            loadExamQuestion();
+        function selectOpt(i) {
+            userChoices[activeDept[curSubIdx]][curQIdx] = i;
+            loadQ();
         }
 
         function renderNavGrid() {
-            const grid = document.getElementById('navGrid');
+            const grid = document.getElementById('numGrid');
             grid.innerHTML = '';
-            trials.forEach((_, i) => {
-                const isCurrent = i === currentTrial;
-                const isAnswered = answersState[i] !== null;
-                const bg = isAnswered ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-400';
-                const border = isCurrent ? 'ring-2 ring-blue-900 ring-offset-2' : '';
-                grid.innerHTML += `<button onclick="jumpTo(${i})" class="h-10 w-full rounded-lg font-black text-xs ${bg} ${border}">${i+1}</button>`;
+            const answers = userChoices[activeDept[curSubIdx]];
+            answers.forEach((ans, i) => {
+                const bg = ans !== null ? 'bg-blue-600 text-white' : 'bg-gray-100';
+                const border = i === curQIdx ? 'ring-2 ring-slate-900' : '';
+                grid.innerHTML += `<button onclick="jumpQ(${i})" class="h-10 rounded-lg font-bold text-[10px] ${bg} ${border}">${i+1}</button>`;
             });
         }
 
-        function nextQ() { if(currentTrial < trials.length - 1) { currentTrial++; loadExamQuestion(); } }
-        function prevQ() { if(currentTrial > 0) { currentTrial--; loadExamQuestion(); } }
-        function jumpTo(i) { currentTrial = i; loadExamQuestion(); }
+        function jumpQ(i) { curQIdx = i; loadQ(); }
+        function nextQ() { if(curQIdx < (userChoices[activeDept[curSubIdx]].length - 1)) { curQIdx++; loadQ(); } }
+        function prevQ() { if(curQIdx > 0) { curQIdx--; loadQ(); } }
+        function switchSub(i) { curSubIdx = i; curQIdx = 0; renderSubjectTabs(); loadQ(); }
 
-        // TIMER
-        function startTimer() {
+        // --- TIMERS ---
+        function startJambCountdown() {
+            const target = new Date("April 18, 2026 08:00:00").getTime();
             setInterval(() => {
-                if(examTime <= 0) { finishExam(); return; }
-                examTime--;
-                const h = Math.floor(examTime / 3600);
-                const m = Math.floor((examTime % 3600) / 60);
-                const s = examTime % 60;
-                document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                const now = new Date().getTime();
+                const gap = target - now;
+                document.getElementById('d-day').innerText = Math.floor(gap / 86400000);
+                document.getElementById('d-hr').innerText = Math.floor((gap % 86400000) / 3600000);
+                document.getElementById('d-min').innerText = Math.floor((gap % 3600000) / 60000);
+                document.getElementById('d-sec').innerText = Math.floor((gap % 60000) / 1000);
             }, 1000);
         }
 
-        // CALCULATOR
-        function toggleCalc() { document.getElementById('calculator').classList.toggle('hidden'); }
-        function calcInput(v) { document.getElementById('calcDisplay').value += v; }
-        function clearCalc() { document.getElementById('calcDisplay').value = ''; }
-        function calculate() { try { document.getElementById('calcDisplay').value = eval(document.getElementById('calcDisplay').value); } catch { document.getElementById('calcDisplay').value = 'Error'; } }
-
-        // SUBMISSION
-        function toggleSubmitModal() {
-            const unanswered = answersState.filter(a => a === null).length;
-            document.getElementById('submitWarning').innerText = unanswered > 0 ? `Wait! You missed ${unanswered} questions.` : "You've answered everything. Ready to submit?";
-            document.getElementById('submitModal').classList.toggle('hidden');
+        function startExamTimer() {
+            setInterval(() => {
+                if(!timerActive || timerSeconds <= 0) return;
+                timerSeconds--;
+                timePerSub[activeDept[curSubIdx]]++;
+                const h = Math.floor(timerSeconds / 3600);
+                const m = Math.floor((timerSeconds % 3600) / 60);
+                const s = timerSeconds % 60;
+                document.getElementById('timerText').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            }, 1000);
         }
+
+        // --- SCORING & RESULTS ---
+        function confirmSubmit() { if(confirm("Submit all 4 subjects?")) finishExam(); }
 
         function finishExam() {
-            let correct = 0;
-            answersState.forEach((ans, i) => { if(ans === trials[i].a) correct++; });
-            const percent = Math.round((correct / trials.length) * 100);
-            document.getElementById('finalPercent').innerText = percent + "%";
-            document.getElementById('correctCount').innerText = correct;
-            document.getElementById('wrongCount').innerText = trials.length - correct;
-            document.getElementById('submitModal').classList.add('hidden');
-            document.getElementById('resultModal').classList.remove('hidden');
-        }
-    </script>
-</body>
-</html>
+            timerActive = false;
+            let grandTotal = 0;
+            let reportHTML = "";
+
+            activeDept.forEach(sub => {
+                let subRaw = 0;
+                const userAns = userChoices[sub];
+                const db = DB[sub] || [];
+
+                userAns.forEach((ans, i) => {
+                    if(db[i] && ans === db[i].a) {
+                        if(sub === 'English') {
+                            if(db[i].type === 'novel') subRaw += 1;
+                            else i
