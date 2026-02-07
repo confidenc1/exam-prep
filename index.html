@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Master Pro | 2005-2024</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hidden { display: none; }
+        .subject-card.selected { border-color: #2563eb; background-color: #eff6ff; }
+        .glass-modal { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <div id="lockScreen" class="max-w-md mx-auto mt-20 p-8 bg-white rounded-3xl shadow-xl text-center">
+        <h1 class="text-3xl font-black text-gray-800 mb-4">EXAM <span class="text-blue-600">PREP</span></h1>
+        <input type="text" id="keyInput" placeholder="ENTER KEY" class="w-full p-4 mb-4 border-2 rounded-xl text-center font-bold text-xl uppercase tracking-widest outline-none focus:border-blue-500">
+        <button onclick="unlock()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 mb-6">ACTIVATE</button>
+        <a href="https://wa.me/2349131546480?text=I%20want%20to%20buy%20a%20key" target="_blank" class="text-green-600 font-bold flex items-center justify-center gap-2">
+            <i class="fab fa-whatsapp"></i> Chat Admin: 09131546480
+        </a>
+    </div>
+
+    <div id="selectionScreen" class="max-w-4xl mx-auto p-6 hidden">
+        <h2 class="text-2xl font-bold text-center mb-6">Pick Your 4 Subjects</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="subjectGrid">
+            </div>
+        <button id="startBtn" disabled onclick="startTest()" class="w-full mt-10 bg-gray-300 text-white py-5 rounded-2xl font-black text-xl uppercase cursor-not-allowed">Start Mock Exam</button>
+    </div>
+
+    <div id="testArea" class="max-w-3xl mx-auto p-4 hidden">
+        <div class="sticky top-4 z-50 flex justify-between items-center bg-white p-4 rounded-2xl shadow-lg border mb-6">
+            <div id="timerDisplay" class="text-2xl font-mono font-black text-blue-600">02:00:00</div>
+            <button onclick="submitTest()" class="bg-red-500 text-white px-6 py-2 rounded-lg font-bold">End Exam</button>
+        </div>
+        <div id="questionsContainer" class="space-y-6 pb-24"></div>
+    </div>
+
+    <div id="resultModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/60">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 text-center shadow-2xl">
+            <div id="resultIcon" class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl"></div>
+            <h2 class="text-3xl font-black mb-2" id="resultTitle">Result</h2>
+            <p class="text-gray-500 mb-6" id="resultSubtitle"></p>
+            
+            <div class="bg-gray-50 rounded-2xl p-4 mb-6 space-y-3 text-left" id="scoreBreakdown">
+                </div>
+
+            <button onclick="location.reload()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold">Restart Application</button>
+        </div>
+    </div>
+
+    <script>
+        const MASTER_KEY = "PREP24";
+        let selectedSubjects = [];
+        let timeLeft = 7200; 
+        let timerInterval;
+
+        // DATABASE: Add your real 2005-2024 data here
+        // 'ans' must match the text in options exactly
+        const questionBank = {
+            "Physics": [{ q: "Unit of Force?", options: ["Joule", "Newton", "Watt"], ans: "Newton" }],
+            "Mathematics": [{ q: "Solve 5 + 5", options: ["10", "15", "20"], ans: "10" }],
+            "Chemistry": [{ q: "Formula for Water?", options: ["CO2", "H2O", "O2"], ans: "H2O" }],
+            "English": [{ q: "Opposite of 'Happy'?", options: ["Sad", "Glad", "Joy"], ans: "Sad" }]
+        };
+
+        const subjects = ["Physics", "Chemistry", "Biology", "Literature", "Government", "CRS", "Accounting", "Commerce", "Economics", "Mathematics", "English"];
+
+        // Init Subject Grid
+        const grid = document.getElementById('subjectGrid');
+        subjects.forEach(sub => {
+            grid.innerHTML += `<button onclick="toggleSubject('${sub}')" class="subject-card p-5 bg-white rounded-2xl border-2 text-left hover:border-blue-300 transition-all">${sub}</button>`;
+        });
+
+        function unlock() {
+            if(document.getElementById('keyInput').value.toUpperCase() === MASTER_KEY) {
+                document.getElementById('lockScreen').classList.add('hidden');
+                document.getElementById('selectionScreen').classList.remove('hidden');
+            } else { alert("Invalid Key!"); }
+        }
+
+        function toggleSubject(name) {
+            const index = selectedSubjects.indexOf(name);
+            if (index > -1) {
+                selectedSubjects.splice(index, 1);
+                event.target.classList.remove('selected');
+            } else if (selectedSubjects.length < 4) {
+ 
