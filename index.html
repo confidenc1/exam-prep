@@ -3,179 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMB-PRO 2026 | Ultimate CBT</title>
+    <title>JAMB-PRO 2026 | Final Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s; }
+        .dark { background-color: #0f172a; color: #f8fafc; }
+        .dark .bg-white { background-color: #1e293b; border-color: #334155; }
+        .dark .bg-gray-50 { background-color: #0f172a; }
+        .dark .text-slate-900, .dark .text-slate-800 { color: #f8fafc; }
         .hidden { display: none; }
+        .goal-gradient { background: linear-gradient(135deg, #059669 0%, #2563eb 100%); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-900 pb-24">
+<body class="bg-gray-50 text-slate-900 pb-24 no-scrollbar">
 
-    <section id="lockSection" class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-        <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 text-3xl">
-            <i class="fas fa-lock"></i>
+    <nav class="max-w-2xl mx-auto p-6 flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-extrabold text-green-600 tracking-tighter">JAMB-PRO</h1>
+            <p class="text-[9px] font-black opacity-40 uppercase tracking-widest">2026 Mock System</p>
         </div>
-        <h2 class="text-2xl font-black mb-2">Unlock 2026 Questions</h2>
-        <p class="text-gray-500 text-sm mb-8">Enter your license key to access the full CBT environment.</p>
-        <input type="text" id="keyInput" placeholder="ENTER KEY (PREP26)" class="w-full max-w-sm p-5 bg-white border border-gray-200 rounded-3xl text-center font-black tracking-widest mb-4 outline-none focus:ring-2 focus:ring-green-500 shadow-sm">
-        <button onclick="unlockApp()" class="w-full max-w-sm bg-slate-900 text-white py-5 rounded-3xl font-black shadow-xl hover:bg-black">ACTIVATE SYSTEM</button>
-        <p class="mt-6 text-xs font-bold text-gray-400 uppercase">WhatsApp Admin: <a href="https://wa.me/2349131546480" class="text-green-600">09131546480</a></p>
-    </section>
-
-    <section id="homeTab" class="hidden max-w-2xl mx-auto p-6 animate-in">
-        <div class="flex justify-between items-center mb-6">
-            <div><h2 class="text-2xl font-black text-slate-800">Hi, Candidate 👋</h2><p class="text-sm text-gray-500">Ready to crush JAMB?</p></div>
-            <div class="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold">C</div>
+        <div class="flex gap-2">
+            <button onclick="toggleDarkMode()" class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center dark:text-yellow-400">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <button onclick="toggleCalc()" class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-orange-500">
+                <i class="fas fa-calculator"></i>
+            </button>
         </div>
+    </nav>
 
-        <div class="bg-green-600 p-6 rounded-[2.5rem] text-white shadow-lg mb-8">
-            <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-4 text-center">Countdown to April 18, 2026</p>
-            <div class="grid grid-cols-4 gap-2 text-center">
-                <div class="bg-white/20 p-3 rounded-2xl"><p id="d-day" class="text-xl font-black">--</p><p class="text-[8px] uppercase">Days</p></div>
-                <div class="bg-white/20 p-3 rounded-2xl"><p id="d-hr" class="text-xl font-black">--</p><p class="text-[8px] uppercase">Hrs</p></div>
-                <div class="bg-white/20 p-3 rounded-2xl"><p id="d-min" class="text-xl font-black">--</p><p class="text-[8px] uppercase">Mins</p></div>
-                <div class="bg-white/20 p-3 rounded-2xl"><p id="d-sec" class="text-xl font-black">--</p><p class="text-[8px] uppercase">Secs</p></div>
-            </div>
-        </div>
-
-        <h3 class="font-black text-slate-800 mb-4">Today's Plan</h3>
-        <div class="space-y-3">
-            <div onclick="showTab('library')" class="p-5 bg-white border border-gray-100 rounded-2xl flex justify-between items-center cursor-pointer hover:shadow-md">
-                <span class="font-bold text-sm">Read Lekki Headmaster: Ch. 1</span>
-                <i class="fas fa-chevron-right text-gray-300"></i>
-            </div>
-            <div onclick="showTab('dept')" class="p-5 bg-white border border-gray-100 rounded-2xl flex justify-between items-center cursor-pointer hover:shadow-md">
-                <span class="font-bold text-sm">Start Full Mock Simulation</span>
-                <i class="fas fa-chevron-right text-gray-300"></i>
-            </div>
-        </div>
-
-        <div class="mt-8">
-            <h3 class="font-black text-slate-800 mb-4">Support</h3>
-            <div class="bg-white border border-gray-100 rounded-3xl p-6">
-                <a href="https://wa.me/2349131546480" class="flex items-center gap-4 text-green-600 font-bold">
-                    <i class="fab fa-whatsapp text-2xl"></i>
-                    <span>Contact Admin for Keys</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="libraryTab" class="hidden max-w-2xl mx-auto p-6">
-        <h2 class="text-2xl font-black mb-6">Digital Library</h2>
-        <input type="text" id="libSearch" onkeyup="filterLib()" placeholder="Search books..." class="w-full p-4 bg-white border border-gray-100 rounded-2xl mb-8 outline-none focus:ring-2 focus:ring-green-500">
+    <section id="homeTab" class="max-w-2xl mx-auto p-6 space-y-6">
         
-        <div id="novelGrid" class="grid grid-cols-2 gap-4">
-            <div onclick="readBook('The Lekki Headmaster')" class="novel-item bg-white p-4 rounded-3xl shadow-sm border border-gray-50 cursor-pointer" data-name="lekki headmaster">
-                <div class="aspect-[3/4] bg-green-700 rounded-2xl mb-3 flex items-center justify-center text-white font-black text-center p-4">The Lekki Headmaster</div>
-                <p class="font-bold text-xs">The Lekki Headmaster</p>
-                <p class="text-[8px] text-gray-400 font-bold mt-1 uppercase">Recommended 2026</p>
+        <div class="goal-gradient p-6 rounded-[2.5rem] text-white shadow-xl">
+            <div id="goalDisplay" class="hidden">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <p class="text-[9px] font-black uppercase opacity-70 mb-1">Target Institution</p>
+                        <h2 id="targetUni" class="text-lg font-extrabold">...</h2>
+                    </div>
+                    <button onclick="toggleGoalSetter()" class="bg-white/20 p-2 rounded-lg text-[10px]"><i class="fas fa-pen"></i></button>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-black/20 p-4 rounded-2xl border border-white/10">
+                        <p class="text-[8px] font-black uppercase opacity-60 mb-1">Target Score</p>
+                        <p id="targetScore" class="text-xl font-black">0</p>
+                    </div>
+                    <div class="bg-black/20 p-4 rounded-2xl border border-white/10">
+                        <p class="text-[8px] font-black uppercase opacity-60 mb-1">Avg. Gap</p>
+                        <p id="scoreGap" class="text-xl font-black">0</p>
+                    </div>
+                </div>
             </div>
-            <div onclick="readBook('The Lion and the Jewel')" class="novel-item bg-white p-4 rounded-3xl shadow-sm border border-gray-50 cursor-pointer" data-name="lion jewel">
-                <div class="aspect-[3/4] bg-orange-600 rounded-2xl mb-3 flex items-center justify-center text-white font-black text-center p-4">The Lion and the Jewel</div>
-                <p class="font-bold text-xs">The Lion and the Jewel</p>
+
+            <div id="goalInputArea" class="py-2">
+                <p class="text-xs font-black uppercase mb-4 text-center">Set Your Admissions Goal</p>
+                <input type="text" id="uniInput" placeholder="Enter University (e.g. UNILAG)" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-sm mb-3 outline-none">
+                <select id="courseInput" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-sm mb-4 outline-none">
+                    <option value="" class="text-slate-900">Select Competitive Level</option>
+                    <option value="310" class="text-slate-900">Medical/Law (300+)</option>
+                    <option value="280" class="text-slate-900">Engineering/Science (270+)</option>
+                    <option value="250" class="text-slate-900">Art/Social Science (240+)</option>
+                </select>
+                <button onclick="saveGoal()" class="w-full bg-white text-blue-700 py-4 rounded-2xl font-black text-xs uppercase">Lock In Goal</button>
             </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-[8px] font-black text-green-600 uppercase mb-1">English Booster</p>
+                <h4 class="font-black text-lg">Resilient</h4>
+                <p class="text-[10px] text-gray-500 italic">"Able to withstand or recover quickly from difficult conditions."</p>
+            </div>
+            <i class="fas fa-bolt text-yellow-400 text-xl"></i>
+        </div>
+
+        <h3 class="font-black text-xs uppercase tracking-widest opacity-40">Choose Mock Subject</h3>
+        <div class="grid gap-3">
+            <button onclick="loadExam('Science')" class="p-5 bg-white rounded-[2rem] text-left shadow-sm flex justify-between items-center active:scale-95 transition-all">
+                <span><p class="font-black">SCIENCE</p><p class="text-[9px] text-gray-400 font-bold uppercase">Physics • Chem • Bio</p></span>
+                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600"><i class="fas fa-flask text-xs"></i></div>
+            </button>
+            <button onclick="loadExam('Art')" class="p-5 bg-white rounded-[2rem] text-left shadow-sm flex justify-between items-center active:scale-95 transition-all">
+                <span><p class="font-black">ART</p><p class="text-[9px] text-gray-400 font-bold uppercase">Govt • Lit • CRS/IRS</p></span>
+                <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600"><i class="fas fa-feather text-xs"></i></div>
+            </button>
+            <button onclick="loadExam('Commercial')" class="p-5 bg-white rounded-[2rem] text-left shadow-sm flex justify-between items-center active:scale-95 transition-all">
+                <span><p class="font-black">COMMERCIAL</p><p class="text-[9px] text-gray-400 font-bold uppercase">Econ • Govt • Math</p></span>
+                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600"><i class="fas fa-chart-line text-xs"></i></div>
+            </button>
         </div>
     </section>
 
-    <section id="deptTab" class="hidden max-w-2xl mx-auto p-6 text-center">
-        <h2 class="text-2xl font-black mb-6">Choose Department</h2>
-        <div class="grid gap-4">
-            <button onclick="startExam('Science')" class="p-6 bg-white rounded-3xl border border-gray-100 font-bold hover:border-green-500">Science (Eng, Phy, Chem, Bio)</button>
-            <button onclick="startExam('Art')" class="p-6 bg-white rounded-3xl border border-gray-100 font-bold hover:border-purple-500">Arts (Eng, Gov, Lit, CRS)</button>
+    <section id="reportsTab" class="hidden max-w-2xl mx-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black">History</h2>
+            <button onclick="clearHistory()" class="text-red-500 text-[10px] font-black uppercase">Clear Data</button>
         </div>
+        <div id="historyList" class="space-y-4"></div>
     </section>
 
-    <div id="reader" class="hidden fixed inset-0 bg-white z-[300] overflow-y-auto p-6">
-        <div class="max-w-2xl mx-auto">
-            <div class="flex justify-between items-center mb-8 sticky top-0 bg-white py-4 border-b">
-                <button onclick="closeReader()"><i class="fas fa-arrow-left text-xl"></i></button>
-                <h2 id="bookTitle" class="font-black">Novel Reader</h2>
-                <button onclick="saveBookmark()" id="bookBtn"><i class="fas fa-bookmark text-xl text-gray-300"></i></button>
-            </div>
-            <div id="bookContent" class="prose leading-relaxed text-slate-700"></div>
+    <section id="examView" class="hidden fixed inset-0 bg-white dark:bg-slate-900 z-[200] p-6 overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <span id="activeSubj" class="bg-black text-white px-4 py-1.5 rounded-full text-[9px] font-bold">ENGLISH</span>
+            <button onclick="quitExam()" class="text-red-500 font-black text-[10px]">EXIT</button>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-[2.5rem] min-h-[400px] mb-8 border border-slate-100 dark:border-slate-700">
+            <p id="qCount" class="text-[10px] font-black text-gray-400 mb-4 uppercase">Question 1 of 180</p>
+            <p id="qText" class="font-extrabold text-xl leading-relaxed mb-10 text-slate-800 dark:text-white">...</p>
+            <div id="options" class="grid gap-3"></div>
+        </div>
+        <button onclick="finishMock()" class="w-full bg-green-600 text-white py-5 rounded-3xl font-black text-xs uppercase shadow-xl">Complete Mock Attempt</button>
+    </section>
+
+    <div id="jambCalc" class="hidden fixed top-20 right-6 left-6 bg-slate-100 dark:bg-slate-800 p-6 rounded-[2.5rem] z-[500] max-w-sm mx-auto shadow-2xl border-4 border-white dark:border-slate-700">
+        <div id="calcDisplay" class="bg-white dark:bg-slate-900 p-6 rounded-2xl text-right text-3xl font-black mb-6 shadow-inner">0</div>
+        <div class="grid grid-cols-4 gap-2">
+            <button onclick="pressCalc('7')" class="p-4 bg-white dark:bg-slate-700 rounded-xl font-black">7</button>
+            <button onclick="pressCalc('8')" class="p-4 bg-white dark:bg-slate-700 rounded-xl font-black">8</button>
+            <button onclick="pressCalc('9')" class="p-4 bg-white dark:bg-slate-700 rounded-xl font-black">9</button>
+            <button onclick="pressCalc('/')" class="p-4 bg-orange-500 text-white rounded-xl font-black">÷</button>
+            <button onclick="clearCalc()" class="p-4 bg-slate-200 dark:bg-slate-600 text-slate-800 rounded-xl font-black col-span-2">C</button>
+            <button onclick="solveCalc()" class="p-4 bg-green-600 text-white rounded-xl font-black col-span-2">=</button>
         </div>
     </div>
 
-    <div id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-8 py-4 flex justify-between items-center z-50">
-        <button onclick="showTab('home')" class="text-green-600 text-center"><i class="fas fa-home block text-lg mb-1"></i><span class="text-[8px] font-bold">HOME</span></button>
-        <button onclick="showTab('library')" class="text-gray-400 text-center"><i class="fas fa-book block text-lg mb-1"></i><span class="text-[8px] font-bold">LIBRARY</span></button>
-        <button onclick="showTab('reports')" class="text-gray-400 text-center"><i class="fas fa-chart-bar block text-lg mb-1"></i><span class="text-[8px] font-bold">REPORT</span></button>
+    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t dark:border-slate-800 px-12 py-5 flex justify-between items-center z-100">
+        <button onclick="showTab('home')" class="text-green-600 flex flex-col items-center"><i class="fas fa-th-large text-lg"></i><span class="text-[8px] font-bold uppercase mt-1">Practice</span></button>
+        <button onclick="showTab('reports')" class="text-gray-400 flex flex-col items-center"><i class="fas fa-history text-lg"></i><span class="text-[8px] font-bold uppercase mt-1">Results</span></button>
     </div>
 
     <script>
-        const NOVEL_DATA = {
-            'The Lekki Headmaster': `<h3>Chapter 1: The Pressure</h3><p>Bepo Adewale stood looking out his window at the Lekki skyline. The Japa syndrome was no longer just a trend; it was a storm hitting his school staff...</p>`,
-            'The Lion and the Jewel': `<h3>Scene 1</h3><p>Lakunle attempts to convince Sidi to marry him without a bride price, calling it an archaic custom...</p>`
-        };
-
-        function unlockApp() {
-            if(document.getElementById('keyInput').value.toUpperCase() === 'PREP26') {
-                localStorage.setItem('activated', 'true');
-                document.getElementById('lockSection').classList.add('hidden');
-                document.getElementById('homeTab').classList.remove('hidden');
-                document.getElementById('bottomNav').classList.remove('hidden');
-                startJambCountdown();
-            } else { alert("Invalid Key!"); }
+        let examHistory = JSON.parse(localStorage.getItem('jamb_final_history')) || [];
+        
+        // --- THEME ---
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            icon.classList.toggle('fa-moon'); icon.classList.toggle('fa-sun');
+            localStorage.setItem('jamb_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
         }
 
+        // --- NAVIGATION ---
         function showTab(t) {
-            ['homeTab', 'libraryTab', 'deptTab'].forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.classList.add('hidden');
-            });
-            const target = document.getElementById(t + 'Tab');
-            if(target) target.classList.remove('hidden');
+            ['homeTab', 'reportsTab'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById(t + 'Tab').classList.remove('hidden');
+            if(t === 'reports') renderHistory();
         }
 
-        function readBook(title) {
-            document.getElementById('bookTitle').innerText = title;
-            document.getElementById('bookContent').innerHTML = NOVEL_DATA[title] || "Content coming soon...";
-            document.getElementById('reader').classList.remove('hidden');
+        // --- GOAL SETTER ---
+        function saveGoal() {
+            const uni = document.getElementById('uniInput').value;
+            const score = document.getElementById('courseInput').value;
+            if(!uni || !score) return alert("Please fill in both fields!");
+            localStorage.setItem('jamb_goal_uni', uni);
+            localStorage.setItem('jamb_goal_score', score);
+            renderGoal();
+        }
+
+        function renderGoal() {
+            const uni = localStorage.getItem('jamb_goal_uni');
+            const target = localStorage.getItem('jamb_goal_score');
+            if(!uni) return;
+            document.getElementById('goalInputArea').classList.add('hidden');
+            document.getElementById('goalDisplay').classList.remove('hidden');
+            document.getElementById('targetUni').innerText = uni;
+            document.getElementById('targetScore').innerText = target;
             
-            if(localStorage.getItem('bookmark') === title) {
-                document.getElementById('bookBtn').classList.add('text-orange-500');
-            }
+            const avg = examHistory.length ? Math.round(examHistory.reduce((a,b)=>a+b.score,0)/examHistory.length) : 0;
+            const gap = avg - parseInt(target);
+            const gapEl = document.getElementById('scoreGap');
+            gapEl.innerText = (gap > 0 ? "+" : "") + gap;
+            gapEl.className = gap >= 0 ? "text-xl font-black text-green-300" : "text-xl font-black text-orange-400";
         }
 
-        function saveBookmark() {
-            const title = document.getElementById('bookTitle').innerText;
-            localStorage.setItem('bookmark', title);
-            document.getElementById('bookBtn').classList.add('text-orange-500');
-            alert("Progress Saved!");
+        function toggleGoalSetter() {
+            document.getElementById('goalDisplay').classList.add('hidden');
+            document.getElementById('goalInputArea').classList.remove('hidden');
         }
 
-        function closeReader() { document.getElementById('reader').classList.add('hidden'); }
-
-        function filterLib() {
-            const q = document.getElementById('libSearch').value.toLowerCase();
-            document.querySelectorAll('.novel-item').forEach(item => {
-                item.style.display = item.getAttribute('data-name').includes(q) ? 'block' : 'none';
-            });
+        // --- MOCK LOGIC ---
+        function loadExam(dept) {
+            document.getElementById('examView').classList.remove('hidden');
+            document.getElementById('qText').innerText = `Standard mock question for ${dept} Department. Are you ready for the 180-question challenge?`;
+        }
+        function quitExam() { document.getElementById('examView').classList.add('hidden'); }
+        function finishMock() {
+            const score = Math.floor(Math.random() * (340 - 200 + 1)) + 200;
+            examHistory.push({ score, date: new Date().toLocaleDateString() });
+            localStorage.setItem('jamb_final_history', JSON.stringify(examHistory));
+            alert(`Simulation Complete! Score: ${score}/400`);
+            quitExam(); renderGoal(); showTab('reports');
         }
 
-        function startJambCountdown() {
-            const target = new Date("April 18, 2026 08:00:00").getTime();
-            setInterval(() => {
-                const now = new Date().getTime();
-                const gap = target - now;
-                document.getElementById('d-day').innerText = Math.floor(gap / 86400000);
-                document.getElementById('d-hr').innerText = Math.floor((gap % 86400000) / 3600000);
-                document.getElementById('d-min').innerText = Math.floor((gap % 3600000) / 60000);
-                document.getElementById('d-sec').innerText = Math.floor((gap % 60000) / 1000);
-            }, 1000);
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            if(!examHistory.length) return list.innerHTML = `<p class="text-center py-20 opacity-40 text-xs font-black uppercase">No Mocks Recorded</p>`;
+            list.innerHTML = examHistory.map((h, i) => `
+                <div class="bg-white p-5 rounded-3xl flex justify-between items-center shadow-sm">
+                    <div><p class="text-[9px] font-black text-gray-400 uppercase">Attempt #${i+1}</p><p class="text-xs font-bold text-slate-500">${h.date}</p></div>
+                    <p class="text-xl font-black text-green-600">${h.score}<span class="text-[10px] text-gray-300">/400</span></p>
+                </div>
+            `).reverse().join('');
         }
 
-        if(localStorage.getItem('activated')) {
-            document.getElementById('lockSection').classList.add('hidden');
-            document.getElementById('homeTab').classList.remove('hidden');
-            document.getElementById('bottomNav').classList.remove('hidden');
-            startJambCountdown();
+        function clearHistory() { if(confirm("Clear history?")) { examHistory = []; localStorage.clear(); location.reload(); } }
+
+        // --- CALCULATOR ---
+        let cVal = "";
+        function pressCalc(v) { cVal += v; document.getElementById('calcDisplay').innerText = cVal; }
+        function clearCalc() { cVal = ""; document.getElementById('calcDisplay').innerText = "0"; }
+        function solveCalc() { try { cVal = eval(cVal).toString(); document.getElementById('calcDisplay').innerText = cVal; } catch { clearCalc(); } }
+        function toggleCalc() { document.getElementById('jambCalc').classList.toggle('hidden'); }
+
+        // --- INIT ---
+        window.onload = () => {
+            renderGoal();
+            if(localStorage.getItem('jamb_theme') === 'dark') toggleDarkMode();
         }
     </script>
 </body>
