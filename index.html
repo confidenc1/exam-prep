@@ -8,43 +8,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* DASHBOARD DESIGN - UNTOUCHED */
-        body { background-color: #2e3075; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        body { background-color: #2e3075; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
         .app-container { background-color: #0f111a; min-height: 100vh; padding-bottom: 80px; }
-        .app-section { display: none; padding: 20px; }
+        .app-section { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
         #dashboard-view { display: block; }
 
-        .header-box { padding: 25px 20px; background-color: #2e3075; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-        .timer { font-family: monospace; letter-spacing: 1px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Dashboard Styles */
+        .header-box { padding: 25px 20px; background-color: #2e3075; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
         .section-title { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin: 20px 0 10px; }
         .subject-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
         .subject-scroll::-webkit-scrollbar { display: none; }
         .mini-card { min-width: 140px; padding: 12px; background: #161722; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
-        .mini-card i { padding: 8px; border-radius: 8px; font-size: 0.9rem; }
-
+        
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .quick-card { height: 100px; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; border: none; cursor: pointer; }
-        .quick-card i { font-size: 1.2rem; background: rgba(255,255,255,0.2); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
-        .quick-card span { font-size: 0.75rem; font-weight: 600; }
-
+        .quick-card { height: 100px; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
         .bg-purple { background: linear-gradient(135deg, #6259a8, #4c4485); }
         .bg-orange { background: linear-gradient(135deg, #bc743c, #9e5d2d); }
         .bg-teal { background: linear-gradient(135deg, #1d9086, #146e66); }
         .bg-grey { background: linear-gradient(135deg, #5b757b, #465a5f); }
 
-        /* PRACTICE SELECTION STYLES */
-        .subject-select-card { background: #1e1f2b; border: 2px solid transparent; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
+        /* Exam Selection Styles */
+        .subject-select-card { background: #1e1f2b; border: 2px solid transparent; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
         .subject-select-card.selected { border-color: #0d6efd; background: rgba(13, 110, 253, 0.1); }
-        .subject-select-card i { font-size: 1.5rem; margin-bottom: 8px; display: block; }
-        .subject-select-card span { font-size: 0.75rem; font-weight: 600; }
+        
+        /* Exam Hall Styles */
+        .question-box { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 20px; min-height: 150px; border: 1px solid rgba(255,255,255,0.1); }
+        .option-btn { background: #161722; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; width: 100%; text-align: left; color: white; transition: 0.2s; }
+        .option-btn:active { background: #2e3075; }
+        .option-btn.active { border-color: #0d6efd; background: rgba(13, 110, 253, 0.2); }
 
-        /* GENERAL UI */
-        .guide-item { background: #1e2029; border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
-        .guide-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 15px; }
-        .note-card { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 15px; border-left: 5px solid #ff8c00; }
-
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #2e3075; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 999; }
+        /* Navigation */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #2e3075; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1000; }
         .nav-link { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.65rem; text-align: center; }
         .nav-link.active { color: white; }
         .nav-link i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
@@ -53,46 +49,25 @@
 <body>
 
 <div class="app-container">
-    <div id="dashboard-view" class="app-section" style="padding: 0; display: block;">
+    <div id="dashboard-view" class="app-section" style="padding:0; display: block;">
         <div class="header-box">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-circle" style="width: 45px; height: 45px; background: #5c5ed3; display: flex; align-items: center; justify-content: center;"><i class="fas fa-user"></i></div>
                     <div><h6 class="mb-0 fw-bold">Hello confidence 👋</h6><small style="opacity: 0.7; font-size: 0.7rem;">Let's start learning</small></div>
                 </div>
-                <div id="timer-display" class="timer fw-bold fs-5 text-white">02:00:00</div>
+                <div id="timer-display" class="fw-bold fs-5">02:00:00</div>
             </div>
         </div>
-
         <div class="px-3">
             <div class="section-title"><i class="fas fa-fire text-danger"></i> My Subject</div>
             <div id="horizontal-list" class="subject-scroll"></div>
-
             <div class="section-title"><i class="fas fa-rocket text-primary"></i> Quick access</div>
             <div class="grid-container">
-                <div class="quick-card bg-purple" onclick="showSection('practice-view')">
-                    <i class="fas fa-desktop"></i><span>Practice Questions</span>
-                </div>
-                <div class="quick-card bg-orange" onclick="openStudyGuide()">
-                    <i class="fas fa-file-alt"></i><span>Notes</span>
-                </div>
-                <div class="quick-card bg-teal" onclick="showSection('literary-view')">
-                    <i class="fas fa-book"></i><span>Literary Texts</span>
-                </div>
-                <div class="quick-card bg-grey" onclick="showSection('syllabus-view')">
-                    <i class="fas fa-archive"></i><span>Syllabus</span>
-                </div>
-            </div>
-
-            <div class="section-title"><i class="fas fa-history text-warning"></i> Resume last session</div>
-            <div class="p-3 rounded-4 mb-3" style="background: #1e1f2b; cursor: pointer;" onclick="viewNote('Literature-In-English')">
-                <div class="d-flex align-items-center">
-                    <div class="bg-dark p-3 rounded-3 me-3"><i class="fas fa-book-open text-primary"></i></div>
-                    <div>
-                        <h6 class="mb-0 small fw-bold text-white-50">The Lekki Headmaster</h6>
-                        <small class="text-white">Chapter 2: The Enticement</small>
-                    </div>
-                </div>
+                <div class="quick-card bg-purple" onclick="showSection('practice-view')"><i class="fas fa-desktop"></i><span>Practice Questions</span></div>
+                <div class="quick-card bg-orange" onclick="openStudyGuide()"><i class="fas fa-file-alt"></i><span>Notes</span></div>
+                <div class="quick-card bg-teal" onclick="showSection('literary-view')"><i class="fas fa-book"></i><span>Literary Texts</span></div>
+                <div class="quick-card bg-grey" onclick="showSection('syllabus-view')"><i class="fas fa-archive"></i><span>Syllabus</span></div>
             </div>
         </div>
     </div>
@@ -102,43 +77,45 @@
             <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
             <h4 class="fw-bold mb-0">CBT Mock Exam</h4>
         </div>
-        <p class="text-muted text-center small mb-4">Select up to 4 subjects to practice.</p>
-        <div id="practice-subject-grid" class="grid-container mb-4"></div>
-        <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold" onclick="startMockExam()">Start Practice Session</button>
+        <p class="text-muted text-center small">Select up to 4 subjects for your session.</p>
+        <div id="practice-subject-grid" class="grid-container mb-4" style="grid-template-columns: 1fr 1fr;"></div>
+        <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold" onclick="goToExamHall()">Start Practice Session</button>
+    </div>
+
+    <div id="exam-hall-view" class="app-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 id="exam-subject-title" class="fw-bold mb-0 text-primary">English</h5>
+            <div class="badge bg-danger p-2" id="exam-timer">02:00:00</div>
+        </div>
+        
+        <div class="question-box">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="badge bg-dark">Question 1 of 40</span>
+            </div>
+            <p id="question-text" class="mb-0">Please wait, loading question...</p>
+        </div>
+
+        <div id="options-container">
+            <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text">Option text here</span></button>
+            <button class="option-btn" onclick="selectOption(this)">B. <span class="opt-text">Option text here</span></button>
+            <button class="option-btn" onclick="selectOption(this)">C. <span class="opt-text">Option text here</span></button>
+            <button class="option-btn" onclick="selectOption(this)">D. <span class="opt-text">Option text here</span></button>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <button class="btn btn-outline-light rounded-pill px-4">Previous</button>
+            <button class="btn btn-primary rounded-pill px-4" onclick="showDashboard()">Submit</button>
+            <button class="btn btn-outline-light rounded-pill px-4">Next</button>
+        </div>
     </div>
 
     <div id="study-guide-view" class="app-section">
-        <div class="d-flex align-items-center mb-4">
-            <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
-            <h4 class="fw-bold mb-0">Study Guide</h4>
-        </div>
+        <div class="d-flex align-items-center mb-4"><button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button><h4 class="fw-bold mb-0">Notes</h4></div>
         <div id="vertical-guide-list"></div>
     </div>
 
-    <div id="literary-view" class="app-section">
-        <div class="d-flex align-items-center mb-4">
-            <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
-            <h4 class="fw-bold mb-0">Literary Texts</h4>
-        </div>
-        <div class="note-card" onclick="viewNote('Literature-In-English')">
-            <h6>The Lekki Headmaster</h6>
-            <small class="text-muted">Analysis and Summary</small>
-        </div>
-    </div>
-
-    <div id="syllabus-view" class="app-section">
-        <div class="d-flex align-items-center mb-4">
-            <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
-            <h4 class="fw-bold mb-0">JAMB Syllabus</h4>
-        </div>
-        <div class="text-center mt-5"><p class="text-muted">Loading Syllabus...</p></div>
-    </div>
-
     <div id="note-viewer" class="app-section">
-        <div class="d-flex align-items-center mb-4">
-            <button class="btn text-white p-0 me-3" onclick="backToGuide()"><i class="fas fa-arrow-left fs-4"></i></button>
-            <h4 id="note-title" class="fw-bold mb-0 text-warning">Notes</h4>
-        </div>
+        <div class="d-flex align-items-center mb-4"><button class="btn text-white p-0 me-3" onclick="showSection('study-guide-view')"><i class="fas fa-arrow-left fs-4"></i></button><h4 id="note-title" class="fw-bold mb-0 text-warning">Notes</h4></div>
         <div id="note-content"></div>
     </div>
 
@@ -151,97 +128,104 @@
 </div>
 
 <script>
+    // FULL SUBJECT LIST
     const allSubjects = [
-        { id: "English Language", icon: "fas fa-book", color: "#bc743c", category: "main" },
-        { id: "Mathematics", icon: "fas fa-calculator", color: "#1d9086", category: "main" },
-        { id: "Physics", icon: "fas fa-broadcast-tower", color: "#3b7d4f", category: "main" },
-        { id: "Chemistry", icon: "fas fa-flask", color: "#bc743c", category: "main" },
-        { id: "Biology", icon: "fas fa-lungs", color: "#bc743c", category: "main" },
-        { id: "Government", icon: "fas fa-landmark", color: "#8a2be2", category: "main" },
-        { id: "Literature-In-English", icon: "fas fa-book-open", color: "#8a2be2", category: "main" }
+        { id: "English Language", icon: "fas fa-book", color: "#bc743c" },
+        { id: "Mathematics", icon: "fas fa-calculator", color: "#1d9086" },
+        { id: "Physics", icon: "fas fa-broadcast-tower", color: "#3b7d4f" },
+        { id: "Chemistry", icon: "fas fa-flask", color: "#bc743c" },
+        { id: "Biology", icon: "fas fa-lungs", color: "#bc743c" },
+        { id: "Government", icon: "fas fa-landmark", color: "#8a2be2" },
+        { id: "Economics", icon: "fas fa-chart-line", color: "#1d9086" },
+        { id: "Literature-In-English", icon: "fas fa-book-open", color: "#8a2be2" },
+        { id: "Commerce", icon: "fas fa-shopping-cart", color: "#bc743c" },
+        { id: "CRS", icon: "fas fa-cross", color: "#1d9086" }
     ];
 
     let noteData = {};
     let selectedSubjects = [];
 
-    function startTimer(duration) {
+    function startTimer(duration, displayId) {
         let timer = duration, h, m, s;
         setInterval(() => {
             h = parseInt(timer / 3600, 10);
             m = parseInt((timer % 3600) / 60, 10);
             s = parseInt(timer % 60, 10);
-            document.querySelector('#timer-display').textContent = 
-                `${h < 10 ? "0"+h : h}:${m < 10 ? "0"+m : m}:${s < 10 ? "0"+s : s}`;
+            document.getElementById(displayId).textContent = `${h<10?"0"+h:h}:${m<10?"0"+m:m}:${s<10?"0"+s:s}`;
             if (--timer < 0) timer = duration;
         }, 1000);
     }
 
     async function loadNotes() {
-        try {
-            const res = await fetch('study_guide.json?v=' + Date.now());
-            noteData = await res.json();
-        } catch(e) { console.error("JSON Error"); }
+        try { const res = await fetch('study_guide.json?v=' + Date.now()); noteData = await res.json(); } catch(e) {}
     }
 
-    function showSection(sectionId) {
+    function showSection(id) {
         document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
-        document.getElementById(sectionId).style.display = 'block';
-        if(sectionId === 'practice-view') setupPracticeSelection();
+        document.getElementById(id).style.display = 'block';
+        if(id === 'practice-view') setupPracticeSelection();
     }
 
     function setupPracticeSelection() {
         const grid = document.getElementById('practice-subject-grid');
         grid.innerHTML = allSubjects.map(s => `
-            <div class="subject-select-card ${selectedSubjects.includes(s.id) ? 'selected' : ''}" 
-                 onclick="toggleSubjectSelection('${s.id}')" id="sel-${s.id.replace(/\s+/g, '')}">
-                <i class="${s.icon}" style="color: ${s.color}"></i>
-                <span>${s.id}</span>
-            </div>
-        `).join('');
+            <div class="subject-select-card ${selectedSubjects.includes(s.id)?'selected':''}" onclick="toggleSelect('${s.id}')" id="sel-${s.id.replace(/\s+/g,'')}">
+                <i class="${s.icon}" style="color:${s.color}"></i><br>
+                <span style="font-size:0.7rem">${s.id}</span>
+            </div>`).join('');
     }
 
-    function toggleSubjectSelection(id) {
-        const el = document.getElementById('sel-' + id.replace(/\s+/g, ''));
-        if (selectedSubjects.includes(id)) {
+    function toggleSelect(id) {
+        const el = document.getElementById('sel-'+id.replace(/\s+/g,''));
+        if(selectedSubjects.includes(id)) {
             selectedSubjects = selectedSubjects.filter(s => s !== id);
             el.classList.remove('selected');
-        } else if (selectedSubjects.length < 4) {
+        } else if(selectedSubjects.length < 4) {
             selectedSubjects.push(id);
             el.classList.add('selected');
         }
     }
 
-    function startMockExam() {
-        if(selectedSubjects.length === 0) return alert("Select a subject!");
-        alert("Starting exam for: " + selectedSubjects.join(", "));
+    function goToExamHall() {
+        if(selectedSubjects.length === 0) return alert("Pick a subject first!");
+        showSection('exam-hall-view');
+        document.getElementById('exam-subject-title').innerText = selectedSubjects[0];
+        document.getElementById('question-text').innerText = "Which of the following is a synonym for 'Vivid'?";
+        const opts = document.querySelectorAll('.opt-text');
+        opts[0].innerText = "Blurred"; opts[1].innerText = "Clear and Bright"; opts[2].innerText = "Dark"; opts[3].innerText = "Quiet";
+    }
+
+    function selectOption(btn) {
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
     }
 
     function viewNote(id) {
         showSection('note-viewer');
         document.getElementById('note-title').innerText = id;
         const notes = noteData[id];
-        document.getElementById('note-content').innerHTML = notes ? notes.map(n => `<div class="note-card"><h6>${n.topic}</h6><div class="small text-white-50">${n.content}</div></div>`).join('') : `<p class="text-center mt-5">Loading...</p>`;
+        document.getElementById('note-content').innerHTML = notes ? notes.map(n => `<div class="note-card"><h6>${n.topic}</h6><div class="small text-white-50">${n.content}</div></div>`).join('') : `<p class="text-center mt-5">No notes found.</p>`;
     }
 
     function openStudyGuide() {
         showSection('study-guide-view');
         document.getElementById('vertical-guide-list').innerHTML = allSubjects.map(s => `
             <div class="guide-item" onclick="viewNote('${s.id}')">
-                <div class="guide-icon" style="background: ${s.color}22"><i class="${s.icon}" style="color: ${s.color}"></i></div>
+                <div class="guide-icon" style="background:${s.color}22"><i class="${s.icon}" style="color:${s.color}"></i></div>
                 <span class="fw-bold">${s.id}</span>
             </div>`).join('');
     }
 
     function showDashboard() { showSection('dashboard-view'); }
-    function backToGuide() { showSection('study-guide-view'); }
 
     window.onload = () => {
-        document.getElementById('horizontal-list').innerHTML = allSubjects.map(s => `
-            <div class="mini-card" style="border-color: ${s.color};">
-                <i class="${s.icon}" style="background: ${s.color}22; color: ${s.color};"></i>
-                <span style="font-size: 0.7rem;">${s.id}</span>
+        document.getElementById('horizontal-list').innerHTML = allSubjects.slice(0,6).map(s => `
+            <div class="mini-card" style="border-color:${s.color}">
+                <i class="${s.icon}" style="color:${s.color}"></i>
+                <span style="font-size:0.7rem">${s.id}</span>
             </div>`).join('');
-        startTimer(7200);
+        startTimer(7200, 'timer-display');
+        startTimer(7200, 'exam-timer');
         loadNotes();
     };
 </script>
