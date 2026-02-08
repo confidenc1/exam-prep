@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FSA-JAMB PRO v11.5</title>
+    <title>FSA JAMB PRACTICES APP</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -25,22 +25,33 @@
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0; padding-bottom: 90px;
-            overflow-x: hidden;
         }
 
-        /* Header & Profile */
+        /* Branding Header */
         .app-header {
             background: var(--primary-bg);
-            padding: 40px 20px 60px 20px;
+            padding: 45px 20px 65px 20px;
             border-radius: 0 0 35px 35px;
+            position: relative;
         }
+        
+        .brand-tag {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 800;
+        }
+
         .profile-img {
             width: 50px; height: 50px; border-radius: 50%;
             border: 2px solid rgba(255,255,255,0.3);
             background: #4a47a3; display: flex; align-items: center; justify-content: center;
         }
 
-        /* Subject Scroller */
+        /* Dashboard Components */
         .subject-scroller {
             display: flex; gap: 12px; overflow-x: auto;
             padding: 10px 20px; margin-top: -30px;
@@ -54,7 +65,6 @@
         }
         .sub-item.selected { border-color: var(--accent); background: rgba(255, 140, 0, 0.1); }
 
-        /* Quick Access Cards */
         .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
         .q-card {
             height: 130px; border-radius: 24px; padding: 20px;
@@ -66,7 +76,7 @@
         .card-teal { background: linear-gradient(135deg, #12cbc4, #06b6d4); }
         .card-grey { background: linear-gradient(135deg, #718093, #2f3640); }
 
-        /* Exam Interface */
+        /* Exam Components */
         .passage-box {
             background: var(--passage-bg) !important;
             color: #f1f5f9 !important;
@@ -80,17 +90,22 @@
         }
         .option-box.active { border-color: var(--accent); background: rgba(255, 140, 0, 0.1); }
 
-        /* Modals & Results */
-        #custom-modal, #results-screen {
+        /* Result Screen */
+        #results-screen, #custom-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 10000;
+            background: rgba(0,0,0,0.97); z-index: 10000;
             display: none; align-items: center; justify-content: center;
         }
-        .progress-circle {
+        .result-card {
+            background: var(--card-bg); padding: 30px; border-radius: 30px;
+            text-align: center; border: 1px solid var(--border);
+            max-width: 380px; width: 90%;
+        }
+        .progress-ring {
             width: 150px; height: 150px; border-radius: 50%;
-            border: 10px solid var(--accent);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.5rem; font-weight: 800; margin: 0 auto 20px;
+            border: 8px solid var(--accent);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
         }
 
         /* Bottom Nav */
@@ -107,81 +122,76 @@
 
 <div id="dashboard-view">
     <header class="app-header">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="brand-tag">FSA JAMB PRACTICES APP</div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex align-items-center">
-                <div class="profile-img"><i class="fas fa-user text-white fs-4"></i></div>
+                <div class="profile-img"><i class="fas fa-user-graduate text-white fs-4"></i></div>
                 <div class="ms-3">
-                    <h5 class="mb-0 fw-bold">Hello Confidenc 👋</h5>
-                    <small class="text-white-50">Let's start learning</small>
+                    <h5 class="mb-0 fw-bold">Hello Candidate 👋</h5>
+                    <small class="text-white-50">Your success starts here</small>
                 </div>
             </div>
             <div id="timer-display" class="fw-bold text-white fs-5" style="font-family: monospace;">02:00:00</div>
         </div>
     </header>
 
-    <div class="px-3 mt-4"><h6 class="fw-bold text-muted small text-uppercase">Select 4 Subjects</h6></div>
+    <div class="px-3 mt-4"><h6 class="fw-bold text-muted small text-uppercase">Course Subjects</h6></div>
     <div class="subject-scroller" id="subject-list"></div>
 
     <div class="quick-grid mt-3">
         <div class="q-card card-purple" onclick="beginExam()">
-            <i class="fas fa-desktop fs-3"></i><span>Practice<br>Questions</span>
+            <i class="fas fa-laptop-code fs-3"></i><span>CBT Mock<br>Exam</span>
         </div>
         <div class="q-card card-orange">
-            <i class="fas fa-file-alt fs-3"></i><span>Study<br>Notes</span>
+            <i class="fas fa-book-reader fs-3"></i><span>Study<br>Guide</span>
         </div>
         <div class="q-card card-teal">
-            <i class="fas fa-book-open fs-3"></i><span>Literary<br>Texts</span>
+            <i class="fas fa-pen-nib fs-3"></i><span>Novel<br>Summaries</span>
         </div>
         <div class="q-card card-grey">
-            <i class="fas fa-list fs-3"></i><span>Syllabus</span>
+            <i class="fas fa-clipboard-list fs-3"></i><span>JAMB<br>Syllabus</span>
         </div>
     </div>
 
     <nav class="bottom-nav">
         <a href="#" class="nav-item active"><i class="fas fa-home d-block fs-4 mb-1"></i>Home</a>
-        <a href="#" class="nav-item"><i class="fas fa-trophy d-block fs-4 mb-1"></i>Activate</a>
-        <a href="#" class="nav-item"><i class="fas fa-user-circle d-block fs-4 mb-1"></i>Account</a>
-        <a href="#" class="nav-item"><i class="fas fa-cog d-block fs-4 mb-1"></i>Settings</a>
+        <a href="#" class="nav-item"><i class="fas fa-key d-block fs-4 mb-1"></i>Activate</a>
+        <a href="#" class="nav-item"><i class="fas fa-user-circle d-block fs-4 mb-1"></i>Profile</a>
+        <a href="#" class="nav-item"><i class="fas fa-info-circle d-block fs-4 mb-1"></i>Help</a>
     </nav>
 </div>
 
 <div id="exam-view" style="display:none; padding: 20px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <button class="btn btn-dark rounded-circle" onclick="location.reload()"><i class="fas fa-times"></i></button>
-        <div class="text-center">
-            <h6 id="current-sub-label" class="fw-bold mb-0">English</h6>
-            <div id="q-count" class="small text-muted">1 / 60</div>
-        </div>
-        <div class="badge bg-danger p-2" id="exam-timer">02:00:00</div>
+        <button class="btn btn-dark rounded-circle" onclick="location.reload()"><i class="fas fa-arrow-left"></i></button>
+        <div class="text-center"><h6 id="current-sub-label" class="fw-bold mb-0">English</h6><div id="q-count" class="small text-muted">1 / 60</div></div>
+        <div class="badge bg-danger p-2 px-3 rounded-pill" id="exam-timer">02:00:00</div>
     </div>
-    
     <div id="q-container"></div>
-
     <div class="d-flex gap-2 mt-4">
         <button class="btn btn-dark flex-grow-1 py-3 rounded-4 fw-bold" onclick="moveQ(-1)">PREV</button>
         <button class="btn btn-dark flex-grow-1 py-3 rounded-4 fw-bold" onclick="moveQ(1)">NEXT</button>
     </div>
-    <button class="btn btn-success w-100 mt-3 py-3 rounded-4 fw-bold" onclick="showSubmitModal()">FINISH & SUBMIT</button>
+    <button class="btn btn-success w-100 mt-3 py-3 rounded-4 fw-bold shadow" onclick="showSubmitModal()">SUBMIT ANSWERS</button>
 </div>
 
 <div id="results-screen">
-    <div class="bg-dark p-4 rounded-5 text-center shadow-lg border border-secondary" style="max-width: 400px; width: 92%;">
-        <h2 class="fw-800 mb-4">YOUR RESULTS</h2>
-        <div class="progress-circle" id="final-total">0</div>
-        <div id="score-breakdown" class="text-start mb-4 small text-muted"></div>
-        <button class="btn btn-premium w-100 py-3 rounded-pill fw-bold" onclick="location.reload()">RETAKE EXAM</button>
+    <div class="result-card">
+        <h3 class="fw-800 mb-4">MOCK SUMMARY</h3>
+        <div class="progress-ring">
+            <span id="final-total" style="font-size: 2.5rem; line-height: 1;">0</span>
+            <small class="text-muted" style="font-size: 0.7rem;">/ 400</small>
+        </div>
+        <div id="score-breakdown" class="text-start mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.03);"></div>
+        <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold" onclick="location.reload()">TRY AGAIN</button>
     </div>
 </div>
 
 <div id="custom-modal">
-    <div class="bg-dark p-4 rounded-5 text-center border border-secondary" style="max-width: 340px; width: 90%;">
-        <i class="fas fa-question-circle text-warning mb-3" style="font-size: 3rem;"></i>
-        <h4 class="fw-bold">Submit Exam?</h4>
-        <p class="text-muted small">Are you sure you want to end this session?</p>
-        <div class="d-flex gap-2">
-            <button class="btn btn-secondary flex-grow-1 rounded-pill" onclick="closeModal()">Review</button>
-            <button class="btn btn-primary flex-grow-1 rounded-pill" onclick="confirmSubmit()">Yes, Submit</button>
-        </div>
+    <div class="bg-dark p-4 rounded-5 text-center border border-secondary" style="max-width: 320px; width: 90%;">
+        <h5 class="fw-bold mb-3">Submit Exam?</h5>
+        <p class="text-muted small">You cannot edit your answers after submission.</p>
+        <div class="d-flex gap-2"><button class="btn btn-secondary flex-grow-1 rounded-pill" onclick="closeModal()">Back</button><button class="btn btn-primary flex-grow-1 rounded-pill" onclick="confirmSubmit()">Submit</button></div>
     </div>
 </div>
 
@@ -217,7 +227,7 @@
             if(timeLeft <= 0) { clearInterval(timerInterval); processResults(); }
             else {
                 timeLeft--;
-                const h = Math.floor(timeLeft / 3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60;
+                const h = Math.floor(timeLeft/3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60;
                 const timeStr = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
                 document.getElementById('timer-display').innerText = timeStr;
                 document.getElementById('exam-timer').innerText = timeStr;
@@ -228,9 +238,11 @@
     async function beginExam() {
         if(selected.length < 4) return alert("Select English + 3 Subjects");
         for (let s of selected) {
-            const res = await fetch(`${s.toLowerCase()}.json`);
-            examData[s] = await res.json();
-            userAns[s] = new Array(examData[s].length).fill(null);
+            try {
+                const res = await fetch(`${s.toLowerCase()}.json`);
+                examData[s] = await res.json();
+                userAns[s] = new Array(examData[s].length).fill(null);
+            } catch(e) { alert(`Missing ${s.toLowerCase()}.json file`); return; }
         }
         document.getElementById('dashboard-view').style.display = 'none';
         document.getElementById('exam-view').style.display = 'block';
@@ -243,8 +255,8 @@
         const user = userAns[activeSub][activeIdx];
         document.getElementById('q-count').innerText = `${activeIdx + 1} / ${examData[activeSub].length}`;
         document.getElementById('current-sub-label').innerText = activeSub;
-        let html = q.p ? `<div class="passage-box"><b>Passage:</b><br>${q.p}</div>` : '';
-        html += `<h5 class="fw-bold mb-4">${q.q}</h5>`;
+        let html = q.p ? `<div class="passage-box"><b>Instructions:</b><br>${q.p}</div>` : '';
+        html += `<h5 class="fw-bold mb-4" style="line-height:1.6">${q.q}</h5>`;
         q.options.forEach((opt, i) => {
             html += `<div class="option-box ${user === i ? 'active' : ''}" onclick="pick(${i})">
                 <div class="me-3 fw-bold">${String.fromCharCode(65+i)}.</div><div>${opt}</div>
@@ -254,7 +266,6 @@
     }
 
     function pick(i) { userAns[activeSub][activeIdx] = i; render(); }
-    
     function moveQ(d) {
         if(examData[activeSub][activeIdx+d]) { activeIdx += d; render(); }
         else {
@@ -266,7 +277,8 @@
 
     function showSubmitModal() { document.getElementById('custom-modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('custom-modal').style.display = 'none'; }
-    
+    function confirmSubmit() { closeModal(); processResults(); }
+
     function processResults() {
         clearInterval(timerInterval);
         let totalScore = 0, breakdownHtml = "";
@@ -275,7 +287,7 @@
             examData[sub].forEach((q, i) => { if(userAns[sub][i] === q.a) correct++; });
             let weighted = Math.round((correct / examData[sub].length) * 100);
             totalScore += weighted;
-            breakdownHtml += `<div class="d-flex justify-content-between mb-1"><span>${sub}</span><span>${weighted}/100</span></div>`;
+            breakdownHtml += `<div class="d-flex justify-content-between mb-2 small"><span>${sub}</span><span class="text-warning">${weighted}/100</span></div>`;
         });
         document.getElementById('final-total').innerText = totalScore;
         document.getElementById('score-breakdown').innerHTML = breakdownHtml;
@@ -283,7 +295,6 @@
         document.getElementById('results-screen').style.display = 'flex';
     }
 
-    function confirmSubmit() { closeModal(); processResults(); }
     window.onload = initDashboard;
 </script>
 </body>
