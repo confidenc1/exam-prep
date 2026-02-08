@@ -24,9 +24,12 @@
         .subject-select-card { background: #1e1f2b; border: 2px solid transparent; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
         .subject-select-card.selected { border-color: #0d6efd; background: rgba(13, 110, 253, 0.1); }
         .question-box { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 20px; min-height: 120px; border: 1px solid rgba(255,255,255,0.1); }
-        .option-btn { background: #161722; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; width: 100%; text-align: left; color: white; transition: 0.2s; }
+        .option-btn { background: #161722; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; width: 100%; text-align: left; color: white; transition: 0.2s; position: relative; }
         .option-btn.active { border-color: #0d6efd; background: rgba(13, 110, 253, 0.2); }
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #2e3075; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .option-btn.correct { background: rgba(25, 135, 84, 0.3) !important; border-color: #198754 !important; }
+        .option-btn.wrong { background: rgba(220, 53, 69, 0.3) !important; border-color: #dc3545 !important; }
+        .explanation-box { background: rgba(13, 110, 253, 0.1); border-left: 4px solid #0d6efd; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #2e3075; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1000; }
         .nav-link { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.65rem; text-align: center; }
         .nav-link.active { color: white; }
         .nav-link i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
@@ -39,7 +42,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-circle" style="width: 45px; height: 45px; background: #5c5ed3; display: flex; align-items: center; justify-content: center;"><i class="fas fa-user"></i></div>
-                    <div><h6 class="mb-0 fw-bold">Hello confidence 👋</h6><small style="opacity: 0.7; font-size: 0.7rem;">Let's start learning</small></div>
+                    <div><h6 class="mb-0 fw-bold">Hello confidence 👋</h6><small style="opacity: 0.7; font-size: 0.7rem;">Ready to excel?</small></div>
                 </div>
                 <div id="timer-display" class="fw-bold fs-5">02:00:00</div>
             </div>
@@ -50,9 +53,9 @@
             <div class="section-title"><i class="fas fa-rocket text-primary"></i> Quick access</div>
             <div class="grid-container">
                 <div class="quick-card bg-purple" onclick="showSection('practice-view')"><i class="fas fa-desktop"></i><span>Practice Questions</span></div>
-                <div class="quick-card bg-orange" onclick="showSection('study-guide-view')"><i class="fas fa-file-alt"></i><span>Notes</span></div>
-                <div class="quick-card bg-teal" onclick="showSection('literary-view')"><i class="fas fa-book"></i><span>Literary Texts</span></div>
-                <div class="quick-card bg-grey" onclick="showSection('syllabus-view')"><i class="fas fa-archive"></i><span>Syllabus</span></div>
+                <div class="quick-card bg-orange"><i class="fas fa-file-alt"></i><span>Notes</span></div>
+                <div class="quick-card bg-teal"><i class="fas fa-book"></i><span>Literary Texts</span></div>
+                <div class="quick-card bg-grey"><i class="fas fa-archive"></i><span>Syllabus</span></div>
             </div>
         </div>
     </div>
@@ -73,7 +76,7 @@
         </div>
         <div class="question-box">
             <span class="badge bg-dark mb-2" id="q-counter">Question 1</span>
-            <p id="question-text">Loading Questions...</p>
+            <p id="question-text">Loading...</p>
         </div>
         <div id="options-container">
             <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text"></span></button>
@@ -81,10 +84,29 @@
             <button class="option-btn" onclick="selectOption(this)">C. <span class="opt-text"></span></button>
             <button class="option-btn" onclick="selectOption(this)">D. <span class="opt-text"></span></button>
         </div>
-        <div class="d-flex justify-content-between mt-4">
-            <button class="btn btn-outline-light rounded-pill px-4" onclick="prevQuestion()">Previous</button>
-            <button class="btn btn-primary rounded-pill px-4" onclick="showDashboard()">Exit</button>
+        
+        <div id="explanation-container" class="explanation-box">
+            <small class="fw-bold text-primary d-block mb-1">EXPLANATION:</small>
+            <span id="explanation-text" style="font-size: 0.85rem;"></span>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4" id="exam-controls">
+            <button class="btn btn-outline-light rounded-pill px-4" onclick="prevQuestion()">Prev</button>
+            <button class="btn btn-success rounded-pill px-4" id="submit-btn" onclick="submitExam()">Submit</button>
             <button class="btn btn-outline-light rounded-pill px-4" onclick="nextQuestion()">Next</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="app-section text-center">
+        <div class="py-5">
+            <i class="fas fa-trophy text-warning" style="font-size: 4rem;"></i>
+            <h2 class="mt-3 fw-bold">Finished!</h2>
+            <div class="display-4 fw-bold my-3" id="final-score">0/0</div>
+            <p class="text-muted" id="score-comment">Excellent work!</p>
+            <div class="d-grid gap-2 mt-4">
+                <button class="btn btn-primary rounded-pill py-3" onclick="startReview()">Review Answers</button>
+                <button class="btn btn-outline-light rounded-pill py-3" onclick="location.reload()">Back to Home</button>
+            </div>
         </div>
     </div>
 
@@ -114,6 +136,10 @@
     let selectedSubjects = [];
     let currentQuestions = [];
     let currentQuestionIndex = 0;
+    let examTimer = null;
+    let timeLeft = 120 * 60; 
+    let userSelections = {}; 
+    let isReviewMode = false;
 
     function showSection(id) {
         document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
@@ -121,10 +147,16 @@
         if(id === 'practice-view') setupPracticeSelection();
     }
 
+    function showDashboard() {
+        if(examTimer && !confirm("Quit exam? Progress lost.")) return;
+        location.reload();
+    }
+
     function setupPracticeSelection() {
         const grid = document.getElementById('practice-subject-grid');
         grid.innerHTML = allSubjects.map(s => `
-            <div class="subject-select-card ${selectedSubjects.includes(s.id)?'selected':''}" onclick="toggleSelect('${s.id}')" id="sel-${s.id.replace(/\s+/g,'')}">
+            <div class="subject-select-card ${selectedSubjects.includes(s.id)?'selected':''}" 
+                 onclick="toggleSelect('${s.id}')" id="sel-${s.id.replace(/\s+/g,'')}">
                 <i class="${s.icon}" style="color:${s.color}"></i><br>
                 <span style="font-size:0.7rem">${s.id}</span>
             </div>`).join('');
@@ -143,47 +175,107 @@
 
     async function goToExamHall() {
         if(selectedSubjects.length === 0) return alert("Select a subject!");
-        
         const subjObj = allSubjects.find(s => s.id === selectedSubjects[0]);
-        document.getElementById('question-text').innerText = "Loading " + subjObj.id + "...";
         showSection('exam-hall-view');
-
         try {
             const res = await fetch(subjObj.file + '?v=' + Date.now());
             const data = await res.json();
-            
-            // This pulls the list from your specific files like biology.json
-            currentQuestions = data.questions || data.Questions || [];
-            
-            if(currentQuestions.length > 0) {
+            let rawList = data.questions || data.Questions || [];
+            if(rawList.length > 0) {
                 const limit = (subjObj.id === "English Language") ? 60 : 40;
-                currentQuestions = currentQuestions.slice(0, limit);
+                currentQuestions = rawList.slice(0, limit);
                 currentQuestionIndex = 0;
+                isReviewMode = false;
+                document.getElementById('explanation-container').style.display = 'none';
                 document.getElementById('exam-subject-title').innerText = subjObj.id;
                 loadQuestion();
-            } else {
-                alert("Empty file: " + subjObj.file);
-                showDashboard();
+                startTimer();
             }
-        } catch(e) {
-            alert("Could not find " + subjObj.file + " on your GitHub.");
-            showDashboard();
-        }
+        } catch(e) { alert("File error"); showSection('dashboard-view'); }
+    }
+
+    function startTimer() {
+        clearInterval(examTimer);
+        timeLeft = 120 * 60; 
+        examTimer = setInterval(() => {
+            timeLeft--;
+            const hrs = Math.floor(timeLeft / 3600);
+            const mins = Math.floor((timeLeft % 3600) / 60);
+            const secs = timeLeft % 60;
+            const f = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+            document.getElementById('exam-timer').innerText = f;
+            if(timeLeft <= 0) submitExam(true);
+        }, 1000);
     }
 
     function loadQuestion() {
         const q = currentQuestions[currentQuestionIndex];
         document.getElementById('question-text').innerText = q.question;
         document.getElementById('q-counter').innerText = `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
+        
         const opts = document.querySelectorAll('.opt-text');
-        q.options.forEach((o, i) => opts[i].innerText = o);
-        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+        const btns = document.querySelectorAll('.option-btn');
+        const optionsData = Array.isArray(q.options) ? q.options : Object.values(q.options);
+        const letters = ['a', 'b', 'c', 'd'];
+
+        btns.forEach((btn, i) => {
+            btn.className = "option-btn"; 
+            opts[i].innerText = optionsData[i] || "";
+            
+            if(!isReviewMode && userSelections[currentQuestionIndex] === letters[i]) {
+                btn.classList.add('active');
+            }
+
+            if(isReviewMode) {
+                const correctLetter = q.answer?.toLowerCase();
+                const userLetter = userSelections[currentQuestionIndex];
+                if(letters[i] === correctLetter) btn.classList.add('correct');
+                if(userLetter === letters[i] && userLetter !== correctLetter) btn.classList.add('wrong');
+            }
+        });
+
+        if(isReviewMode) {
+            const expBox = document.getElementById('explanation-container');
+            const expText = document.getElementById('explanation-text');
+            if(q.explanation) {
+                expBox.style.display = 'block';
+                expText.innerText = q.explanation;
+            } else {
+                expBox.style.display = 'none';
+            }
+        }
     }
 
-    function nextQuestion() { if(currentQuestionIndex < currentQuestions.length - 1) { currentQuestionIndex++; loadQuestion(); } }
+    function selectOption(btn) {
+        if(isReviewMode) return;
+        const btns = document.querySelectorAll('.option-btn');
+        const index = Array.from(btns).indexOf(btn);
+        const letters = ['a', 'b', 'c', 'd'];
+        userSelections[currentQuestionIndex] = letters[index];
+        loadQuestion();
+    }
+
+    function nextQuestion() { if(currentQuestionIndex < currentQuestions.length-1) { currentQuestionIndex++; loadQuestion(); } }
     function prevQuestion() { if(currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(); } }
-    function selectOption(btn) { document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-    function showDashboard() { showSection('dashboard-view'); }
+
+    function submitExam(isAuto = false) {
+        if(!isAuto && !confirm("Submit now?")) return;
+        clearInterval(examTimer);
+        let score = 0;
+        currentQuestions.forEach((q, i) => { if(userSelections[i] === q.answer?.toLowerCase()) score++; });
+        document.getElementById('final-score').innerText = `${score}/${currentQuestions.length}`;
+        showSection('result-view');
+    }
+
+    function startReview() {
+        isReviewMode = true;
+        currentQuestionIndex = 0;
+        document.getElementById('exam-timer').innerText = "REVIEW MODE";
+        document.getElementById('submit-btn').innerText = "Exit Review";
+        document.getElementById('submit-btn').onclick = () => location.reload();
+        showSection('exam-hall-view');
+        loadQuestion();
+    }
 
     window.onload = () => {
         document.getElementById('horizontal-list').innerHTML = allSubjects.slice(0,6).map(s => `
