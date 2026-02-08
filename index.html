@@ -25,9 +25,10 @@
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0; padding-bottom: 90px;
+            overflow-x: hidden;
         }
 
-        /* Branding Header */
+        /* Header */
         .app-header {
             background: var(--primary-bg);
             padding: 45px 20px 65px 20px;
@@ -51,7 +52,7 @@
             background: #4a47a3; display: flex; align-items: center; justify-content: center;
         }
 
-        /* Dashboard Components */
+        /* Subject Scroller */
         .subject-scroller {
             display: flex; gap: 12px; overflow-x: auto;
             padding: 10px 20px; margin-top: -30px;
@@ -65,18 +66,20 @@
         }
         .sub-item.selected { border-color: var(--accent); background: rgba(255, 140, 0, 0.1); }
 
+        /* Quick Access Cards */
         .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
         .q-card {
             height: 130px; border-radius: 24px; padding: 20px;
             display: flex; flex-direction: column; justify-content: space-between;
-            font-weight: 700; cursor: pointer;
+            font-weight: 700; cursor: pointer; transition: 0.2s;
         }
+        .q-card:active { transform: scale(0.95); }
         .card-purple { background: linear-gradient(135deg, #6a5af9, #d66efd); }
         .card-orange { background: linear-gradient(135deg, #ff6b6b, #ff9e6d); }
         .card-teal { background: linear-gradient(135deg, #12cbc4, #06b6d4); }
         .card-grey { background: linear-gradient(135deg, #718093, #2f3640); }
 
-        /* Exam Components */
+        /* Exam Box */
         .passage-box {
             background: var(--passage-bg) !important;
             color: #f1f5f9 !important;
@@ -90,7 +93,7 @@
         }
         .option-box.active { border-color: var(--accent); background: rgba(255, 140, 0, 0.1); }
 
-        /* Result Screen */
+        /* Modals */
         #results-screen, #custom-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.97); z-index: 10000;
@@ -102,7 +105,7 @@
             max-width: 380px; width: 90%;
         }
         .progress-ring {
-            width: 150px; height: 150px; border-radius: 50%;
+            width: 140px; height: 140px; border-radius: 50%;
             border: 8px solid var(--accent);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             margin: 0 auto 20px;
@@ -135,20 +138,20 @@
         </div>
     </header>
 
-    <div class="px-3 mt-4"><h6 class="fw-bold text-muted small text-uppercase">Course Subjects</h6></div>
+    <div class="px-3 mt-4"><h6 class="fw-bold text-muted small text-uppercase">Study Subjects</h6></div>
     <div class="subject-scroller" id="subject-list"></div>
 
     <div class="quick-grid mt-3">
         <div class="q-card card-purple" onclick="beginExam()">
             <i class="fas fa-laptop-code fs-3"></i><span>CBT Mock<br>Exam</span>
         </div>
-        <div class="q-card card-orange">
+        <div class="q-card card-orange" onclick="alert('Study Guide Coming Soon!')">
             <i class="fas fa-book-reader fs-3"></i><span>Study<br>Guide</span>
         </div>
-        <div class="q-card card-teal">
+        <div class="q-card card-teal" onclick="alert('Literature Summaries Coming Soon!')">
             <i class="fas fa-pen-nib fs-3"></i><span>Novel<br>Summaries</span>
         </div>
-        <div class="q-card card-grey">
+        <div class="q-card card-grey" onclick="alert('Official Syllabus Coming Soon!')">
             <i class="fas fa-clipboard-list fs-3"></i><span>JAMB<br>Syllabus</span>
         </div>
     </div>
@@ -190,19 +193,26 @@
 <div id="custom-modal">
     <div class="bg-dark p-4 rounded-5 text-center border border-secondary" style="max-width: 320px; width: 90%;">
         <h5 class="fw-bold mb-3">Submit Exam?</h5>
-        <p class="text-muted small">You cannot edit your answers after submission.</p>
+        <p class="text-muted small">Ready to see your score?</p>
         <div class="d-flex gap-2"><button class="btn btn-secondary flex-grow-1 rounded-pill" onclick="closeModal()">Back</button><button class="btn btn-primary flex-grow-1 rounded-pill" onclick="confirmSubmit()">Submit</button></div>
     </div>
 </div>
 
 <script>
     const allSubs = [
-        {id:"English", icon:"fas fa-book"}, {id:"Mathematics", icon:"fas fa-calculator"}, 
-        {id:"Physics", icon:"fas fa-atom"}, {id:"Chemistry", icon:"fas fa-flask"}, 
-        {id:"Biology", icon:"fas fa-dna"}, {id:"Government", icon:"fas fa-university"}, 
-        {id:"Economics", icon:"fas fa-chart-line"}, {id:"Commerce", icon:"fas fa-shopping-cart"},
-        {id:"Crk", icon:"fas fa-bible"}, {id:"Accounting", icon:"fas fa-briefcase"}
+        {id:"English", icon:"fas fa-book"}, 
+        {id:"Mathematics", icon:"fas fa-calculator"}, 
+        {id:"Physics", icon:"fas fa-atom"}, 
+        {id:"Chemistry", icon:"fas fa-flask"}, 
+        {id:"Biology", icon:"fas fa-dna"}, 
+        {id:"Literature", icon:"fas fa-pen-nib"}, 
+        {id:"Government", icon:"fas fa-university"}, 
+        {id:"Economics", icon:"fas fa-chart-line"}, 
+        {id:"Commerce", icon:"fas fa-shopping-cart"},
+        {id:"Crk", icon:"fas fa-bible"}, 
+        {id:"Accounting", icon:"fas fa-briefcase"}
     ];
+
     let selected = ["English"], examData = {}, activeSub = "English", activeIdx = 0, userAns = {}, timeLeft = 7200, timerInterval;
 
     function initDashboard() {
@@ -242,7 +252,7 @@
                 const res = await fetch(`${s.toLowerCase()}.json`);
                 examData[s] = await res.json();
                 userAns[s] = new Array(examData[s].length).fill(null);
-            } catch(e) { alert(`Missing ${s.toLowerCase()}.json file`); return; }
+            } catch(e) { alert(`Error: Make sure ${s.toLowerCase()}.json exists in your folder.`); return; }
         }
         document.getElementById('dashboard-view').style.display = 'none';
         document.getElementById('exam-view').style.display = 'block';
@@ -255,7 +265,7 @@
         const user = userAns[activeSub][activeIdx];
         document.getElementById('q-count').innerText = `${activeIdx + 1} / ${examData[activeSub].length}`;
         document.getElementById('current-sub-label').innerText = activeSub;
-        let html = q.p ? `<div class="passage-box"><b>Instructions:</b><br>${q.p}</div>` : '';
+        let html = q.p ? `<div class="passage-box"><b>Comprehension:</b><br>${q.p}</div>` : '';
         html += `<h5 class="fw-bold mb-4" style="line-height:1.6">${q.q}</h5>`;
         q.options.forEach((opt, i) => {
             html += `<div class="option-box ${user === i ? 'active' : ''}" onclick="pick(${i})">
@@ -287,7 +297,7 @@
             examData[sub].forEach((q, i) => { if(userAns[sub][i] === q.a) correct++; });
             let weighted = Math.round((correct / examData[sub].length) * 100);
             totalScore += weighted;
-            breakdownHtml += `<div class="d-flex justify-content-between mb-2 small"><span>${sub}</span><span class="text-warning">${weighted}/100</span></div>`;
+            breakdownHtml += `<div class="d-flex justify-content-between mb-2"><span>${sub}</span><span class="text-warning fw-bold">${weighted}/100</span></div>`;
         });
         document.getElementById('final-total').innerText = totalScore;
         document.getElementById('score-breakdown').innerHTML = breakdownHtml;
