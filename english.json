@@ -1,0 +1,55 @@
+[
+  {
+    "p": "<b>PASSAGE I: THE DILEMMA OF MODERN EDUCATION</b><br>Education today is often viewed merely as a meal ticket. Students are more concerned with obtaining certificates than acquiring knowledge...",
+    "q": "The author's main concern in the passage is:",
+    "options": ["The cost of education", "The loss of true educational values", "The importance of certificates", "The rise of literacy"],
+    "a": 1
+  },
+  {
+    "p": "<b>PASSAGE I (Continued)</b>",
+    "q": "What does the author mean by 'learned illiterates'?",
+    "options": ["People who cannot read", "Degree holders without competence", "Teachers who are not trained", "Students who drop out"],
+    "a": 1
+  },
+  {
+    "p": "<b>PASSAGE I (Continued)</b>",
+    "q": "According to the text, 'certificate syndrome' directly encourages:",
+    "options": ["Hard work", "Integrity", "Examination malpractice", "Social problem solving"],
+    "a": 2
+  },
+  {
+    "q": "Choose the option nearest in meaning to the underlined word: The manager was <u>sacked</u> for gross misconduct.",
+    "options": ["Promoted", "Dismissed", "Warned", "Transferred"],
+    "a": 1
+  },
+  {
+    "q": "Choose the option opposite in meaning: The witness gave a <u>vague</u> account of the accident.",
+    "options": ["Clear", "Uncertain", "Dirty", "Long"],
+    "a": 0
+  },
+  {
+    "q": "The students were asked to <u>keep an eye on</u> the equipment.",
+    "options": ["Repair", "Watch closely", "Ignore", "Clean"],
+    "a": 1
+  },
+  {
+    "q": "Choose the most appropriate option: Neither the teacher nor the students ______ present at the lecture.",
+    "options": ["is", "was", "were", "has been"],
+    "a": 2
+  },
+  {
+    "q": "Select the correctly stressed word: RE-pre-sent",
+    "options": ["represent", "REpresent", "repreSENT", "rePREsent"],
+    "a": 2
+  },
+  {
+    "q": "The <u>scintillating</u> performance of the team earned them a standing ovation.",
+    "options": ["Dull", "Brilliant", "Average", "Poor"],
+    "a": 1
+  },
+  {
+    "q": "He is a <u>vocal</u> critic of the new government policy.",
+    "options": ["Silent", "Outspoken", "Weak", "Indifferent"],
+    "a": 1
+  }
+]
