@@ -3,333 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSA JAMB PRACTICES APP 2026</title>
+    <title>FSA JAMB PRACTICES 2026 - OFFICIAL MODE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --jamb-blue: #1a237e;
-            --jamb-red: #b71c1c;
-            --accent-gold: #ffd700;
-            --bg-color: #f4f7f9;
-            --card-bg: #ffffff;
-            --text-color: #212529;
-        }
+        :root { --jamb-blue: #0d47a1; --accent: #ffd600; --bg: #f0f2f5; --card: #ffffff; --text: #1c1e21; }
+        [data-theme="dark"] { --bg: #18191a; --card: #242526; --text: #e4e6eb; --jamb-blue: #1565c0; }
 
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --jamb-blue: #3949ab;
-        }
-
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; transition: 0.3s; min-height: 100vh; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', Roboto, sans-serif; transition: 0.3s; }
+        .header { background: var(--jamb-blue); color: white; padding: 12px 20px; border-bottom: 4px solid var(--accent); position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
         
-        .top-bar { 
-            background: var(--jamb-blue); 
-            color: white; padding: 1rem; 
-            border-bottom: 4px solid var(--accent-gold);
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-        }
+        /* Subject Tabs like real JAMB */
+        .subject-tabs { display: flex; background: #e0e0e0; border-radius: 8px 8px 0 0; overflow: hidden; margin-top: 10px; }
+        .sub-tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; border-bottom: 3px solid transparent; font-weight: bold; transition: 0.2s; color: #555; }
+        .sub-tab.active { background: var(--card); border-bottom: 3px solid var(--jamb-blue); color: var(--jamb-blue); }
+        [data-theme="dark"] .subject-tabs { background: #3a3b3c; }
 
-        .subject-card {
-            background: var(--card-bg); border-radius: 12px; padding: 20px;
-            text-align: center; cursor: pointer; transition: 0.3s;
-            border: 2px solid transparent; color: var(--text-color);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .subject-card:hover { transform: translateY(-5px); border-color: var(--jamb-blue); }
-        .subject-card.selected { border-color: #28a745; background-color: rgba(40, 167, 69, 0.1); }
+        .exam-container { background: var(--card); border-radius: 0 0 12px 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-height: 500px; }
+        .q-circle { width: 38px; height: 38px; border-radius: 50%; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; transition: 0.2s; background: var(--card); color: var(--text); }
+        .q-circle.answered { background: #2e7d32 !important; color: white; border-color: #2e7d32; }
+        .q-circle.current { border: 2px solid var(--jamb-blue); box-shadow: 0 0 8px rgba(13, 71, 161, 0.4); font-weight: bold; }
         
-        .question-box {
-            background: var(--card-bg); padding: 25px; border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-height: 450px;
-        }
+        .option-btn { display: block; width: 100%; text-align: left; padding: 14px 20px; margin-bottom: 12px; border: 1.5px solid #dee2e6; border-radius: 10px; background: none; color: var(--text); transition: 0.2s; }
+        .option-btn:hover { background: rgba(13, 71, 161, 0.05); border-color: var(--jamb-blue); }
+        .option-btn.selected { background: var(--jamb-blue); color: white; border-color: var(--jamb-blue); }
 
-        .q-num {
-            width: 35px; height: 35px; font-size: 12px; display: flex;
-            align-items: center; justify-content: center; border: 1px solid #ccc;
-            border-radius: 4px; cursor: pointer; background: var(--card-bg);
-        }
-        .q-num.answered { background: #28a745 !important; color: white; border-color: #28a745; }
-        .q-num.current { border: 2px solid var(--jamb-blue); font-weight: bold; transform: scale(1.1); }
+        .passage-box { height: 400px; overflow-y: auto; background: #f8f9fa; padding: 20px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; line-height: 1.7; color: #333; }
+        [data-theme="dark"] .passage-box { background: #1c1c1c; border-color: #444; color: #ccc; }
 
-        .explanation-box {
-            display: none; background: #e8f5e9; color: #2e7d32;
-            padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 5px solid #2e7d32;
-        }
-        [data-theme="dark"] .explanation-box { background: #1b5e20; color: #c8e6c9; }
-
-        .passage-pane {
-            height: 400px; overflow-y: auto; background: #f8f9fa;
-            border: 1px solid #ddd; border-radius: 8px; padding: 15px;
-            font-size: 1rem; line-height: 1.6; color: #333;
-        }
-        [data-theme="dark"] .passage-pane { background: #2c2c2c; color: #ddd; border-color: #444; }
+        /* Calculator Styles */
+        #calc-modal { display: none; position: fixed; top: 100px; right: 20px; width: 220px; background: #333; color: white; padding: 10px; border-radius: 10px; z-index: 2000; box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .calc-display { width: 100%; height: 40px; background: #000; color: #0f0; border: none; text-align: right; padding: 5px; font-family: monospace; font-size: 20px; margin-bottom: 10px; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .c-btn { padding: 10px; background: #444; border: none; color: white; cursor: pointer; border-radius: 4px; }
+        .c-btn:hover { background: #555; }
+        .c-op { background: #666; font-weight: bold; }
+        .c-eq { background: var(--jamb-blue); grid-column: span 2; }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <h4 class="mb-0">🎓 FSA JAMB PRACTICES</h4>
+<div class="header">
+    <h5 class="mb-0">FSA JAMB PRACTICES - 2026 OFFICIAL MODE</h5>
     <div class="d-flex align-items-center">
-        <div id="timerDisplay" class="h4 mb-0 me-3 fw-bold">02:00:00</div>
-        <button class="btn btn-outline-light btn-sm" onclick="toggleDarkMode()">🌓 Mode</button>
+        <button class="btn btn-sm btn-warning me-3" onclick="toggleCalc()">🧮 Calculator (C)</button>
+        <div id="mainTimer" class="h4 mb-0 me-4 fw-bold text-white">02:00:00</div>
+        <button class="btn btn-sm btn-outline-light" onclick="toggleTheme()">🌓 Theme</button>
+    </div>
+</div>
+
+<div id="calc-modal">
+    <input type="text" id="cdis" class="calc-display" readonly value="0">
+    <div class="calc-grid">
+        <button class="c-btn" onclick="cIn('7')">7</button><button class="c-btn" onclick="cIn('8')">8</button><button class="c-btn" onclick="cIn('9')">9</button><button class="c-btn c-op" onclick="cIn('/')">/</button>
+        <button class="c-btn" onclick="cIn('4')">4</button><button class="c-btn" onclick="cIn('5')">5</button><button class="c-btn" onclick="cIn('6')">6</button><button class="c-btn c-op" onclick="cIn('*')">×</button>
+        <button class="c-btn" onclick="cIn('1')">1</button><button class="c-btn" onclick="cIn('2')">2</button><button class="c-btn" onclick="cIn('3')">3</button><button class="c-btn c-op" onclick="cIn('-')">-</button>
+        <button class="c-btn" onclick="cIn('0')">0</button><button class="c-btn" onclick="cIn('.')">.</button><button class="c-btn c-op" onclick="cIn('+')">+</button><button class="c-btn c-op" onclick="cIn('C')">AC</button>
+        <button class="c-btn c-eq" onclick="cRes()">=</button>
     </div>
 </div>
 
 <div class="container mt-4 pb-5">
-    <div id="dashboard">
-        <div class="row mb-4">
-            <div class="col-12 text-center">
-                <h2 class="fw-bold">FSA Examination Portal</h2>
-                <p class="text-muted">Select 4 Subjects (English is Mandatory). Your hard work starts here.</p>
-            </div>
+    <div id="setupArea">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">FSA Candidate Dashboard</h2>
+            <p class="text-muted">Total: 180 Questions | English (60), Others (40)</p>
         </div>
-        <div class="row g-3" id="subjectGrid"></div>
+        <div class="row g-3 justify-content-center" id="subjectGrid"></div>
         <div class="text-center mt-5">
-            <button id="startBtn" class="btn btn-primary btn-lg px-5 disabled" onclick="startExam()">PROCEED TO EXAM</button>
+            <button id="startBtn" class="btn btn-primary btn-lg px-5 disabled" onclick="launchExam()">START FULL EXAM</button>
         </div>
     </div>
 
-    <div id="examInterface" style="display:none;">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="question-box">
+    <div id="examMode" style="display:none;">
+        <div class="subject-tabs" id="tabBar"></div>
+        <div class="exam-container">
+            <div class="row">
+                <div class="col-lg-8">
                     <div class="d-flex justify-content-between mb-3 align-items-center">
-                        <span id="subjectTag" class="badge bg-primary fs-6">Subject</span>
-                        <span id="qCounter" class="fw-bold">Q 1/180</span>
+                        <span id="currentSubLabel" class="badge bg-primary px-3 py-2">ENGLISH</span>
+                        <span id="qProgress" class="fw-bold">Question 1 of 60</span>
                     </div>
-                    <hr>
-                    <div id="qContentArea">
-                        </div>
-                    <div id="explBox" class="explanation-box"></div>
+                    <div id="contentDisplay"></div>
+                    <div class="mt-4 d-flex justify-content-between">
+                        <button class="btn btn-secondary px-4" onclick="navigate(-1)">⬅ Previous</button>
+                        <button class="btn btn-primary px-4" onclick="navigate(1)">Next ➡</button>
+                    </div>
                 </div>
-                <div class="mt-4 d-flex justify-content-between">
-                    <button class="btn btn-secondary px-4" onclick="changeQ(-1)">⬅ Previous</button>
-                    <button class="btn btn-primary px-4" onclick="changeQ(1)">Next Question ➡</button>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card p-3 shadow-sm border-0 bg-transparent">
-                    <h6 class="mb-3">Progress Map</h6>
-                    <div id="navGrid" class="d-flex flex-wrap gap-1"></div>
-                    <hr>
-                    <button class="btn btn-danger w-100 fw-bold py-2" onclick="confirmSubmit()">SUBMIT EXAMINATION</button>
+                <div class="col-lg-4">
+                    <div class="card p-3 bg-transparent border-0">
+                        <h6 class="text-center mb-3">Navigation Map</h6>
+                        <div id="qMap" class="d-flex flex-wrap gap-2 justify-content-center overflow-auto" style="max-height: 400px; padding: 10px; border: 1px solid #ddd; border-radius: 8px;"></div>
+                        <hr>
+                        <button class="btn btn-danger w-100 fw-bold py-2" onclick="submitProcess()">SUBMIT EXAM</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="resultArea" style="display:none;" class="text-center py-5">
-        <div class="card p-5 shadow-lg border-0 m-auto" style="max-width: 650px; background: var(--card-bg);">
-            <h1 class="fw-bold">Result Report</h1>
-            <div id="aggScore" class="display-1 fw-bold my-4">000</div>
-            <p class="text-muted">Estimated Aggregate Score</p>
-            <div id="breakdown" class="text-start mb-4"></div>
-            <div class="d-flex gap-2 justify-content-center">
-                <button class="btn btn-success" onclick="enterReview()">Review Correct Answers</button>
-                <button class="btn btn-outline-primary" onclick="location.reload()">Start New Practice</button>
-            </div>
+    <div id="resultArea" style="display:none;" class="text-center mt-5 pb-5">
+        <div class="card p-5 shadow-lg m-auto" style="max-width: 700px; background: var(--card);">
+            <h1 class="fw-bold">Official FSA Result</h1>
+            <div id="finalScore" class="display-1 fw-bold text-success my-4">000</div>
+            <p class="text-muted">ESTIMATED JAMB AGGREGATE</p>
+            <div id="statBreakdown" class="text-start mb-4"></div>
+            <button class="btn btn-primary btn-lg" onclick="location.reload()">New Practice Session</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Extensive "Hard" Question Bank
-    const db = {
-        "English": [
-            { 
-                type: "passage", 
-                passage: "The climate crisis in the Sahel region has reached a tipping point. Desertification is encroaching upon arable land at an alarming rate. This ecological shift has not only displaced thousands of farmers but has also intensified the struggle for meager resources between herders and sedentary agriculturists. Government intervention remains sluggish, leaving the local populations to fend for themselves in an increasingly hostile environment.",
-                q: "According to the passage, the primary cause of conflict is?", 
-                options: ["Religious differences", "Resource scarcity due to ecological shift", "Lack of education", "Urbanization"], 
-                a: 1, 
-                e: "The text states the ecological shift intensified the struggle for 'meager resources'." 
-            },
-            { q: "Choose the word nearest in meaning to <b>Candid</b>.", options: ["Secretive", "Frank", "Vague", "Cruel"], a: 1, e: "Candid means truthful and straightforward; Frank is the synonym." },
-            { q: "The boss insisted that the report ___ submitted by noon.", options: ["is", "be", "was", "must"], a: 1, e: "This uses the subjunctive mood, which requires the base form 'be' regardless of the subject." }
-        ],
-        "Mathematics": [
-            { q: "Evaluate $\\int_{1}^{2} (3x^2 - 4x) dx$.", options: ["1", "2", "3", "4"], a: 0, e: "Integration: $[x^3 - 2x^2]_1^2 = (8-8) - (1-2) = 0 - (-1) = 1$." },
-            { q: "If $log_{10}2 = 0.3010$, find $log_{10}5$.", options: ["0.4771", "0.6990", "1.3010", "0.5000"], a: 1, e: "$log_{10}5 = log_{10}(10/2) = log_{10}10 - log_{10}2 = 1 - 0.3010 = 0.6990$." }
-        ],
-        "Economics": [
-            { q: "A major cause of inflation in a developing economy is?", options: ["Budget surplus", "Increase in production", "Excessive money supply", "Decrease in government spending"], a: 2, e: "Inflation is often caused by 'too much money chasing too few goods'." }
-        ],
-        "Government": [
-            { q: "The 1979 Constitution of Nigeria introduced?", options: ["Parliamentary system", "Presidential system", "Monarchy", "Unitary system"], a: 1, e: "The 1979 constitution marked the shift to the Presidential system." }
-        ],
-        "Literature": [
-            { q: "A poem of fourteen lines is a/an?", options: ["Ode", "Elegy", "Sonnet", "Epic"], a: 2, e: "A Sonnet is a 14-line poem with a specific rhyme scheme." }
-        ],
-        "Physics": [
-            { q: "The rate of change of momentum is proportional to?", options: ["Velocity", "Acceleration", "Applied Force", "Inertia"], a: 2, e: "This is Newton's Second Law: $F = \Delta p / \Delta t$." }
-        ],
-        "Chemistry": [
-            { q: "The oxidation state of Manganese in $KMnO_4$ is?", options: ["+2", "+5", "+7", "+4"], a: 2, e: "$1 + x + (4 \times -2) = 0 \implies x - 7 = 0 \implies x = +7$." }
-        ],
-        "Biology": [
-            { q: "The site of aerobic respiration in the cell is?", options: ["Ribosome", "Nucleus", "Mitochondria", "Vacuole"], a: 2, e: "Mitochondria are the powerhouses where ATP is produced via respiration." }
-        ]
-    };
-
-    const subjects = [
-        { name: "English", icon: "📚", dept: "General" },
-        { name: "Mathematics", icon: "📐", dept: "Science/Comm" },
-        { name: "Economics", icon: "📈", dept: "Comm" },
-        { name: "Government", icon: "🏛️", dept: "Arts" },
-        { name: "Literature", icon: "📖", dept: "Arts" },
-        { name: "Physics", icon: "⚛️", dept: "Science" },
-        { name: "Chemistry", icon: "🧪", dept: "Science" },
-        { name: "Biology", icon: "🧬", dept: "Science" },
-        { name: "Commerce", icon: "💼", dept: "Comm" }
+    const subList = [
+        { name: "English", icon: "📚", count: 60 },
+        { name: "Mathematics", icon: "📐", count: 40 },
+        { name: "Physics", icon: "⚛️", count: 40 },
+        { name: "Chemistry", icon: "🧪", count: 40 },
+        { name: "Biology", icon: "🧬", count: 40 },
+        { name: "Economics", icon: "📊", count: 40 },
+        { name: "Government", icon: "🏛️", count: 40 },
+        { name: "Literature", icon: "📖", count: 40 },
+        { name: "Commerce", icon: "💼", count: 40 }
     ];
 
-    let selected = ["English"];
-    let examQs = [];
-    let currentIdx = 0;
-    let userAns = {};
-    let isReview = false;
-    let timerInterval;
+    let selectedSubs = ["English"];
+    let examData = {};
+    let activeSub = "English";
+    let activeIdx = 0;
+    let userAnswers = {};
+    let timer;
 
-    function init() {
+    // --- SETUP DASHBOARD ---
+    function initDashboard() {
         const grid = document.getElementById('subjectGrid');
-        subjects.forEach(s => {
+        subList.forEach(s => {
             const card = document.createElement('div');
             card.className = "col-md-4 col-lg-3";
-            card.innerHTML = `<div class="subject-card ${s.name==='English'?'selected':''}" id="s-${s.name}" onclick="select('${s.name}')">
-                <div class="fs-2">${s.icon}</div><h5 class="mt-2">${s.name}</h5><small>${s.dept}</small>
+            card.innerHTML = `<div class="card p-3 text-center subject-card ${s.name==='English'?'selected':''}" id="c-${s.name}" onclick="toggleSub('${s.name}')">
+                <div class="h2">${s.icon}</div><h6>${s.name}</h6><small>${s.count} Qs</small>
             </div>`;
             grid.appendChild(card);
         });
     }
 
-    function select(name) {
+    function toggleSub(name) {
         if(name === 'English') return;
-        const i = selected.indexOf(name);
-        if(i > -1) selected.splice(i, 1);
-        else if(selected.length < 4) selected.push(name);
+        const i = selectedSubs.indexOf(name);
+        if(i > -1) selectedSubs.splice(i, 1);
+        else if(selectedSubs.length < 4) selectedSubs.push(name);
         
         document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
-        selected.forEach(s => document.getElementById(`s-${s}`).classList.add('selected'));
-        document.getElementById('startBtn').classList.toggle('disabled', selected.length < 4);
+        selectedSubs.forEach(s => document.getElementById(`c-${s}`).classList.add('selected'));
+        document.getElementById('startBtn').classList.toggle('disabled', selectedSubs.length < 4);
     }
 
-    function startExam() {
-        selected.forEach(s => {
-            const qs = db[s] || [{q: `Is this a sample ${s} question?`, options: ["Yes","No","Maybe","None"], a: 0, e: "Sample explanation for "+s}];
-            examQs = examQs.concat(qs.map(q => ({...q, sub: s})));
+    // --- CALCULATOR ---
+    let cExp = "0";
+    function toggleCalc() {
+        const m = document.getElementById('calc-modal');
+        m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+    }
+    window.addEventListener('keydown', (e) => { if(e.key.toLowerCase() === 'c') toggleCalc(); });
+
+    function cIn(v) {
+        if(v === 'C') cExp = "0";
+        else cExp = (cExp === "0") ? v : cExp + v;
+        document.getElementById('cdis').value = cExp;
+    }
+    function cRes() {
+        try { cExp = eval(cExp).toString(); document.getElementById('cdis').value = cExp; }
+        catch { cExp = "0"; document.getElementById('cdis').value = "Error"; }
+    }
+
+    // --- ENGINE ---
+    function launchExam() {
+        selectedSubs.forEach(s => {
+            const count = (s === "English") ? 60 : 40;
+            examData[s] = generateQs(s, count);
+            userAnswers[s] = {};
         });
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('examInterface').style.display = 'block';
-        startTimer();
-        renderQ();
+        document.getElementById('setupArea').style.display = 'none';
+        document.getElementById('examMode').style.display = 'block';
+        renderTabs(); renderScreen(); startTimer(7200);
     }
 
-    function renderQ() {
-        const q = examQs[currentIdx];
-        document.getElementById('subjectTag').innerText = q.sub;
-        document.getElementById('qCounter').innerText = `Q ${currentIdx + 1}/${examQs.length}`;
+    function generateQs(subject, count) {
+        const t = [];
+        for(let i=0; i<count; i++) {
+            if(subject === "English" && i < 10) {
+                t.push({ type: "passage", passage: "Comprehension passage for 2026: The shift to sustainable energy in West Africa...", q: `(${i+1}) The author's tone is?`, opts: ["Critical", "Optimistic", "Indifferent", "Satirical"], a: 1 });
+            } else {
+                t.push({ type: "normal", q: `${subject} Hard Q ${i+1}: Evaluate the most likely outcome of X given Y?`, opts: ["Option A", "Option B", "Option C", "Option D"], a: 1 });
+            }
+        }
+        return t;
+    }
+
+    function renderTabs() {
+        const bar = document.getElementById('tabBar');
+        bar.innerHTML = '';
+        selectedSubs.forEach(s => {
+            const t = document.createElement('div');
+            t.className = `sub-tab ${activeSub === s ? 'active' : ''}`;
+            t.innerText = s.toUpperCase();
+            t.onclick = () => { activeSub = s; activeIdx = 0; renderTabs(); renderScreen(); };
+            bar.appendChild(t);
+        });
+    }
+
+    function renderScreen() {
+        const q = examData[activeSub][activeIdx];
+        document.getElementById('currentSubLabel').innerText = activeSub;
+        document.getElementById('qProgress').innerText = `Question ${activeIdx + 1} of ${examData[activeSub].length}`;
         
-        const area = document.getElementById('qContentArea');
-        area.innerHTML = '';
-
+        const area = document.getElementById('contentDisplay');
         if(q.type === 'passage') {
-            area.innerHTML = `
-                <div class="row">
-                    <div class="col-md-6"><div class="passage-pane mb-3">${q.passage}</div></div>
-                    <div class="col-md-6"><h5>${q.q}</h5><div id="opts"></div></div>
-                </div>`;
+            area.innerHTML = `<div class="row"><div class="col-md-6"><div class="passage-box mb-3">${q.passage}</div></div>
+                <div class="col-md-6"><h5>${q.q}</h5><div id="optList"></div></div></div>`;
         } else {
-            area.innerHTML = `<h4 class="mb-4">${q.q}</h4><div id="opts"></div>`;
+            area.innerHTML = `<h4 class="mb-4">${q.q}</h4><div id="optList"></div>`;
         }
 
-        const optsDiv = document.getElementById('opts');
-        q.options.forEach((opt, i) => {
-            let bClass = "btn-outline-primary";
-            if(isReview) {
-                if(i === q.a) bClass = "btn-success";
-                else if(i === userAns[currentIdx]) bClass = "btn-danger";
-            } else if(userAns[currentIdx] === i) bClass = "btn-primary";
-
-            const btn = document.createElement('button');
-            btn.className = `btn ${bClass} w-100 text-start p-3 mb-2`;
-            btn.innerHTML = `<b>${String.fromCharCode(65+i)}.</b> ${opt}`;
-            btn.onclick = () => { if(!isReview) { userAns[currentIdx] = i; renderQ(); renderNav(); } };
-            optsDiv.appendChild(btn);
+        const list = document.getElementById('optList');
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = `option-btn ${userAnswers[activeSub][activeIdx] === i ? 'selected' : ''}`;
+            b.innerHTML = `<b>${String.fromCharCode(65+i)}.</b> ${o}`;
+            b.onclick = () => { userAnswers[activeSub][activeIdx] = i; renderScreen(); renderMap(); };
+            list.appendChild(b);
         });
-
-        const ex = document.getElementById('explBox');
-        if(isReview) {
-            ex.style.display = 'block';
-            ex.innerHTML = `<strong>FSA Explanation:</strong><br>${q.e}`;
-        }
-        renderNav();
+        renderMap();
     }
 
-    function renderNav() {
-        const grid = document.getElementById('navGrid');
-        grid.innerHTML = '';
-        examQs.forEach((_, i) => {
-            const n = document.createElement('div');
-            n.className = `q-num ${userAns[i]!==undefined?'answered':''} ${currentIdx===i?'current':''}`;
-            n.innerText = i + 1;
-            n.onclick = () => { currentIdx = i; renderQ(); };
-            grid.appendChild(n);
+    function renderMap() {
+        const map = document.getElementById('qMap');
+        map.innerHTML = '';
+        examData[activeSub].forEach((_, i) => {
+            const c = document.createElement('div');
+            c.className = `q-circle ${userAnswers[activeSub][i] !== undefined ? 'answered' : ''} ${activeIdx === i ? 'current' : ''}`;
+            c.innerText = i + 1;
+            c.onclick = () => { activeIdx = i; renderScreen(); };
+            map.appendChild(c);
         });
     }
 
-    function changeQ(dir) {
-        if(currentIdx + dir >= 0 && currentIdx + dir < examQs.length) {
-            currentIdx += dir;
-            renderQ();
-        }
+    function navigate(dir) {
+        if(activeIdx + dir >= 0 && activeIdx + dir < examData[activeSub].length) { activeIdx += dir; renderScreen(); }
     }
 
-    function startTimer() {
-        let time = 7200;
-        timerInterval = setInterval(() => {
-            time--;
-            let h = Math.floor(time/3600), m = Math.floor((time%3600)/60), s = time%60;
-            document.getElementById('timerDisplay').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            if(time <= 0) submitExam();
+    function startTimer(sec) {
+        timer = setInterval(() => {
+            sec--;
+            let h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+            document.getElementById('mainTimer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            if(sec <= 0) submitProcess();
         }, 1000);
     }
 
-    function confirmSubmit() { if(confirm("Are you sure you want to end your exam?")) submitExam(); }
-
-    function submitExam() {
-        clearInterval(timerInterval);
-        document.getElementById('examInterface').style.display = 'none';
+    function submitProcess() {
+        if(!confirm("Submit final answers to FSA portal?")) return;
+        clearInterval(timer);
+        document.getElementById('examMode').style.display = 'none';
         document.getElementById('resultArea').style.display = 'block';
-        
-        let correct = 0;
-        let breakdownHTML = '';
-        selected.forEach(s => {
-            const subQs = examQs.filter(q => q.sub === s);
-            const subCorrect = subQs.filter((q) => userAns[examQs.indexOf(q)] === q.a).length;
-            correct += subCorrect;
-            const perc = Math.round((subCorrect/subQs.length)*100);
-            breakdownHTML += `<div class="mb-3"><div class="d-flex justify-content-between"><span>${s}</span><span>${subCorrect}/${subQs.length}</span></div>
-                <div class="progress mt-1" style="height:12px"><div class="progress-bar bg-success" style="width:${perc}%"></div></div></div>`;
+
+        let correct = 0, total = 0, breakdown = '';
+        selectedSubs.forEach(s => {
+            let sC = 0, sT = examData[s].length;
+            examData[s].forEach((q, i) => { if(userAnswers[s][i] === q.a) sC++; });
+            correct += sC; total += sT;
+            const p = Math.round((sC/sT)*100);
+            breakdown += `<div class="mb-3"><h6>${s}: ${p}%</h6><div class="progress"><div class="progress-bar bg-primary" style="width:${p}%"></div></div></div>`;
         });
-        
-        const score = Math.round((correct/examQs.length)*400);
-        document.getElementById('aggScore').innerText = score;
-        document.getElementById('aggScore').style.color = score >= 250 ? "#28a745" : (score >= 200 ? "#ffc107" : "#dc3545");
-        document.getElementById('breakdown').innerHTML = breakdownHTML;
+        document.getElementById('finalScore').innerText = Math.round((correct/total)*400);
+        document.getElementById('statBreakdown').innerHTML = breakdown;
     }
 
-    function enterReview() { isReview = true; currentIdx = 0; document.getElementById('resultArea').style.display = 'none'; document.getElementById('examInterface').style.display = 'block'; renderQ(); }
-    
-    function toggleDarkMode() {
-        const body = document.documentElement;
-        body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    }
-
-    init();
+    function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); }
+    initDashboard();
 </script>
 </body>
 </html>
