@@ -3,203 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSA JAMB PRO v3.5</title>
+    <title>FSA JAMB PRO - Subject Switcher</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root { --jamb-blue: #0d47a1; --accent: #ffd600; --bg: #f4f7f6; }
-        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
-        .header { background: var(--jamb-blue); color: white; padding: 15px; border-bottom: 4px solid var(--accent); position: sticky; top: 0; z-index: 1000; }
-        .subject-card { background: white; border-radius: 12px; padding: 15px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); height: 100%; }
-        .subject-card.selected { border-color: #28a745; background: #f0fff4; transform: scale(1.05); }
-        .option { display: block; width: 100%; padding: 12px; margin-bottom: 10px; border: 1.5px solid #ddd; border-radius: 8px; text-align: left; background: white; transition: 0.2s; }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; padding-bottom: 220px; }
+        .header { background: var(--jamb-blue); color: white; padding: 12px; border-bottom: 4px solid var(--accent); position: sticky; top: 0; z-index: 1000; }
+        .option { display: block; width: 100%; padding: 12px; margin-bottom: 8px; border: 1.5px solid #ddd; border-radius: 8px; text-align: left; background: white; }
         .option.selected { background: var(--jamb-blue); color: white; border-color: var(--jamb-blue); }
-        #calc-box { display:none; position: fixed; top: 80px; right: 20px; width: 220px; background: #222; color: white; padding: 15px; border-radius: 15px; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .calc-btn { width: 45px; height: 45px; margin: 2px; font-weight: bold; }
-        .passage-box { background: #fffbe6; border-left: 5px solid #ffc107; padding: 15px; margin-bottom: 20px; max-height: 250px; overflow-y: auto; font-style: italic; }
+        
+        /* BOTTOM PANEL */
+        .bottom-panel { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #ddd; padding: 10px; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); }
+        .subject-nav { max-height: 150px; overflow-y: auto; margin-bottom: 10px; }
+        .sub-btn { width: 100%; text-align: left; margin-bottom: 2px; border-radius: 4px; border: 1px solid #eee; padding: 8px 15px; background: #fff; }
+        .sub-btn.active { background: #007bff; color: white; font-weight: bold; }
+        
+        .passage-box { background: #fffbe6; border-left: 5px solid #ffc107; padding: 12px; margin-bottom: 15px; font-style: italic; font-size: 0.95rem; }
+        #calc-box { display:none; position: fixed; top: 70px; right: 10px; width: 200px; background: #222; padding: 10px; border-radius: 10px; z-index: 2000; }
     </style>
 </head>
 <body>
 
-<div class="header d-flex justify-content-between align-items-center shadow">
-    <h4 class="mb-0">🎓 FSA JAMB PRO</h4>
-    <div id="timer" class="fw-bold fs-5">02:00:00</div>
+<div class="header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">🎓 FSA JAMB PRO</h5>
+    <div id="timer" class="fw-bold">02:00:00</div>
     <button class="btn btn-sm btn-warning fw-bold" onclick="toggleCalc()">CALC</button>
 </div>
 
-<div id="calc-box">
-    <input type="text" id="calc-display" class="form-control mb-3 text-end fs-4" readonly>
+<div id="calc-box" class="shadow">
+    <input type="text" id="calc-display" class="form-control mb-2 text-end" readonly>
     <div class="d-flex flex-wrap justify-content-center">
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('7')">7</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('8')">8</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('9')">9</button>
-        <button class="btn btn-danger calc-btn" onclick="calcInput('C')">C</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('4')">4</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('5')">5</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('6')">6</button>
-        <button class="btn btn-warning calc-btn" onclick="calcInput('*')">×</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('1')">1</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('2')">2</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('3')">3</button>
-        <button class="btn btn-warning calc-btn" onclick="calcInput('-')">-</button>
-        <button class="btn btn-outline-light calc-btn" onclick="calcInput('0')">0</button>
-        <button class="btn btn-warning calc-btn" onclick="calcInput('/')">÷</button>
-        <button class="btn btn-warning calc-btn" onclick="calcInput('+')">+</button>
-        <button class="btn btn-success calc-btn" onclick="calcInput('=')">=</button>
+        <button class="btn btn-sm btn-outline-light m-1" style="width:35px" onclick="calcInput('7')">7</button>
+        <button class="btn btn-sm btn-outline-light m-1" style="width:35px" onclick="calcInput('8')">8</button>
+        <button class="btn btn-sm btn-outline-light m-1" style="width:35px" onclick="calcInput('9')">9</button>
+        <button class="btn btn-sm btn-danger m-1" style="width:35px" onclick="calcInput('C')">C</button>
+        <button class="btn btn-sm btn-outline-light m-1" style="width:35px" onclick="calcInput('4')">4</button>
+        <button class="btn btn-sm btn-outline-light m-1" style="width:35px" onclick="calcInput('5')">5</button>
+        <button class="btn btn-sm btn-outline-light m-1" style="width:35px" onclick="calcInput('6')">6</button>
+        <button class="btn btn-sm btn-warning m-1" style="width:35px" onclick="calcInput('*')">×</button>
+        <button class="btn btn-sm btn-success m-1" style="width:80px" onclick="calcInput('=')">=</button>
     </div>
 </div>
 
-<div class="container mt-4">
-    <div id="dash-screen">
-        <div class="text-center mb-4">
-            <h2>Candidate Dashboard</h2>
-            <p class="text-muted">Select <b>English</b> and 3 other subjects</p>
+<div class="container mt-3">
+    <div id="exam-area">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 id="current-subject-name" class="text-primary fw-bold mb-0">English</h6>
+            <span id="q-count" class="badge bg-secondary">Q 1 of 60</span>
         </div>
-        <div class="row g-3" id="sub-grid"></div>
-        <div class="text-center mt-5 mb-5">
-            <button id="start-btn" class="btn btn-primary btn-lg px-5 disabled shadow" onclick="startExam()">START EXAMINATION</button>
-        </div>
-    </div>
-
-    <div id="exam-screen" style="display:none;">
-        <div class="row">
-            <div class="col-md-8 mx-auto">
-                <div class="card p-4 shadow-sm border-0">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 id="sub-title" class="text-primary fw-bold mb-0"></h5>
-                        <span id="q-count" class="badge bg-dark fs-6"></span>
-                    </div>
-                    <hr>
-                    <div id="q-area"></div>
-                    <div class="d-flex justify-content-between mt-4">
-                        <button class="btn btn-outline-secondary px-4" onclick="changeQ(-1)">Previous</button>
-                        <button class="btn btn-primary px-4" onclick="changeQ(1)">Next Question</button>
-                    </div>
-                    <button class="btn btn-success w-100 mt-4 fw-bold" onclick="confirmSubmit()">SUBMIT EXAMINATION</button>
-                </div>
+        
+        <div class="card p-3 shadow-sm border-0">
+            <div id="q-content">Loading questions...</div>
+            
+            <div class="d-flex justify-content-between mt-3">
+                <button class="btn btn-sm btn-outline-secondary px-4" onclick="changeQ(-1)">Previous</button>
+                <button class="btn btn-sm btn-primary px-4" onclick="changeQ(1)">Next</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div id="result-screen" style="display:none;">
-        <div class="card p-4 shadow border-0 text-center">
-            <h2 class="text-primary">Exam Result</h2>
-            <div class="display-1 fw-bold text-success my-3" id="total-score">0</div>
-            <p class="fs-4 text-muted">Total Aggregate (out of 400)</p>
-            <hr>
-            <div id="analysis-box" class="text-start"></div>
-            <button class="btn btn-primary btn-lg mt-4 w-100" onclick="location.reload()">RETAKE EXAM</button>
+<div class="bottom-panel">
+    <small class="text-muted fw-bold d-block mb-1">Subjects</small>
+    <div class="subject-nav" id="sub-list">
         </div>
-    </div>
+    <button class="btn btn-danger w-100 fw-bold mt-1" onclick="submitExam()">SUBMIT ALL</button>
 </div>
 
 <script>
-    const subjectsList = [
-        {id:"English", file:"english.json", icon:"📚"},
-        {id:"Mathematics", file:"math.json", icon:"📐"},
-        {id:"Physics", file:"physics.json", icon:"⚛️"},
-        {id:"Chemistry", file:"chemistry.json", icon:"🧪"},
-        {id:"Biology", file:"biology.json", icon:"🧬"},
-        {id:"Government", file:"government.json", icon:"🏛️"},
-        {id:"CRK", file:"crk.json", icon:"📖"},
-        {id:"Economics", file:"economics.json", icon:"📈"},
-        {id:"Commerce", file:"commerce.json", icon:"🛒"},
-        {id:"Accounting", file:"accounting.json", icon:"📊"}
-    ];
+    const subjects = ["English", "Physics", "Chemistry", "Biology", "Government", "Crk", "Mathematics", "Economics", "Commerce", "Accounting"];
+    let examData = {};
+    let currentSub = "English";
+    let currentIdx = 0;
+    let userAnswers = {};
 
-    let selected = ["English"], examData = {}, activeS = "English", activeI = 0, answers = {};
-
-    function initDash() {
-        const grid = document.getElementById('sub-grid');
-        grid.innerHTML = '';
-        subjectsList.forEach(s => {
-            const isSel = selected.includes(s.id);
-            grid.innerHTML += `
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="subject-card ${isSel?'selected':''}" onclick="toggleS('${s.id}')">
-                        <div class="fs-1 mb-2">${s.icon}</div>
-                        <h6 class="mb-0 fw-bold">${s.id}</h6>
-                    </div>
-                </div>`;
-        });
-        document.getElementById('start-btn').classList.toggle('disabled', selected.length < 4);
-    }
-
-    function toggleS(id) {
-        if(id === "English") return;
-        const i = selected.indexOf(id);
-        if(i > -1) selected.splice(i, 1);
-        else if(selected.length < 4) selected.push(id);
-        initDash();
-    }
-
-    async function startExam() {
-        document.getElementById('start-btn').innerText = "Loading...";
-        for (let sName of selected) {
-            const sObj = subjectsList.find(s => s.id === sName);
-            try {
-                const res = await fetch(sObj.file + '?v=' + Date.now());
-                examData[sName] = await res.json();
-                answers[sName] = {};
-            } catch (e) { alert("Error loading " + sName); }
-        }
-        document.getElementById('dash-screen').style.display = 'none';
-        document.getElementById('exam-screen').style.display = 'block';
-        renderQ();
+    // 1. Initialize the Subject List at the bottom
+    function initApp() {
+        const list = document.getElementById('sub-list');
+        list.innerHTML = subjects.map(s => `
+            <button class="sub-btn ${s === currentSub ? 'active' : ''}" id="btn-${s}" onclick="switchSub('${s}')">
+                ${s}
+            </button>
+        `).join('');
+        loadAllData();
         startTimer(7200);
     }
 
-    function renderQ() {
-        const q = examData[activeS][activeI];
-        document.getElementById('sub-title').innerText = activeS;
-        document.getElementById('q-count').innerText = `Q ${activeI + 1} of ${examData[activeS].length}`;
-        let html = q.p ? `<div class="passage-box">${q.p}</div>` : "";
-        html += `<h5 class="mb-4">${q.q}</h5>`;
-        q.options.forEach((opt, idx) => {
-            const isSel = answers[activeS][activeI] === idx;
-            html += `<button class="option ${isSel?'selected':''}" onclick="pick(${idx})"><b>${String.fromCharCode(65+idx)}.</b> ${opt}</button>`;
-        });
-        document.getElementById('q-area').innerHTML = html;
+    // 2. Load all JSON files at once
+    async function loadAllData() {
+        for (let s of subjects) {
+            try {
+                const response = await fetch(`${s.toLowerCase()}.json?v=${Date.now()}`);
+                examData[s] = await response.json();
+                userAnswers[s] = {};
+            } catch (e) { console.log("Missing: " + s); }
+        }
+        renderQuestion();
     }
 
-    function pick(idx) { answers[activeS][activeI] = idx; renderQ(); }
-    function changeQ(dir) { if(activeI+dir >= 0 && activeI+dir < examData[activeS].length) { activeI += dir; renderQ(); } }
-    function confirmSubmit() { if(confirm("Submit Exam?")) finishExam(); }
-
-    function finishExam() {
-        let totalAggregate = 0;
-        let analysisHtml = "<h5>Breakdown:</h5><div class='list-group'>";
-        selected.forEach(sName => {
-            let correct = 0;
-            examData[sName].forEach((q, i) => { if(answers[sName][i] === q.a) correct++; });
-            let percent = (correct / examData[sName].length) * 100;
-            totalAggregate += percent;
-            analysisHtml += `<div class='list-group-item'><b>${sName}:</b> ${correct}/${examData[sName].length}</div>`;
-        });
-        document.getElementById('total-score').innerText = Math.round(totalAggregate);
-        document.getElementById('analysis-box').innerHTML = analysisHtml + "</div>";
-        document.getElementById('exam-screen').style.display = 'none';
-        document.getElementById('result-screen').style.display = 'block';
+    // 3. Switch between subjects
+    function switchSub(sName) {
+        if (!examData[sName]) return alert("File for " + sName + " is missing!");
+        currentSub = sName;
+        currentIdx = 0;
+        
+        // Update UI buttons
+        document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`btn-${sName}`).classList.add('active');
+        
+        renderQuestion();
     }
 
-    function startTimer(sec) {
+    // 4. Render the current question
+    function renderQuestion() {
+        const qData = examData[currentSub][currentIdx];
+        document.getElementById('current-subject-name').innerText = currentSub;
+        document.getElementById('q-count').innerText = `Q ${currentIdx + 1} of ${examData[currentSub].length}`;
+        
+        let html = qData.p ? `<div class="passage-box">${qData.p}</div>` : "";
+        html += `<p class="fw-bold">${qData.q}</p>`;
+        
+        qData.options.forEach((opt, i) => {
+            const isSel = userAnswers[currentSub][currentIdx] === i;
+            html += `<button class="option ${isSel?'selected':''}" onclick="answer(${i})">
+                <b>${String.fromCharCode(65+i)}.</b> ${opt}
+            </button>`;
+        });
+        
+        document.getElementById('q-content').innerHTML = html;
+    }
+
+    function answer(i) { userAnswers[currentSub][currentIdx] = i; renderQuestion(); }
+    function changeQ(dir) { 
+        if(currentIdx + dir >= 0 && currentIdx + dir < examData[currentSub].length) {
+            currentIdx += dir; renderQuestion();
+        }
+    }
+
+    function submitExam() {
+        if(confirm("Are you sure you want to submit all subjects?")) {
+            let total = 0;
+            subjects.forEach(s => {
+                if(examData[s]) {
+                    let correct = 0;
+                    examData[s].forEach((q, i) => { if(userAnswers[s][i] === q.a) correct++; });
+                    total += (correct / examData[s].length) * 100;
+                }
+            });
+            alert("Finished!\nJAMB Aggregate: " + Math.round(total));
+            location.reload();
+        }
+    }
+
+    function startTimer(t) {
         setInterval(() => {
-            sec--;
-            let h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+            t--;
+            let h=Math.floor(t/3600), m=Math.floor((t%3600)/60), s=t%60;
             document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }, 1000);
     }
 
     function toggleCalc() {
-        const box = document.getElementById('calc-box');
-        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        const c = document.getElementById('calc-box');
+        c.style.display = c.style.display === 'block' ? 'none' : 'block';
     }
 
     function calcInput(v) {
         const d = document.getElementById('calc-display');
-        if(v === 'C') d.value = ""; else if(v === '=') d.value = eval(d.value); else d.value += v;
+        if(v==='C') d.value=''; else if(v==='=') d.value=eval(d.value); else d.value+=v;
     }
 
-    initDash();
+    initApp();
 </script>
 </body>
 </html>
