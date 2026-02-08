@@ -15,6 +15,7 @@
         .app-section { display: none; padding: 20px; }
         #dashboard-view { display: block; }
         .header-box { padding: 25px 20px; background: linear-gradient(135deg, #2e3075, #1a1d4f); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
+        .countdown-timer { background: rgba(255, 255, 255, 0.1); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); display: inline-block; }
         .navbar-top { background: #198754; padding: 10px 20px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         .question-palette { background: var(--card); padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 5px; max-height: 120px; overflow-y: auto; }
         .palette-btn { width: 35px; height: 35px; border-radius: 50%; border: none; cursor: pointer; font-size: 0.8rem; }
@@ -30,12 +31,13 @@
         .option-btn.wrong { background: rgba(220,53,69,0.4) !important; border-color: var(--danger) !important; }
         .explanation { background: rgba(25,135,84,0.2); border-left: 4px solid var(--success); padding: 15px; border-radius: 8px; margin-top: 15px; display: none; }
         .nav-bottom { position: fixed; bottom: 0; width: 100%; background: linear-gradient(135deg, #2e3075, #1a1d4f); display: flex; justify-content: space-around; padding: 15px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; }
-        .nav-link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.7rem; text-align: center; cursor: pointer; transition: 0.3s; }
+        .nav-link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.7rem; text-align: center; cursor: pointer; transition: 0.3s; flex: 1; }
         .nav-link:hover, .nav-link.active { color: white; }
         .score-chart { max-width: 300px; margin: 20px auto; }
-        .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .subject-card { background: var(--card); border: 2px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px 15px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .subject-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .subject-card { background: var(--card); border: 2px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px 10px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; }
+        .offline-badge { position: absolute; top: 10px; right: 10px; font-size: 0.6rem; color: #198754; display: none; }
+        .subject-card.cached .offline-badge { display: block; }
     </style>
 </head>
 <body>
@@ -45,13 +47,16 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-circle bg-primary p-3"><i class="fas fa-graduation-cap fs-4"></i></div>
-                    <div><h5 class="mb-0 fw-bold">Welcome, Candidate!</h5><small>JAMB 2026 Success Awaits</small></div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">Ready to Excel?</h5>
+                        <div id="jamb-countdown" class="countdown-timer mt-1">Calculating...</div>
+                    </div>
                 </div>
-                <i class="fas fa-chart-line text-warning fs-3" onclick="showSection('stats-view')"></i>
+                <i class="fas fa-chart-line text-warning fs-3" style="cursor:pointer;" onclick="showSection('stats-view', null)"></i>
             </div>
         </div>
-        <div class="px-4">
-            <h6 class="fw-bold mb-3 mt-4"><i class="fas fa-list text-primary"></i> Select Subject</h6>
+        <div class="px-3">
+            <h6 class="fw-bold mb-3 mt-4"><i class="fas fa-book-open text-primary"></i> Study Room</h6>
             <div id="subject-grid" class="subject-grid"></div>
         </div>
     </div>
@@ -62,74 +67,69 @@
             <div class="d-flex align-items-center gap-3">
                 <i class="fas fa-calculator fs-4"></i>
                 <span id="exam-timer" class="badge bg-light text-dark fs-6">02:00:00</span>
-                <button class="btn btn-sm btn-light" onclick="submitExam(true)">End Exam</button>
+                <button class="btn btn-sm btn-light" onclick="submitExam(true)">End</button>
             </div>
         </div>
-        <div id="passage-container" class="alert alert-info mb-4" style="display:none;"></div>
         <div class="question-box">
             <div class="d-flex justify-content-between mb-3">
                 <span class="badge bg-secondary" id="q-counter">Q1</span>
                 <button class="btn btn-warning btn-sm" onclick="flagQuestion()">Flag</button>
             </div>
-            <div id="question-text" class="fs-5 fw-semibold mb-4">Select a subject to begin...</div>
+            <div id="question-text" class="fs-5 fw-semibold mb-4">Loading content...</div>
             <div id="options-container"></div>
             <div id="explanation" class="explanation">
-                <strong>Explanation:</strong> <span id="exp-text"></span>
+                <strong>Solution:</strong> <span id="exp-text"></span>
             </div>
         </div>
         <div class="question-palette" id="question-palette"></div>
-        <div class="d-flex justify-content-between mt-4 px-4">
-            <button class="btn btn-outline-light rounded-pill px-5 py-2" onclick="prevQuestion()"><i class="fas fa-chevron-left"></i> Prev</button>
-            <button class="btn btn-success rounded-pill px-5 py-2" onclick="submitExam()">Submit All</button>
-            <button class="btn btn-outline-light rounded-pill px-5 py-2" onclick="nextQuestion()">Next <i class="fas fa-chevron-right"></i></button>
+        <div class="d-flex justify-content-between mt-4">
+            <button class="btn btn-outline-light rounded-pill px-4" onclick="prevQuestion()"><i class="fas fa-arrow-left"></i></button>
+            <button class="btn btn-success rounded-pill px-5" onclick="submitExam()">Submit</button>
+            <button class="btn btn-outline-light rounded-pill px-4" onclick="nextQuestion()"><i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <div id="result-view" class="app-section text-center px-4">
-        <div class="py-5">
-            <i class="fas fa-trophy text-warning" style="font-size: 5rem;"></i>
-            <h2 class="fw-bold mb-2">Excellent Performance!</h2>
-            <h3 id="result-subject-name" class="text-primary mb-4">Subject</h3>
-            <div class="display-3 fw-bold mb-3" id="final-score" style="color:var(--primary);">0%</div>
-            <p id="result-stats" class="mb-4">Time: 0m | Correct: 0/0</p>
+    <div id="result-view" class="app-section text-center">
+        <div class="py-4">
+            <i class="fas fa-award text-warning" style="font-size: 5rem;"></i>
+            <h2 class="fw-bold mt-2">Performance Summary</h2>
+            <h4 id="result-subject-name" class="text-primary"></h4>
+            <div class="display-2 fw-bold my-3" id="final-score">0%</div>
+            <p id="result-stats" class="text-muted"></p>
             <canvas id="score-chart" class="score-chart"></canvas>
         </div>
-        <div class="d-grid gap-3">
-            <button class="btn btn-primary rounded-pill py-3 fs-5" onclick="startReview()"><i class="fas fa-eye"></i> Review Answers</button>
-            <button class="btn btn-info rounded-pill py-3 fs-5" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
-            <button class="btn btn-warning rounded-pill py-3 fs-5" id="retake-btn">Retake Subject</button>
-            <button class="btn btn-outline-light rounded-pill py-3 fs-5" onclick="showSection('dashboard-view')">New Practice</button>
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary rounded-pill py-3" onclick="startReview()">Review Corrections</button>
+            <button class="btn btn-warning rounded-pill py-3" id="retake-btn">Try Again</button>
+            <button class="btn btn-outline-light rounded-pill py-3" onclick="showSection('dashboard-view')">Dashboard</button>
         </div>
     </div>
 
     <div id="stats-view" class="app-section">
-        <h5 class="fw-bold mb-4"><i class="fas fa-chart-bar text-info"></i> Practice History</h5>
+        <h5 class="fw-bold mb-4"><i class="fas fa-history"></i> Performance History</h5>
         <canvas id="history-chart" width="400" height="200"></canvas>
-        <div id="history-list"></div>
+        <div id="history-list" class="mt-4"></div>
         <button class="btn btn-secondary mt-4 w-100" onclick="showSection('dashboard-view')">Back</button>
     </div>
 
     <div class="nav-bottom">
-        <a class="nav-link active" onclick="showSection('dashboard-view')"><i class="fas fa-home d-block fs-2"></i><span>Home</span></a>
-        <a class="nav-link" onclick="showSection('stats-view')"><i class="fas fa-chart-line d-block fs-2"></i><span>Stats</span></a>
-        <a class="nav-link"><i class="fas fa-trophy d-block fs-2"></i><span>Rank</span></a>
-        <a class="nav-link"><i class="fas fa-cog d-block fs-2"></i><span>Settings</span></a>
+        <a class="nav-link active" onclick="showSection('dashboard-view', this)"><i class="fas fa-home d-block fs-2"></i><span>Home</span></a>
+        <a class="nav-link" onclick="showSection('stats-view', this)"><i class="fas fa-poll d-block fs-2"></i><span>Stats</span></a>
     </div>
 </div>
 
 <script>
-    // List of subjects based on your GitHub file structure
     const allSubjects = [
-        { id: "accounting", name: "Accounting", icon: "fas fa-file-invoice-dollar", color: "#4caf50" },
+        { id: "accounting", name: "Accounting", icon: "fas fa-calculator", color: "#4caf50" },
         { id: "biology", name: "Biology", icon: "fas fa-dna", color: "#8bc34a" },
         { id: "chemistry", name: "Chemistry", icon: "fas fa-flask", color: "#00bcd4" },
         { id: "commerce", name: "Commerce", icon: "fas fa-store", color: "#ff9800" },
         { id: "crk", name: "CRK", icon: "fas fa-cross", color: "#795548" },
-        { id: "economics", name: "Economics", icon: "fas fa-chart-pie", color: "#3f51b5" },
-        { id: "english", name: "English Language", icon: "fas fa-spell-check", color: "#9c27b0" },
-        { id: "government", name: "Government", icon: "fas fa-university", color: "#607d8b" },
-        { id: "literature", name: "Literature", icon: "fas fa-feather-alt", color: "#e91e63" },
-        { id: "mathematics", name: "Mathematics", icon: "fas fa-calculator", color: "#f44336" },
+        { id: "economics", name: "Economics", icon: "fas fa-chart-line", color: "#3f51b5" },
+        { id: "english", name: "English", icon: "fas fa-spell-check", color: "#9c27b0" },
+        { id: "government", name: "Government", icon: "fas fa-landmark", color: "#607d8b" },
+        { id: "literature", name: "Literature", icon: "fas fa-book", color: "#e91e63" },
+        { id: "mathematics", name: "Maths", icon: "fas fa-divide", color: "#f44336" },
         { id: "physics", name: "Physics", icon: "fas fa-atom", color: "#2196f3" }
     ];
 
@@ -137,42 +137,61 @@
         userSelections = {}, flags = {}, scoresHistory = JSON.parse(localStorage.getItem('jambScores') || '[]'),
         isReviewMode = false;
 
-    window.onload = initApp;
-
-    function initApp() {
+    window.onload = () => {
         populateSubjects();
+        updateCountdown();
         loadHistoryChart();
         document.addEventListener('keydown', handleKeys);
+    };
+
+    function updateCountdown() {
+        const examDate = new Date("April 18, 2026 08:00:00").getTime();
+        const now = new Date().getTime();
+        const diff = examDate - now;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        document.getElementById("jamb-countdown").innerHTML = `<i class="fas fa-clock"></i> ${days} Days to JAMB 2026`;
     }
 
     function populateSubjects() {
+        const cachedSubjects = JSON.parse(localStorage.getItem('cachedSubjects') || '{}');
         document.getElementById('subject-grid').innerHTML = allSubjects.map(s => `
-            <div class="subject-card" onclick="startExam('${s.id}')">
-                <i class="${s.icon}" style="color:${s.color}; font-size:2.5rem;"></i>
-                <h6 class="mt-3 mb-0 fw-bold">${s.name}</h6>
+            <div class="subject-card ${cachedSubjects[s.id] ? 'cached' : ''}" onclick="startExam('${s.id}')">
+                <i class="fas fa-check-circle offline-badge" title="Available Offline"></i>
+                <i class="${s.icon}" style="color:${s.color}; font-size:2rem;"></i>
+                <h6 class="mt-2 mb-0 fw-bold" style="font-size:0.85rem;">${s.name}</h6>
             </div>
         `).join('');
     }
 
     async function startExam(subjectId) {
         try {
-            // Fetch questions from the specific JSON file in your repo
-            const response = await fetch(`${subjectId}.json`);
-            if (!response.ok) throw new Error('Subject file not found');
+            // Check Offline Cache first
+            const cachedData = JSON.parse(localStorage.getItem('cachedSubjects') || '{}');
             
-            currentQuestions = await response.json();
+            if (cachedData[subjectId]) {
+                currentQuestions = cachedData[subjectId];
+            } else {
+                // Fetch from GitHub
+                const response = await fetch(`${subjectId}.json`);
+                if (!response.ok) throw new Error('File not found');
+                currentQuestions = await response.json();
+                
+                // Save to Offline Cache
+                cachedData[subjectId] = currentQuestions;
+                localStorage.setItem('cachedSubjects', JSON.stringify(cachedData));
+            }
+
             const subjectObj = allSubjects.find(s => s.id === subjectId);
             currentSubject = subjectObj ? subjectObj.name : subjectId;
-
             showSection('exam-hall-view');
             resetExam();
             buildSubjectsNav();
             buildPalette();
             loadQuestion();
             startTimer();
+            populateSubjects(); // Refresh badges
         } catch (error) {
-            alert("Could not load " + subjectId + ".json. Please ensure the file is in the same directory.");
-            console.error(error);
+            alert(`Unable to load ${subjectId}. Connect to the internet once to download this subject!`);
         }
     }
 
@@ -211,8 +230,7 @@
         container.innerHTML = q.options.map((opt, i) => {
             const letter = String.fromCharCode(97 + i);
             const isActive = userSelections[currentQuestionIndex] === letter;
-            return `<button class="option-btn ${isActive ? 'active' : ''}" 
-                    onclick="selectOption(${i}, this)">${letter.toUpperCase()}. ${opt}</button>`;
+            return `<button class="option-btn ${isActive ? 'active' : ''}" onclick="selectOption(${i})">${letter.toUpperCase()}. ${opt}</button>`;
         }).join('');
 
         document.getElementById('explanation').style.display = isReviewMode ? 'block' : 'none';
@@ -220,7 +238,7 @@
         updatePalette();
     }
 
-    function selectOption(index, btn) {
+    function selectOption(index) {
         if (isReviewMode) return;
         userSelections[currentQuestionIndex] = String.fromCharCode(97 + index);
         loadQuestion(); 
@@ -230,7 +248,7 @@
         const q = currentQuestions[currentQuestionIndex];
         const correct = (q.answer || '').toLowerCase().trim();
         const user = userSelections[currentQuestionIndex];
-        document.getElementById('exp-text').innerText = q.exp || 'No explanation provided for this question.';
+        document.getElementById('exp-text').innerText = q.exp || 'Correct answer is ' + correct.toUpperCase();
         
         setTimeout(() => {
             document.querySelectorAll('.option-btn').forEach((b, i) => {
@@ -257,23 +275,24 @@
     function prevQuestion() { if (currentQuestionIndex > 0) currentQuestionIndex--; loadQuestion(); }
 
     function submitExam(force = false) {
-        if (!force && !confirm('Submit exam?')) return;
+        if (!force && !confirm('Submit now?')) return;
         clearInterval(examTimer);
-        let score = 0, total = currentQuestions.length;
+        let score = 0;
         currentQuestions.forEach((q, i) => {
             if (userSelections[i] === (q.answer || '').toLowerCase().trim()) score++;
         });
-        const percent = total > 0 ? Math.round((score / total) * 100) : 0;
+        const percent = Math.round((score / currentQuestions.length) * 100);
         
         document.getElementById('final-score').textContent = `${percent}%`;
         document.getElementById('result-subject-name').textContent = currentSubject;
-        document.getElementById('result-stats').textContent = `Correct: ${score}/${total} | Time Used: ${Math.floor((7200 - timeLeft)/60)}m`;
+        document.getElementById('result-stats').textContent = `Score: ${score}/${currentQuestions.length} | Time Used: ${Math.floor((7200 - timeLeft)/60)}m`;
         
         scoresHistory.push({subject: currentSubject, score: percent, date: new Date().toLocaleDateString()});
         localStorage.setItem('jambScores', JSON.stringify(scoresHistory));
         
-        drawScoreChart(score, total - score);
-        document.getElementById('retake-btn').onclick = () => startExam(allSubjects.find(s => s.name === currentSubject).id);
+        drawScoreChart(score, currentQuestions.length - score);
+        const subjId = allSubjects.find(s => s.name === currentSubject).id;
+        document.getElementById('retake-btn').onclick = () => startExam(subjId);
         showSection('result-view');
     }
 
@@ -282,8 +301,7 @@
         if (window.myChart) window.myChart.destroy();
         window.myChart = new Chart(canvas.getContext('2d'), {
             type: 'doughnut',
-            data: { labels: ['Correct', 'Wrong'], datasets: [{ data: [correct, wrong], backgroundColor: ['#198754', '#dc3545'] }] },
-            options: { responsive: true }
+            data: { labels: ['Correct', 'Wrong'], datasets: [{ data: [correct, wrong], backgroundColor: ['#198754', '#dc3545'] }] }
         });
     }
 
@@ -296,41 +314,40 @@
 
     function loadHistoryChart() {
         const ctx = document.getElementById('history-chart').getContext('2d');
-        const labels = scoresHistory.slice(-10).map(s => s.subject.substring(0,5));
+        const recentScores = scoresHistory.slice(-8);
         if (window.historyChartInstance) window.historyChartInstance.destroy();
         window.historyChartInstance = new Chart(ctx, {
             type: 'bar',
-            data: { labels, datasets: [{ label: 'Score %', data: scoresHistory.slice(-10).map(s => s.score), backgroundColor: '#0d6efd' }] },
-            options: { scales: { y: { beginAtZero: true, max: 100 } } }
+            data: { 
+                labels: recentScores.map(s => s.subject.substring(0,5)), 
+                datasets: [{ label: 'Score %', data: recentScores.map(s => s.score), backgroundColor: '#0d6efd' }] 
+            }
         });
         document.getElementById('history-list').innerHTML = scoresHistory.slice(-5).reverse().map(s => `
-            <div class="d-flex justify-content-between alert alert-dark py-2 px-3 mb-2" style="font-size:0.85rem">
+            <div class="d-flex justify-content-between alert alert-dark py-2 px-3 mb-2" style="font-size:0.75rem">
                 <span>${s.subject}</span><strong>${s.score}%</strong><span>${s.date}</span>
             </div>
         `).join('');
     }
 
-    function downloadPDF() {
-        const element = document.getElementById('result-view');
-        html2pdf().from(element).set({ filename: `JAMB_Result_${currentSubject}.pdf` }).save();
-    }
-
-    function showSection(id) {
+    function showSection(id, element) {
         document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
         document.getElementById(id).style.display = 'block';
         window.scrollTo(0,0);
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(l => l.classList.remove('active'));
+        if (element) element.classList.add('active');
+        else if (id === 'dashboard-view') navLinks[0].classList.add('active');
+        else if (id === 'stats-view') navLinks[1].classList.add('active');
         if (id === 'stats-view') loadHistoryChart();
     }
 
     function handleKeys(e) {
         if (document.getElementById('exam-hall-view').style.display !== 'block') return;
         const key = e.key.toLowerCase();
-        if (['a','b','c','d'].includes(key)) {
-            const idx = key.charCodeAt(0) - 97;
-            selectOption(idx);
-        } else if (key === 'n') nextQuestion();
-        else if (key === 'p') prevQuestion();
-        else if (key === 's') submitExam();
+        if (['a','b','c','d'].includes(key)) selectOption(key.charCodeAt(0) - 97);
+        else if (key === 'n' || key === 'arrowright') nextQuestion();
+        else if (key === 'p' || key === 'arrowleft') prevQuestion();
     }
 </script>
 </body>
