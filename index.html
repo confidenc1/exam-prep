@@ -76,7 +76,7 @@
         </div>
         <div class="question-box">
             <span class="badge bg-dark mb-2" id="q-counter">Question 1</span>
-            <p id="question-text">Loading...</p>
+            <p id="question-text">Loading Questions...</p>
         </div>
         <div id="options-container">
             <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text"></span></button>
@@ -102,7 +102,7 @@
             <i class="fas fa-trophy text-warning" style="font-size: 4rem;"></i>
             <h2 class="mt-3 fw-bold">Finished!</h2>
             <div class="display-4 fw-bold my-3" id="final-score">0/0</div>
-            <p class="text-muted" id="score-comment">Excellent work!</p>
+            <p class="text-muted">Review your performance below</p>
             <div class="d-grid gap-2 mt-4">
                 <button class="btn btn-primary rounded-pill py-3" onclick="startReview()">Review Answers</button>
                 <button class="btn btn-outline-light rounded-pill py-3" onclick="location.reload()">Back to Home</button>
@@ -174,13 +174,20 @@
     }
 
     async function goToExamHall() {
-        if(selectedSubjects.length === 0) return alert("Select a subject!");
+        if(selectedSubjects.length === 0) return alert("Select a subject first!");
         const subjObj = allSubjects.find(s => s.id === selectedSubjects[0]);
         showSection('exam-hall-view');
+        
+        document.getElementById('question-text').innerText = "Loading " + subjObj.id + "...";
+
         try {
+            // Updated fetch logic to handle your GitHub structure
             const res = await fetch(subjObj.file + '?v=' + Date.now());
             const data = await res.json();
-            let rawList = data.questions || data.Questions || [];
+            
+            // Checks if data is an array directly or has a "questions" key
+            let rawList = Array.isArray(data) ? data : (data.questions || data.Questions || []);
+
             if(rawList.length > 0) {
                 const limit = (subjObj.id === "English Language") ? 60 : 40;
                 currentQuestions = rawList.slice(0, limit);
@@ -190,8 +197,13 @@
                 document.getElementById('exam-subject-title').innerText = subjObj.id;
                 loadQuestion();
                 startTimer();
+            } else {
+                document.getElementById('question-text').innerText = "Error: No questions found in " + subjObj.file;
             }
-        } catch(e) { alert("File error"); showSection('dashboard-view'); }
+        } catch(e) { 
+            document.getElementById('question-text').innerText = "Failed to load " + subjObj.file;
+            console.error(e);
+        }
     }
 
     function startTimer() {
@@ -209,25 +221,34 @@
     }
 
     function loadQuestion() {
-        const q = currentQuestions[currentQuestionIndex];
-        document.getElementById('question-text').innerText = q.question;
+        const qData = currentQuestions[currentQuestionIndex];
+        
+        // Handles both "q" (from your file) or "question" keys
+        const questionText = qData.q || qData.question || "No text available";
+        document.getElementById('question-text').innerHTML = questionText;
         document.getElementById('q-counter').innerText = `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
         
         const opts = document.querySelectorAll('.opt-text');
         const btns = document.querySelectorAll('.option-btn');
-        const optionsData = Array.isArray(q.options) ? q.options : Object.values(q.options);
+        const optionsData = qData.options || [];
         const letters = ['a', 'b', 'c', 'd'];
 
         btns.forEach((btn, i) => {
             btn.className = "option-btn"; 
-            opts[i].innerText = optionsData[i] || "";
+            if(optionsData[i]) {
+                btn.style.display = "block";
+                opts[i].innerText = optionsData[i];
+            } else {
+                btn.style.display = "none";
+            }
             
             if(!isReviewMode && userSelections[currentQuestionIndex] === letters[i]) {
                 btn.classList.add('active');
             }
 
             if(isReviewMode) {
-                const correctLetter = q.answer?.toLowerCase();
+                // Handles "answer" or "a" keys for correct response
+                const correctLetter = (qData.answer || qData.a || "").toLowerCase();
                 const userLetter = userSelections[currentQuestionIndex];
                 if(letters[i] === correctLetter) btn.classList.add('correct');
                 if(userLetter === letters[i] && userLetter !== correctLetter) btn.classList.add('wrong');
@@ -237,9 +258,10 @@
         if(isReviewMode) {
             const expBox = document.getElementById('explanation-container');
             const expText = document.getElementById('explanation-text');
-            if(q.explanation) {
+            const explanation = qData.explanation || qData.ex || "";
+            if(explanation) {
                 expBox.style.display = 'block';
-                expText.innerText = q.explanation;
+                expText.innerText = explanation;
             } else {
                 expBox.style.display = 'none';
             }
@@ -259,10 +281,13 @@
     function prevQuestion() { if(currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(); } }
 
     function submitExam(isAuto = false) {
-        if(!isAuto && !confirm("Submit now?")) return;
+        if(!isAuto && !confirm("Submit your answers?")) return;
         clearInterval(examTimer);
         let score = 0;
-        currentQuestions.forEach((q, i) => { if(userSelections[i] === q.answer?.toLowerCase()) score++; });
+        currentQuestions.forEach((q, i) => { 
+            const correctAns = (q.answer || q.a || "").toLowerCase();
+            if(userSelections[i] === correctAns) score++; 
+        });
         document.getElementById('final-score').innerText = `${score}/${currentQuestions.length}`;
         showSection('result-view');
     }
