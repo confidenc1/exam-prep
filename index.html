@@ -3,242 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSA JAMB PRO - GitHub Edition</title>
-    
+    <title>FSA JAMB PRO 2026</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <style>
-        :root { --jamb-blue: #0d47a1; --accent: #ffd600; --bg: #f4f7f6; --card: #ffffff; }
-        body { background: var(--bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .header { background: var(--jamb-blue); color: white; padding: 15px; border-bottom: 4px solid var(--accent); position: sticky; top: 0; z-index: 100; }
-        
-        /* Dashboard */
-        .sub-card { background: var(--card); border-radius: 12px; padding: 25px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        .sub-card.selected { border-color: #28a745; background: #f0fff4; }
-        
-        /* Exam Interface */
-        .subject-bar { display: flex; background: #ddd; border-radius: 8px 8px 0 0; }
-        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; border-bottom: 3px solid transparent; }
-        .tab.active { background: white; border-bottom: 3px solid var(--jamb-blue); color: var(--jamb-blue); }
-        
-        .question-box { background: white; padding: 30px; border-radius: 0 0 12px 12px; min-height: 450px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .option { display: block; width: 100%; padding: 15px; margin-bottom: 10px; border: 1.5px solid #d1d5db; border-radius: 8px; text-align: left; background: none; transition: 0.2s; }
-        .option:hover { border-color: var(--jamb-blue); background: #f0f7ff; }
+        :root { --jamb-blue: #0d47a1; --accent: #ffd600; --bg: #f4f7f6; }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; margin-bottom: 50px; }
+        .header { background: var(--jamb-blue); color: white; padding: 15px; border-bottom: 4px solid var(--accent); position: sticky; top: 0; z-index: 1000; }
+        .subject-card { background: white; border-radius: 12px; padding: 15px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .subject-card.selected { border-color: #28a745; background: #f0fff4; transform: translateY(-5px); }
+        .option { display: block; width: 100%; padding: 14px; margin-bottom: 10px; border: 1.5px solid #d1d5db; border-radius: 8px; text-align: left; background: white; transition: 0.2s; }
         .option.selected { background: var(--jamb-blue); color: white; border-color: var(--jamb-blue); }
-
-        .q-map { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; max-height: 350px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
-        .q-dot { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; cursor: pointer; }
-        .q-dot.done { background: #2e7d32; color: white; border: none; }
-        .q-dot.active { outline: 2px solid var(--jamb-blue); font-weight: bold; }
-
-        #calc { display: none; position: fixed; bottom: 20px; right: 20px; width: 220px; background: #333; padding: 15px; border-radius: 12px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .passage { background: #f8f9fa; padding: 15px; border-left: 4px solid var(--jamb-blue); margin-bottom: 15px; max-height: 250px; overflow-y: auto; }
+        .passage { background: #fffde7; padding: 15px; border-left: 5px solid var(--jamb-blue); margin-bottom: 20px; font-style: italic; border-radius: 4px; }
+        #timer { font-size: 1.5rem; }
     </style>
 </head>
 <body>
 
-<div class="header d-flex justify-content-between align-items-center">
-    <h4 class="mb-0">FSA JAMB PRO 2026</h4>
-    <div class="d-flex gap-3 align-items-center">
-        <button class="btn btn-warning btn-sm fw-bold" onclick="toggleCalc()">🧮 Calculator (C)</button>
-        <div id="timer" class="h4 mb-0 fw-bold">02:00:00</div>
-    </div>
+<div class="header d-flex justify-content-between align-items-center shadow">
+    <h4 class="mb-0">🎓 FSA JAMB PRO</h4>
+    <div id="timer" class="fw-bold">02:00:00</div>
 </div>
 
-<div class="container mt-4 pb-5">
-    <div id="screen-login" class="text-center py-5">
-        <div class="card p-4 shadow m-auto" style="max-width: 400px;">
-            <h3>Candidate Login</h3>
-            <input type="text" id="user-name" class="form-control my-3" placeholder="Full Name">
-            <button class="btn btn-primary w-100" onclick="goToDashboard()">Proceed</button>
+<div class="container mt-4">
+    <div id="dash-screen">
+        <div class="text-center mb-4">
+            <h2>Candidate Dashboard</h2>
+            <p class="text-muted">Select <b>English</b> + 3 other subjects to begin.</p>
         </div>
-    </div>
-
-    <div id="screen-dash" style="display:none;">
-        <div class="text-center mb-5"><h2>Select Your 4 Subjects</h2><p>English is required by default</p></div>
         <div class="row g-3" id="sub-grid"></div>
         <div class="text-center mt-5">
-            <button id="start-btn" class="btn btn-primary btn-lg px-5 disabled" onclick="startExam()">START EXAM</button>
+            <button id="start-btn" class="btn btn-primary btn-lg px-5 disabled shadow" onclick="startExam()">START EXAMINATION</button>
         </div>
     </div>
 
-    <div id="screen-exam" style="display:none;">
-        <div class="subject-bar" id="sub-tabs"></div>
-        <div class="row mt-0 g-0">
-            <div class="col-lg-8">
-                <div class="question-box">
+    <div id="exam-screen" style="display:none;">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card p-4 shadow-sm border-0">
                     <div class="d-flex justify-content-between mb-3">
-                        <span id="q-label" class="badge bg-primary">Question 1</span>
-                        <span id="active-sub-name" class="fw-bold text-uppercase"></span>
+                        <h5 id="sub-title" class="text-primary fw-bold"></h5>
+                        <span id="q-count" class="badge bg-dark fs-6"></span>
                     </div>
-                    <div id="q-container"></div>
+                    <hr>
+                    <div id="q-area"></div>
                     <div class="d-flex justify-content-between mt-4">
-                        <button class="btn btn-outline-secondary px-4" onclick="nav(-1)">Previous</button>
-                        <button class="btn btn-primary px-4" onclick="nav(1)">Next</button>
+                        <button class="btn btn-outline-secondary px-4" onclick="changeQ(-1)">Previous</button>
+                        <button class="btn btn-primary px-4" onclick="changeQ(1)">Next Question</button>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 ps-lg-3">
-                <div class="card p-3 shadow-sm">
-                    <h6>Question Map</h6>
-                    <div class="q-map mb-3" id="q-map"></div>
-                    <button class="btn btn-danger w-100 fw-bold" onclick="endExam()">SUBMIT EXAM</button>
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm border-0">
+                    <h6>Subject Progress</h6>
+                    <div id="subject-tabs" class="list-group mb-3"></div>
+                    <button class="btn btn-danger w-100 fw-bold" onclick="finishExam()">SUBMIT ALL SUBJECTS</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="screen-result" style="display:none;" class="text-center py-5">
-        <div id="pdf-area" class="card p-5 shadow-lg m-auto" style="max-width: 650px;">
-            <h1 class="fw-bold text-primary">JAMB Result Slip</h1>
-            <h4 id="res-name">Candidate Name</h4>
-            <div id="score-big" class="display-1 fw-bold my-4 text-success">000</div>
-            <div id="res-breakdown" class="text-start border-top pt-3"></div>
-            <div class="mt-4 no-print">
-                <button class="btn btn-dark" onclick="printPDF()">Download PDF</button>
-                <button class="btn btn-link" onclick="location.reload()">Restart</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="calc">
-    <input type="text" id="cdis" class="form-control mb-2 text-end bg-dark text-white" value="0" readonly>
-    <div class="row g-1" id="calc-keys"></div>
 </div>
 
 <script>
-    const config = [
-        {id:"English", q:60, icon:"📚"},{id:"Mathematics", q:40, icon:"📐"},
-        {id:"Physics", q:40, icon:"⚛️"},{id:"Chemistry", q:40, icon:"🧪"},
-        {id:"Biology", q:40, icon:"🧬"},{id:"Government", q:40, icon:"🏛️"},
-        {id:"Economics", q:40, icon:"📈"}
+    const subjects = [
+        {id:"English", file:"english.json", icon:"📚"},
+        {id:"Mathematics", file:"math.json", icon:"📐"},
+        {id:"Physics", file:"physics.json", icon:"⚛️"},
+        {id:"Chemistry", file:"chemistry.json", icon:"🧪"},
+        {id:"Biology", file:"biology.json", icon:"🧬"},
+        {id:"CRK", file:"crk.json", icon:"📖"},
+        {id:"Commerce", file:"commerce.json", icon:"🛒"},
+        {id:"Accounting", file:"accounting.json", icon:"📊"}
     ];
 
-    let selected = ["English"], examData = {}, activeSub = "English", activeIdx = 0, answers = {}, userName = "";
+    let selected = ["English"];
+    let examData = {};
+    let currentSub = "English";
+    let currentIdx = 0;
+    let studentAnswers = {};
 
-    function goToDashboard() {
-        userName = document.getElementById('user-name').value;
-        if(!userName) return alert("Please enter your name");
-        document.getElementById('screen-login').style.display='none';
-        document.getElementById('screen-dash').style.display='block';
-        renderDash();
-    }
-
-    function renderDash() {
+    function initDash() {
         const grid = document.getElementById('sub-grid');
         grid.innerHTML = '';
-        config.forEach(s => {
-            const isS = selected.includes(s.id);
-            grid.innerHTML += `<div class="col-md-4"><div class="sub-card ${isS?'selected':''}" onclick="toggleSub('${s.id}')">
-                <div class="h2">${s.icon}</div><h5>${s.id}</h5><small>${s.q} Questions</small>
-            </div></div>`;
+        subjects.forEach(s => {
+            const isSelected = selected.includes(s.id);
+            grid.innerHTML += `
+                <div class="col-6 col-md-3">
+                    <div class="subject-card ${isSelected?'selected':''}" onclick="toggleS('${s.id}')">
+                        <div class="h2">${s.icon}</div>
+                        <h6>${s.id}</h6>
+                    </div>
+                </div>`;
         });
         document.getElementById('start-btn').classList.toggle('disabled', selected.length < 4);
     }
 
-    function toggleSub(id) {
+    function toggleS(id) {
         if(id === "English") return;
         const i = selected.indexOf(id);
         if(i > -1) selected.splice(i, 1);
         else if(selected.length < 4) selected.push(id);
-        renderDash();
+        initDash();
     }
 
     async function startExam() {
         try {
-            const res = await fetch('questions.json');
-            const db = await res.json();
-            selected.forEach(s => {
-                examData[s] = (db[s] || []).sort(() => 0.5 - Math.random()).slice(0, config.find(x=>x.id===s).q);
-                answers[s] = {};
-            });
-            document.getElementById('screen-dash').style.display='none';
-            document.getElementById('screen-exam').style.display='block';
-            renderTabs(); renderQ(); startTimer(7200);
-        } catch(e) { alert("Missing questions.json file in your GitHub folder!"); }
+            document.getElementById('start-btn').innerHTML = "Loading Questions...";
+            for (let sName of selected) {
+                const sObj = subjects.find(s => s.id === sName);
+                const response = await fetch(sObj.file);
+                if(!response.ok) throw new Error();
+                examData[sName] = await response.json();
+                studentAnswers[sName] = {};
+            }
+            document.getElementById('dash-screen').style.display = 'none';
+            document.getElementById('exam-screen').style.display = 'block';
+            renderTabs();
+            renderQ();
+            startTimer(7200); 
+        } catch (e) {
+            alert("Error: One or more .json files are missing from your GitHub folder!");
+            location.reload();
+        }
     }
 
     function renderTabs() {
-        const h = document.getElementById('sub-tabs'); h.innerHTML = '';
+        const container = document.getElementById('subject-tabs');
+        container.innerHTML = '';
         selected.forEach(s => {
-            h.innerHTML += `<div class="tab ${activeSub===s?'active':''}" onclick="switchSub('${s}')">${s}</div>`;
+            container.innerHTML += `
+                <button class="list-group-item list-group-item-action ${currentSub===s?'active':''}" 
+                    onclick="switchSub('${s}')">${s}</button>`;
         });
     }
 
-    function switchSub(s) { activeSub = s; activeIdx = 0; renderTabs(); renderQ(); }
+    function switchSub(s) { currentSub = s; currentIdx = 0; renderTabs(); renderQ(); }
 
     function renderQ() {
-        const q = examData[activeSub][activeIdx];
-        document.getElementById('active-sub-name').innerText = activeSub;
-        document.getElementById('q-label').innerText = `Q${activeIdx + 1}`;
-        let h = q.p ? `<div class="passage">${q.p}</div>` : "";
-        if(q.img) h += `<div class="text-center mb-3"><img src="${q.img}" class="img-fluid border" style="max-height:200px"></div>`;
-        h += `<h5 class="mb-4">${q.q}</h5>`;
-        q.options.forEach((o, i) => {
-            h += `<button class="option ${answers[activeSub][activeIdx]===i?'selected':''}" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`;
+        const qList = examData[currentSub];
+        const q = qList[currentIdx];
+        document.getElementById('sub-title').innerText = currentSub;
+        document.getElementById('q-count').innerText = `Q ${currentIdx + 1} of ${qList.length}`;
+        
+        let html = q.p ? `<div class="passage">${q.p}</div>` : "";
+        if(q.img) html += `<div class="text-center mb-3"><img src="${q.img}" class="img-fluid border" style="max-height:250px"></div>`;
+        html += `<h5 class="mb-4">${q.q}</h5>`;
+        
+        q.options.forEach((opt, i) => {
+            const isSel = studentAnswers[currentSub][currentIdx] === i;
+            html += `<button class="option ${isSel?'selected':''}" onclick="saveAns(${i})">
+                <b>${String.fromCharCode(65+i)}.</b> ${opt}
+            </button>`;
         });
-        document.getElementById('q-container').innerHTML = h;
-        renderMap();
+        document.getElementById('q-area').innerHTML = html;
     }
 
-    function pick(i) { answers[activeSub][activeIdx] = i; renderQ(); }
-
-    function renderMap() {
-        const m = document.getElementById('q-map'); m.innerHTML = '';
-        examData[activeSub].forEach((_, i) => {
-            m.innerHTML += `<div class="q-dot ${activeIdx===i?'active':''} ${answers[activeSub][i]!==undefined?'done':''}" onclick="jump(${i})">${i+1}</div>`;
-        });
+    function saveAns(i) { studentAnswers[currentSub][currentIdx] = i; renderQ(); }
+    
+    function changeQ(dir) {
+        if(currentIdx + dir >= 0 && currentIdx + dir < examData[currentSub].length) {
+            currentIdx += dir; renderQ();
+        }
     }
 
-    function jump(i) { activeIdx = i; renderQ(); }
-    function nav(d) { if(activeIdx+d >= 0 && activeIdx+d < examData[activeSub].length) { activeIdx += d; renderQ(); } }
-
-    function startTimer(t) {
-        const timerObj = setInterval(() => {
-            if(t <= 0) { clearInterval(timerObj); endExam(); }
-            t--;
-            let m = Math.floor(t/60), s = t%60, h = Math.floor(m/60);
-            document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${(m%60).toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    function startTimer(sec) {
+        const timerEl = document.getElementById('timer');
+        const interval = setInterval(() => {
+            sec--;
+            let h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+            timerEl.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            if(sec <= 0) { clearInterval(interval); finishExam(); }
         }, 1000);
     }
 
-    function endExam() {
-        if(!confirm("Submit Exam?")) return;
-        document.getElementById('screen-exam').style.display='none';
-        document.getElementById('screen-result').style.display='block';
-        let grand = 0, totalQ = 0, b = '';
+    function finishExam() {
+        let score = 0;
+        let totalQs = 0;
         selected.forEach(s => {
-            let correct = 0; examData[s].forEach((q,i) => { if(answers[s][i] === q.a) correct++; });
-            grand += correct; totalQ += examData[s].length;
-            b += `<p><strong>${s}:</strong> ${correct} / ${examData[s].length}</p>`;
+            examData[s].forEach((q, idx) => {
+                if(studentAnswers[s][idx] === q.a) score++;
+                totalQs++;
+            });
         });
-        document.getElementById('res-name').innerText = userName;
-        document.getElementById('score-big').innerText = Math.round((grand/totalQ)*400);
-        document.getElementById('res-breakdown').innerHTML = b;
+        const jambScore = Math.round((score/totalQs) * 400);
+        alert(`Finished!\nTotal Correct: ${score}/${totalQs}\nEstimated JAMB Score: ${jambScore}/400`);
+        location.reload();
     }
 
-    function printPDF() { 
-        const opt = { margin: 0.5, filename: `${userName}_JAMB_Result.pdf`, html2canvas: { scale: 2 } };
-        html2pdf().set(opt).from(document.getElementById('pdf-area')).save(); 
-    }
-
-    function toggleCalc() { const c = document.getElementById('calc'); c.style.display = (c.style.display==='block'?'none':'block'); }
-    window.addEventListener('keydown', e => { if(e.key.toLowerCase()==='c') toggleCalc(); });
-
-    // Calculator Keys
-    const k = ['7','8','9','/','4','5','6','*','1','2','3','-','0','.','=','+','C'];
-    k.forEach(x => {
-        const btn = document.createElement('div'); btn.className = (x==='='?'col-6':'col-3');
-        btn.innerHTML = `<button class="btn btn-sm btn-secondary w-100 mb-1" onclick="cIn('${x}')">${x}</button>`;
-        document.getElementById('calc-keys').appendChild(btn);
-    });
-    let cv = "0";
-    function cIn(x) { 
-        if(x==='C') cv="0"; else if(x==='=') try{cv=eval(cv).toString()}catch{cv="Err"} else cv=(cv==="0"?x:cv+x);
-        document.getElementById('cdis').value = cv;
-    }
+    initDash();
 </script>
 </body>
 </html>
