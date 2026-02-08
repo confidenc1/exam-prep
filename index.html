@@ -15,7 +15,7 @@
         #dashboard-view { display: block; }
 
         .header-box { padding: 25px 20px; background-color: #2e3075; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-        .utme-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 5px 15px; font-size: 0.7rem; }
+        .timer { font-family: monospace; letter-spacing: 1px; }
 
         .section-title { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin: 20px 0 10px; }
         .subject-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
@@ -33,7 +33,13 @@
         .bg-teal { background: linear-gradient(135deg, #1d9086, #146e66); }
         .bg-grey { background: linear-gradient(135deg, #5b757b, #465a5f); }
 
-        /* Generic UI for all sub-pages */
+        /* PRACTICE SELECTION STYLES */
+        .subject-select-card { background: #1e1f2b; border: 2px solid transparent; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .subject-select-card.selected { border-color: #0d6efd; background: rgba(13, 110, 253, 0.1); }
+        .subject-select-card i { font-size: 1.5rem; margin-bottom: 8px; display: block; }
+        .subject-select-card span { font-size: 0.75rem; font-weight: 600; }
+
+        /* GENERAL UI */
         .guide-item { background: #1e2029; border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
         .guide-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 15px; }
         .note-card { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 15px; border-left: 5px solid #ff8c00; }
@@ -79,7 +85,7 @@
             </div>
 
             <div class="section-title"><i class="fas fa-history text-warning"></i> Resume last session</div>
-            <div class="p-3 rounded-4 mb-3" style="background: #1e1f2b;" onclick="showSection('literary-view')">
+            <div class="p-3 rounded-4 mb-3" style="background: #1e1f2b; cursor: pointer;" onclick="viewNote('Literature-In-English')">
                 <div class="d-flex align-items-center">
                     <div class="bg-dark p-3 rounded-3 me-3"><i class="fas fa-book-open text-primary"></i></div>
                     <div>
@@ -96,10 +102,9 @@
             <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
             <h4 class="fw-bold mb-0">CBT Mock Exam</h4>
         </div>
-        <div class="text-center mt-5">
-            <p class="text-muted">Select your subjects to start the mock timer.</p>
-            <button class="btn btn-primary w-100 rounded-pill py-3">Start Practice Session</button>
-        </div>
+        <p class="text-muted text-center small mb-4">Select up to 4 subjects to practice.</p>
+        <div id="practice-subject-grid" class="grid-container mb-4"></div>
+        <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold" onclick="startMockExam()">Start Practice Session</button>
     </div>
 
     <div id="study-guide-view" class="app-section">
@@ -126,7 +131,7 @@
             <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
             <h4 class="fw-bold mb-0">JAMB Syllabus</h4>
         </div>
-        <div class="text-center mt-5"><p class="text-muted">Loading Syllabus Data...</p></div>
+        <div class="text-center mt-5"><p class="text-muted">Loading Syllabus...</p></div>
     </div>
 
     <div id="note-viewer" class="app-section">
@@ -153,14 +158,11 @@
         { id: "Chemistry", icon: "fas fa-flask", color: "#bc743c", category: "main" },
         { id: "Biology", icon: "fas fa-lungs", color: "#bc743c", category: "main" },
         { id: "Government", icon: "fas fa-landmark", color: "#8a2be2", category: "main" },
-        { id: "Literature-In-English", icon: "fas fa-book-open", color: "#8a2be2", category: "main" },
-        { id: "Financial Accounting", icon: "fas fa-chart-pie", color: "#1d9086", category: "main" },
-        { id: "Economics", icon: "fas fa-chart-line", color: "#1d9086", category: "main" },
-        { id: "Agricultural Science", icon: "fas fa-sun", color: "#bc743c", category: "other" },
-        { id: "Geography", icon: "fas fa-globe", color: "#1d9086", category: "other" }
+        { id: "Literature-In-English", icon: "fas fa-book-open", color: "#8a2be2", category: "main" }
     ];
 
     let noteData = {};
+    let selectedSubjects = [];
 
     function startTimer(duration) {
         let timer = duration, h, m, s;
@@ -181,47 +183,67 @@
         } catch(e) { console.error("JSON Error"); }
     }
 
-    function init() {
-        document.getElementById('horizontal-list').innerHTML = allSubjects.filter(s => s.category === 'main').map(s => `
-            <div class="mini-card" style="border-color: ${s.color};">
-                <i class="${s.icon}" style="background: ${s.color}22; color: ${s.color};"></i>
-                <span style="font-size: 0.7rem;">${s.id}</span>
-            </div>
-        `).join('');
-        startTimer(7200);
-        loadNotes();
-    }
-
     function showSection(sectionId) {
         document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
         document.getElementById(sectionId).style.display = 'block';
+        if(sectionId === 'practice-view') setupPracticeSelection();
     }
 
-    function showDashboard() { showSection('dashboard-view'); }
+    function setupPracticeSelection() {
+        const grid = document.getElementById('practice-subject-grid');
+        grid.innerHTML = allSubjects.map(s => `
+            <div class="subject-select-card ${selectedSubjects.includes(s.id) ? 'selected' : ''}" 
+                 onclick="toggleSubjectSelection('${s.id}')" id="sel-${s.id.replace(/\s+/g, '')}">
+                <i class="${s.icon}" style="color: ${s.color}"></i>
+                <span>${s.id}</span>
+            </div>
+        `).join('');
+    }
 
-    function openStudyGuide() {
-        showSection('study-guide-view');
-        let html = '<div style="font-size: 0.8rem; color: #888; text-transform: uppercase; margin: 20px 0 10px;">My Subjects</div>';
-        html += allSubjects.filter(s => s.category === 'main').map(s => `
-            <div class="guide-item" onclick="viewNote('${s.id}')">
-                <div class="guide-icon" style="background: ${s.color}22"><i class="${s.icon}" style="color: ${s.color}"></i></div>
-                <span class="fw-bold" style="font-size:0.85rem">${s.id}</span>
-            </div>`).join('');
-        document.getElementById('vertical-guide-list').innerHTML = html;
+    function toggleSubjectSelection(id) {
+        const el = document.getElementById('sel-' + id.replace(/\s+/g, ''));
+        if (selectedSubjects.includes(id)) {
+            selectedSubjects = selectedSubjects.filter(s => s !== id);
+            el.classList.remove('selected');
+        } else if (selectedSubjects.length < 4) {
+            selectedSubjects.push(id);
+            el.classList.add('selected');
+        }
+    }
+
+    function startMockExam() {
+        if(selectedSubjects.length === 0) return alert("Select a subject!");
+        alert("Starting exam for: " + selectedSubjects.join(", "));
     }
 
     function viewNote(id) {
         showSection('note-viewer');
         document.getElementById('note-title').innerText = id;
-        const body = document.getElementById('note-content');
         const notes = noteData[id];
-        body.innerHTML = notes ? notes.map(n => `<div class="note-card"><h6>${n.topic}</h6><div class="small text-white-50">${n.content}</div></div>`).join('') 
-                               : `<p class="text-center mt-5">Content coming soon!</p>`;
+        document.getElementById('note-content').innerHTML = notes ? notes.map(n => `<div class="note-card"><h6>${n.topic}</h6><div class="small text-white-50">${n.content}</div></div>`).join('') : `<p class="text-center mt-5">Loading...</p>`;
     }
 
+    function openStudyGuide() {
+        showSection('study-guide-view');
+        document.getElementById('vertical-guide-list').innerHTML = allSubjects.map(s => `
+            <div class="guide-item" onclick="viewNote('${s.id}')">
+                <div class="guide-icon" style="background: ${s.color}22"><i class="${s.icon}" style="color: ${s.color}"></i></div>
+                <span class="fw-bold">${s.id}</span>
+            </div>`).join('');
+    }
+
+    function showDashboard() { showSection('dashboard-view'); }
     function backToGuide() { showSection('study-guide-view'); }
 
-    window.onload = init;
+    window.onload = () => {
+        document.getElementById('horizontal-list').innerHTML = allSubjects.map(s => `
+            <div class="mini-card" style="border-color: ${s.color};">
+                <i class="${s.icon}" style="background: ${s.color}22; color: ${s.color};"></i>
+                <span style="font-size: 0.7rem;">${s.id}</span>
+            </div>`).join('');
+        startTimer(7200);
+        loadNotes();
+    };
 </script>
 </body>
 </html>
