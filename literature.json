@@ -1,0 +1,206 @@
+[
+  {
+    "p": "LITERARY TERMS AND DEVICES",
+    "q": "Which literary device involves a direct address to an absent person or an inanimate object?",
+    "options": ["Synecdoche", "Apostrophe", "Euphemism", "Hyperbole"],
+    "a": 1
+  },
+  {
+    "p": "THE LIFE CHANGER (General Text)",
+    "q": "In 'The Life Changer', what is the name of the university's Chief Security Officer (CSO)?",
+    "options": ["Mr. Bimi", "Dr. Samina", "Lafayette", "The CSO (unnamed)"],
+    "a": 3
+  },
+  {
+    "q": "A poem consisting of fourteen lines with a specific rhyme scheme is a/an _____.",
+    "options": ["Limerick", "Sonnet", "Epic", "Elegy"],
+    "a": 1
+  },
+  {
+    "p": "AFRICAN PROSE",
+    "q": "Which of these is a recurring theme in Buchi Emecheta's 'Second Class Citizen'?",
+    "options": ["Triumph of patriarchy", "Quest for female self-assertion", "Glorification of colonial rule", "Benefits of early marriage"],
+    "a": 1
+  },
+  {
+    "q": "What is the primary function of a 'Soliloquy' in drama?",
+    "options": ["Secret conversation", "Summary by a narrator", "To reveal innermost thoughts to audience", "To signal end of scene"],
+    "a": 2
+  },
+  {
+    "q": "In 'The Life Changer', Omar celebrates his admission into the university to study _____.",
+    "options": ["Law", "Medicine", "Accounting", "French"],
+    "a": 2
+  },
+  {
+    "q": "The literary device 'The waves danced beside them' is an example of _____.",
+    "options": ["Metonymy", "Personification", "Oxymoron", "Alliteration"],
+    "a": 1
+  },
+  {
+    "q": "A 'Farce' is a type of comedy characterized by _____.",
+    "options": ["Intellectual wit", "Deep tragedy", "Exaggerated physical humor", "Death of protagonist"],
+    "a": 2
+  },
+  {
+    "p": "DRAMA (The Lion and the Jewel)",
+    "q": "In 'The Lion and the Jewel', who is the 'Jewel' of Ilujinle?",
+    "options": ["Sadiku", "Sidi", "Baroka", "Lakunle"],
+    "a": 1
+  },
+  {
+    "q": "The rhyme scheme of a standard Shakespearean sonnet is _____.",
+    "options": ["abab cdcd efef gg", "abba abba cde cde", "aaaa bbbb cccc dd", "abc abc abc abc dd"],
+    "a": 0
+  },
+  {
+    "q": "Which of these is a 'Gothic' novel characteristic?",
+    "options": ["Cheerful settings", "Supernatural elements and gloomy atmospheres", "Scientific facts", "Middle-class life"],
+    "a": 1
+  },
+  {
+    "q": "In 'The Life Changer', why was Teniola (the 'Quiet One') nearly expelled?",
+    "options": ["Stealing", "Student riot", "Examination malpractice", "Failing courses"],
+    "a": 2
+  },
+  {
+    "q": "The 'Protagonist' of a story is the _____.",
+    "options": ["Character who opposes hero", "Central character around whom plot revolves", "Narrator outside story", "Character who dies"],
+    "a": 1
+  },
+  {
+    "q": "Which of these is an example of an Onomatopoeia?",
+    "options": ["Wind whistled", "The snake hissed", "The red rose", "As cold as ice"],
+    "a": 1
+  },
+  {
+    "q": "In Wole Soyinka's 'The Lion and the Jewel', Baroka's 'jewel' is _____.",
+    "options": ["His Throne", "Sidi", "The Magazine", "His Gold"],
+    "a": 1
+  },
+  {
+    "q": "An 'Ode' is a form of lyric poetry characterized by _____.",
+    "options": ["Mocking tone", "Serious expression of praise", "Five-line stanzas", "Animal characters"],
+    "a": 1
+  },
+  {
+    "q": "In 'The Life Changer', what lesson does Ummi intend to teach her children?",
+    "options": ["How to hide secrets", "Academic excellence only", "Life is full of changes and requires vigilance", "How to make money"],
+    "a": 2
+  },
+  {
+    "q": "Which of these best defines 'Irony'?",
+    "options": ["Comparison using 'like'", "Contrast between expectation and reality", "Words that sound same", "Exaggeration"],
+    "a": 1
+  },
+  {
+    "q": "The setting of a literary work refers to _____.",
+    "options": ["List of characters", "Sequence of events", "Time and place of action", "Moral of story"],
+    "a": 2
+  },
+  {
+    "q": "In 'The Lion and the Jewel', Lakunle's main conflict with Baroka is over _____.",
+    "options": ["Land ownership", "The bride price of Sidi", "Political power", "Railway construction"],
+    "a": 1
+  },
+  {
+    "q": "An 'Allusion' in literature is _____.",
+    "options": ["Long description", "Brief reference to history or another book", "Repetition of vowels", "Struggle between characters"],
+    "a": 1
+  },
+  {
+    "q": "Which character in 'The Life Changer' symbolizes the dangers of social media?",
+    "options": ["Bint", "Salma", "Omar", "Teemah"],
+    "a": 1
+  },
+  {
+    "q": "A 'Dramatic Monologue' is a poem in which _____.",
+    "options": ["Poet speaks to himself", "Character speaks to a silent listener", "Two characters argue", "Narrator summarizes plot"],
+    "a": 1
+  },
+  {
+    "q": "In Buchi Emecheta's 'Second Class Citizen', Francis is portrayed as _____.",
+    "options": ["Supportive husband", "Ambitious scholar", "Lazy, narrow-minded, and abusive", "Revolutionary leader"],
+    "a": 2
+  },
+  {
+    "q": "The literary device 'Parting is such sweet sorrow' is an example of _____.",
+    "options": ["Metaphor", "Oxymoron", "Simile", "Euphemism"],
+    "a": 1
+  },
+  {
+    "q": "In 'The Lion and the Jewel', the Bale (Baroka) wins Sidi by _____.",
+    "options": ["Outsmarting Lakunle", "Using a false story about his impotence", "Paying double bride price", "Forcing her"],
+    "a": 1
+  },
+  {
+    "q": "The 'climax' of a plot is the _____.",
+    "options": ["Introduction", "Point of highest tension", "End of story", "Middle section"],
+    "a": 1
+  },
+  {
+    "q": "Which of these is a characteristic of 'Epic' poetry?",
+    "options": ["Domestic issues", "Short stanzas", "Heroes of national importance", "Mocking tone"],
+    "a": 2
+  },
+  {
+    "q": "In 'The Life Changer', who is the 'Quiet One'?",
+    "options": ["Salma", "Teniola", "Ummi", "Bint"],
+    "a": 1
+  },
+  {
+    "q": "A work that uses humor to criticize stupidity is _____.",
+    "options": ["Tragedy", "Satire", "Biography", "Romance"],
+    "a": 1
+  },
+  {
+    "q": "The 'theme' of a book is _____.",
+    "options": ["Name of character", "Central idea or message", "Location", "List of chapters"],
+    "a": 1
+  },
+  {
+    "q": "Which of these is a 'Metaphor'?",
+    "options": ["Strong as a lion", "He is a lion in battle", "Lion roared", "Lion, oh Lion!"],
+    "a": 1
+  },
+  {
+    "q": "In 'The Lion and the Jewel', Lakunle is best described as a _____.",
+    "options": ["Modernized African", "Traditionalist", "Warrior hero", "Rich merchant"],
+    "a": 0
+  },
+  {
+    "q": "The term 'Denouement' refers to _____.",
+    "options": ["Beginning", "Final resolution of plot", "Tragic flaw", "Highest point"],
+    "a": 1
+  },
+  {
+    "q": "In 'The Life Changer', what is the significance of the title?",
+    "options": ["New technology", "University admission changes life", "Name of a car", "Political revolution"],
+    "a": 1
+  },
+  {
+    "q": "A 'Terza Rima' stanza form consists of _____.",
+    "options": ["Couplets", "Interlocking three-line stanzas", "Non-rhyming quatrains", "Six-line stanzas"],
+    "a": 1
+  },
+  {
+    "q": "Who is the 'Antagonist' in 'Second Class Citizen'?",
+    "options": ["Adah", "Francis", "Vicky", "Gentry family"],
+    "a": 1
+  },
+  {
+    "q": "An 'Elegy' is a poem written to _____.",
+    "options": ["Celebrate wedding", "Mourn the death of someone", "Explain science", "Tell animal story"],
+    "a": 1
+  },
+  {
+    "q": "In 'The Lion and the Jewel', Sidi's pride comes from _____.",
+    "options": ["Rich family", "Education", "Photographs in a magazine", "Weaving skill"],
+    "a": 2
+  },
+  {
+    "q": "A 'Metonymy' is a figure of speech in which _____.",
+    "options": ["Part represents whole", "Object called by name of associated thing", "Human traits to animals", "Opposites paired"],
+    "a": 1
+  }
+]
