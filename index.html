@@ -3,114 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSA JAMB PRACTICES APP</title>
+    <title>FSA JAMB PRACTICE APP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { background-color: #0f111a; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        :root { --primary-blue: #2e3075; --dark-bg: #0f111a; --card-bg: #1e1f2b; }
+        body { background-color: var(--dark-bg); color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         .app-container { min-height: 100vh; padding-bottom: 80px; }
-        .app-section { display: none; padding: 20px; }
+        .app-section { display: none; padding: 20px; animation: fadeIn 0.3s ease-in; }
         #dashboard-view { display: block; }
-        .header-box { padding: 25px 20px; background-color: #2e3075; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-        .section-title { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin: 20px 0 10px; }
-        .subject-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
-        .mini-card { min-width: 140px; padding: 12px; background: #161722; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Header & Cards */
+        .header-box { padding: 30px 20px; background-color: var(--primary-blue); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; margin-bottom: 20px; }
+        .subject-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 10px; }
+        .mini-card { min-width: 140px; padding: 15px; background: #161722; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .quick-card { height: 100px; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; border: none; }
+        .quick-card { height: 110px; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; border: none; transition: transform 0.2s; }
+        .quick-card:active { transform: scale(0.95); }
+
+        /* Exam Hall Styles */
+        .progress { height: 6px; background: #161722; border-radius: 10px; margin-bottom: 15px; }
+        .passage-box { background: #252736; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #0d6efd; font-size: 0.9rem; max-height: 250px; overflow-y: auto; color: #cfd1d8; }
+        .question-box { background: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .option-btn { background: #161722; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 12px; width: 100%; text-align: left; color: white; transition: 0.2s; }
+        .option-btn.active { border-color: #0d6efd; background: rgba(13, 110, 253, 0.15); box-shadow: 0 0 10px rgba(13,110,253,0.3); }
+        .option-btn.correct { background: rgba(25, 135, 84, 0.3) !important; border-color: #198754 !important; }
+        .option-btn.wrong { background: rgba(220, 53, 69, 0.3) !important; border-color: #dc3545 !important; }
+
+        /* Navigation */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--primary-blue); display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1000; }
+        .nav-link { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.7rem; text-align: center; cursor: pointer; }
+        .nav-link.active { color: white; }
+        
+        /* Gradients */
         .bg-purple { background: linear-gradient(135deg, #6259a8, #4c4485); }
         .bg-orange { background: linear-gradient(135deg, #bc743c, #9e5d2d); }
         .bg-teal { background: linear-gradient(135deg, #1d9086, #146e66); }
         .bg-grey { background: linear-gradient(135deg, #5b757b, #465a5f); }
-        .subject-select-card { background: #1e1f2b; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; }
-        .passage-box { background: #252736; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #0d6efd; font-size: 0.85rem; display: none; max-height: 200px; overflow-y: auto; color: #cfd1d8; }
-        .question-box { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .option-btn { background: #161722; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; width: 100%; text-align: left; color: white; transition: 0.2s; cursor: pointer; }
-        .option-btn.active { border-color: #0d6efd; background: rgba(13, 110, 253, 0.2); }
-        .option-btn.correct { background: rgba(25, 135, 84, 0.3) !important; border-color: #198754 !important; }
-        .option-btn.wrong { background: rgba(220, 53, 69, 0.3) !important; border-color: #dc3545 !important; }
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #2e3075; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1000; }
-        .nav-link { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.65rem; text-align: center; cursor: pointer; }
-        .nav-link.active { color: white; }
     </style>
 </head>
 <body>
+
 <div class="app-container">
     <div id="dashboard-view" class="app-section">
         <div class="header-box">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle" style="width: 45px; height: 45px; background: #5c5ed3; display: flex; align-items: center; justify-content: center;"><i class="fas fa-user"></i></div>
-                    <div><h6 class="mb-0 fw-bold">Hello candidate👋</h6><small style="opacity: 0.7; font-size: 0.7rem;">JAMB Success Awaits</small></div>
-                </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-primary p-3"><i class="fas fa-user"></i></div>
+                <div><h5 class="mb-0 fw-bold">JAMB Candidate</h5><small class="opacity-75">Ready to excel?</small></div>
             </div>
         </div>
-        <div class="px-3">
-            <div class="section-title"><i class="fas fa-fire text-danger"></i> My Subjects</div>
+        <div class="px-2">
+            <h6 class="fw-bold mb-3 px-2"><i class="fas fa-book-open text-warning me-2"></i>Available Subjects</h6>
             <div id="horizontal-list" class="subject-scroll"></div>
-            <div class="section-title"><i class="fas fa-rocket text-primary"></i> Quick access</div>
+            
+            <h6 class="fw-bold mt-4 mb-3 px-2"><i class="fas fa-rocket text-info me-2"></i>Quick Menu</h6>
             <div class="grid-container">
-                <div class="quick-card bg-purple" onclick="showSection('practice-view')"><i class="fas fa-desktop"></i><span>Practice CBT</span></div>
-                <div class="quick-card bg-orange"><i class="fas fa-file-alt"></i><span>Notes</span></div>
-                <div class="quick-card bg-teal"><i class="fas fa-book"></i><span>Literary</span></div>
-                <div class="quick-card bg-grey"><i class="fas fa-archive"></i><span>Syllabus</span></div>
+                <div class="quick-card bg-purple" onclick="showSection('practice-view')"><i class="fas fa-desktop fs-4"></i><span>Practice CBT</span></div>
+                <div class="quick-card bg-orange"><i class="fas fa-file-signature fs-4"></i><span>Mock Exam</span></div>
+                <div class="quick-card bg-teal"><i class="fas fa-history fs-4"></i><span>History</span></div>
+                <div class="quick-card bg-grey"><i class="fas fa-cog fs-4"></i><span>Settings</span></div>
             </div>
         </div>
     </div>
 
     <div id="practice-view" class="app-section">
         <div class="d-flex align-items-center mb-4">
-            <button class="btn text-white p-0 me-3" onclick="showSection('dashboard-view')"><i class="fas fa-arrow-left fs-4"></i></button>
-            <h4 class="fw-bold mb-0">Select Subject</h4>
+            <button class="btn text-white me-2" onclick="showSection('dashboard-view')"><i class="fas fa-chevron-left"></i></button>
+            <h4 class="mb-0 fw-bold">Select Subject</h4>
         </div>
-        <div id="practice-subject-grid" class="grid-container mb-4"></div>
+        <div id="practice-subject-grid" class="grid-container"></div>
     </div>
 
     <div id="exam-hall-view" class="app-section">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 id="exam-subject-title" class="fw-bold mb-0 text-primary">Subject</h5>
-            <div class="badge bg-danger p-2" id="exam-timer">02:00:00</div>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 id="exam-subject-title" class="fw-bold text-info mb-0">Subject</h6>
+            <div class="badge bg-danger fs-6" id="exam-timer">02:00:00</div>
         </div>
-        <div id="passage-container" class="passage-box"></div>
+        
+        <div class="progress">
+            <div id="exam-progress" class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
+        </div>
+
+        <div id="passage-container" class="passage-box" style="display:none;"></div>
+        
         <div class="question-box">
-            <span class="badge bg-dark mb-2" id="q-counter">Question 1</span>
-            <p id="question-text">Loading...</p>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="badge bg-dark" id="q-counter">Q1</span>
+                <i class="fas fa-calculator text-secondary" style="cursor:pointer;" onclick="alert('Calculator feature coming soon!')"></i>
+            </div>
+            <p id="question-text" class="mb-0" style="line-height: 1.6;">Loading question...</p>
         </div>
+
         <div id="options-container">
-            <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text"></span></button>
-            <button class="option-btn" onclick="selectOption(this)">B. <span class="opt-text"></span></button>
-            <button class="option-btn" onclick="selectOption(this)">C. <span class="opt-text"></span></button>
-            <button class="option-btn" onclick="selectOption(this)">D. <span class="opt-text"></span></button>
+            <button class="option-btn" onclick="handleOptionSelection(0)">A. <span class="opt-text"></span></button>
+            <button class="option-btn" onclick="handleOptionSelection(1)">B. <span class="opt-text"></span></button>
+            <button class="option-btn" onclick="handleOptionSelection(2)">C. <span class="opt-text"></span></button>
+            <button class="option-btn" onclick="handleOptionSelection(3)">D. <span class="opt-text"></span></button>
         </div>
+
         <div class="d-flex justify-content-between mt-4">
-            <button class="btn btn-outline-light rounded-pill px-4" onclick="prevQuestion()">Prev</button>
-            <button class="btn btn-success rounded-pill px-4" id="submit-btn" onclick="submitExam()">Submit</button>
-            <button class="btn btn-outline-light rounded-pill px-4" onclick="nextQuestion()">Next</button>
+            <button class="btn btn-outline-light px-4" onclick="prevQuestion()"><i class="fas fa-arrow-left me-2"></i>Prev</button>
+            <button class="btn btn-success px-4 fw-bold" id="submit-btn" onclick="submitExam()">Submit</button>
+            <button class="btn btn-outline-light px-4" onclick="nextQuestion()">Next<i class="fas fa-arrow-right ms-2"></i></button>
         </div>
     </div>
 
     <div id="result-view" class="app-section text-center">
-        <div id="pdf-content" style="padding: 20px; border-radius: 15px;">
-            <div class="py-5">
-                <i class="fas fa-trophy text-warning" style="font-size: 4rem;"></i>
-                <h2 class="mt-3 fw-bold">Score Report</h2>
-                <h5 id="result-subject-name" class="text-primary">Subject</h5>
-                <div class="display-4 fw-bold my-3" id="final-score" style="color:#0d6efd">0 / 0</div>
-                <p id="result-date" style="font-size: 0.8rem; opacity: 0.7;"></p>
-            </div>
+        <div id="pdf-content" class="py-4 rounded shadow">
+            <i class="fas fa-award text-warning" style="font-size: 5rem;"></i>
+            <h2 class="mt-3 fw-bold">Exam Finished!</h2>
+            <h4 id="result-subject-name" class="text-info">Subject</h4>
+            <div class="display-2 fw-bold my-3" id="final-score" style="color:#0d6efd">0 / 0</div>
+            <p id="result-message" class="px-4 opacity-75"></p>
         </div>
-        <div class="d-grid gap-2 mt-4 px-4">
-            <button class="btn btn-primary rounded-pill py-3" onclick="startReview()">Review Corrections</button>
-            <button class="btn btn-info rounded-pill py-3 text-white" onclick="downloadPDF()">Save Result (PDF)</button>
-            <button class="btn btn-outline-info rounded-pill py-3" id="retake-btn">Retake Exam</button>
-            <button class="btn btn-outline-light rounded-pill py-3" onclick="location.reload()">Back to Home</button>
+        <div class="d-grid gap-2 mt-4 px-3">
+            <button class="btn btn-primary btn-lg rounded-pill" onclick="startReview()">Review Corrections</button>
+            <button class="btn btn-outline-info rounded-pill" onclick="downloadPDF()">Download Result</button>
+            <button class="btn btn-outline-light rounded-pill" onclick="location.reload()">Back to Home</button>
         </div>
     </div>
 
     <div class="nav-bottom">
-        <a class="nav-link active" onclick="showSection('dashboard-view')"><i class="fas fa-home d-block"></i>Home</a>
-        <a class="nav-link"><i class="fas fa-trophy d-block"></i>Rank</a>
-        <a class="nav-link"><i class="fas fa-user d-block"></i>Profile</a>
+        <a class="nav-link active" onclick="showSection('dashboard-view')"><i class="fas fa-home d-block fs-5 mb-1"></i>Home</a>
+        <a class="nav-link"><i class="fas fa-chart-bar d-block fs-5 mb-1"></i>Stats</a>
+        <a class="nav-link"><i class="fas fa-user-circle d-block fs-5 mb-1"></i>Profile</a>
     </div>
 </div>
 
@@ -121,17 +139,12 @@
         { id: "Physics", file: "physics.json", icon: "fas fa-broadcast-tower", color: "#3b7d4f" },
         { id: "Chemistry", file: "chemistry.json", icon: "fas fa-flask", color: "#bc743c" },
         { id: "Biology", file: "biology.json", icon: "fas fa-lungs", color: "#bc743c" },
-        { id: "Government", file: "government.json", icon: "fas fa-landmark", color: "#8a2be2" },
-        { id: "Economics", file: "economics.json", icon: "fas fa-chart-line", color: "#1d9086" },
-        { id: "Financial Accounting", file: "accounting.json", icon: "fas fa-balance-scale", color: "#1d9086" },
-        { id: "Literature-In-English", file: "literature.json", icon: "fas fa-book-open", color: "#8a2be2" },
-        { id: "Commerce", file: "commerce.json", icon: "fas fa-shopping-cart", color: "#bc743c" },
-        { id: "CRS", file: "crk.json", icon: "fas fa-cross", color: "#1d9086" }
+        { id: "Government", file: "government.json", icon: "fas fa-landmark", color: "#8a2be2" }
     ];
 
     let currentQuestions = [];
     let currentQuestionIndex = 0;
-    let examTimer = null;
+    let timerInterval = null;
     let timeLeft = 120 * 60; 
     let userSelections = {}; 
     let isReviewMode = false;
@@ -140,120 +153,139 @@
 
     function showSection(id) {
         document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
-        const target = document.getElementById(id);
-        if(target) target.style.display = 'block';
+        document.getElementById(id).style.display = 'block';
+        if(id === 'practice-view') renderPracticeGrid();
         window.scrollTo(0,0);
-        if(id === 'practice-view') setupPracticeSelection();
     }
 
-    function setupPracticeSelection() {
+    function renderPracticeGrid() {
         const grid = document.getElementById('practice-subject-grid');
         grid.innerHTML = allSubjects.map(s => `
-            <div class="subject-select-card" onclick="startExam('${s.id}')">
-                <i class="${s.icon} mb-2" style="color:${s.color}; font-size: 1.2rem;"></i><br>
-                <span style="font-size:0.75rem">${s.id}</span>
+            <div class="mini-card text-center" style="cursor:pointer; border-bottom: 3px solid ${s.color}" onclick="startExam('${s.id}')">
+                <i class="${s.icon} mb-2 fs-3" style="color:${s.color}"></i>
+                <div style="font-size:0.8rem; font-weight:600">${s.id}</div>
             </div>`).join('');
     }
 
     async function startExam(subjectId) {
         lastActiveSubject = subjectId;
-        const subjObj = allSubjects.find(s => s.id === subjectId);
+        const subj = allSubjects.find(s => s.id === subjectId);
         showSection('exam-hall-view');
-        document.getElementById('question-text').innerText = "Loading Questions...";
-
+        
         try {
-            const res = await fetch(subjObj.file + '?v=' + Date.now());
+            const res = await fetch(subj.file + '?v=' + Date.now());
             const data = await res.json();
-            activePassage = data.find(item => item.p)?.p || "";
-            currentQuestions = data.filter(item => item.q);
+            
+            // Critical Fix: Handle different JSON formats (some use .q, some .question)
+            currentQuestions = data.filter(item => item.q || item.question);
+            activePassage = data.find(item => item.p || item.passage)?.p || "";
             
             if(currentQuestions.length > 0) {
                 currentQuestionIndex = 0;
-                isReviewMode = false;
                 userSelections = {};
-                document.getElementById('submit-btn').innerText = "Submit";
-                document.getElementById('submit-btn').onclick = () => submitExam();
+                isReviewMode = false;
                 document.getElementById('exam-subject-title').innerText = subjectId;
+                document.getElementById('submit-btn').innerHTML = "Submit";
                 loadQuestion();
                 startTimer();
+            } else {
+                throw new Error("No questions found");
             }
-        } catch(e) { 
-            alert("Error loading data.");
+        } catch(e) {
+            alert("Error loading " + subjectId + ". Ensure the JSON file exists on your server.");
             showSection('dashboard-view');
         }
     }
 
     function startTimer() {
-        clearInterval(examTimer);
-        timeLeft = 120 * 60; 
-        examTimer = setInterval(() => {
+        clearInterval(timerInterval);
+        timeLeft = 120 * 60;
+        timerInterval = setInterval(() => {
             timeLeft--;
-            let hrs = Math.floor(timeLeft / 3600);
-            let mins = Math.floor((timeLeft % 3600) / 60);
-            let secs = timeLeft % 60;
-            document.getElementById('exam-timer').innerText = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-            if(timeLeft <= 0) submitExam(true);
+            let h = Math.floor(timeLeft / 3600);
+            let m = Math.floor((timeLeft % 3600) / 60);
+            let s = timeLeft % 60;
+            document.getElementById('exam-timer').innerText = 
+                `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            if(timeLeft <= 0) { clearInterval(timerInterval); submitExam(true); }
         }, 1000);
     }
 
     function loadQuestion() {
         const qData = currentQuestions[currentQuestionIndex];
         const pCont = document.getElementById('passage-container');
+        
+        // Show passage only if it exists and for first 10 questions (standard JAMB style)
         if(activePassage && currentQuestionIndex < 10) {
-            pCont.innerHTML = `<strong>Passage:</strong><br>${activePassage}`;
+            pCont.innerHTML = `<strong>Passage:</strong><br><small>${activePassage}</small>`;
             pCont.style.display = "block";
         } else {
             pCont.style.display = "none";
         }
-        document.getElementById('question-text').innerHTML = qData.q;
-        document.getElementById('q-counter').innerText = `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
-        const opts = document.querySelectorAll('.opt-text');
+
+        // Handle inconsistent JSON keys (q vs question)
+        document.getElementById('question-text').innerHTML = qData.q || qData.question;
+        document.getElementById('q-counter').innerText = `Question ${currentQuestionIndex + 1}/${currentQuestions.length}`;
+        
+        // Progress bar
+        const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+        document.getElementById('exam-progress').style.width = progress + '%';
+
         const btns = document.querySelectorAll('.option-btn');
+        const optsTexts = document.querySelectorAll('.opt-text');
         const letters = ['a', 'b', 'c', 'd'];
+
         btns.forEach((btn, i) => {
-            btn.className = "option-btn"; 
-            opts[i].innerText = (qData.options && qData.options[i]) ? qData.options[i] : "";
-            if(!isReviewMode && userSelections[currentQuestionIndex] === letters[i]) btn.classList.add('active');
+            btn.className = "option-btn";
+            const optValue = qData.options ? qData.options[i] : (qData['option' + letters[i].toUpperCase()] || "");
+            optsTexts[i].innerText = optValue;
+
+            if(!isReviewMode && userSelections[currentQuestionIndex] === letters[i]) {
+                btn.classList.add('active');
+            }
+
             if(isReviewMode) {
-                const correctLetter = (qData.answer || qData.a || "").toLowerCase().trim();
-                const userLetter = userSelections[currentQuestionIndex];
-                if(letters[i] === correctLetter) btn.classList.add('correct');
-                if(userLetter === letters[i] && userLetter !== correctLetter) btn.classList.add('wrong');
+                const correct = (qData.answer || qData.a || "").toLowerCase().trim();
+                const userChoice = userSelections[currentQuestionIndex];
+                if(letters[i] === correct) btn.classList.add('correct');
+                if(userChoice === letters[i] && userChoice !== correct) btn.classList.add('wrong');
             }
         });
     }
 
-    function selectOption(btn) {
+    function handleOptionSelection(idx) {
         if(isReviewMode) return;
-        const btns = Array.from(document.querySelectorAll('.option-btn'));
-        const index = btns.indexOf(btn);
-        userSelections[currentQuestionIndex] = ['a', 'b', 'c', 'd'][index];
-        btns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        const letters = ['a', 'b', 'c', 'd'];
+        userSelections[currentQuestionIndex] = letters[idx];
+        loadQuestion();
     }
 
-    function nextQuestion() { if(currentQuestionIndex < currentQuestions.length-1) { currentQuestionIndex++; loadQuestion(); } }
+    function nextQuestion() { if(currentQuestionIndex < currentQuestions.length - 1) { currentQuestionIndex++; loadQuestion(); } }
     function prevQuestion() { if(currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(); } }
 
-    function submitExam(isAuto = false) {
-        if(!isAuto && !confirm("Do you want to submit?")) return;
-        clearInterval(examTimer);
+    function submitExam(auto = false) {
+        if(!auto && !confirm("Finish and see your result?")) return;
+        clearInterval(timerInterval);
+        
         let score = 0;
-        currentQuestions.forEach((q, i) => { 
-            const correctAns = (q.answer || q.a || "").toLowerCase().trim();
-            if(userSelections[i] === correctAns && userSelections[i] !== "") score++; 
+        currentQuestions.forEach((q, i) => {
+            const correct = (q.answer || q.a || "").toLowerCase().trim();
+            if(userSelections[i] === correct) score++;
         });
+
         document.getElementById('final-score').innerText = `${score} / ${currentQuestions.length}`;
         document.getElementById('result-subject-name').innerText = lastActiveSubject;
-        document.getElementById('result-date').innerText = "Date: " + new Date().toLocaleString();
-        document.getElementById('retake-btn').onclick = () => startExam(lastActiveSubject);
+        
+        const percent = (score / currentQuestions.length) * 100;
+        document.getElementById('result-message').innerText = percent >= 50 ? "Great job! Keep practicing to reach 100%." : "Don't give up. Review your corrections and try again.";
+        
         showSection('result-view');
     }
 
     function startReview() {
         isReviewMode = true;
         currentQuestionIndex = 0;
-        document.getElementById('submit-btn').innerText = "Finish Review";
+        document.getElementById('submit-btn').innerHTML = "<i class='fas fa-home'></i> Home";
         document.getElementById('submit-btn').onclick = () => location.reload();
         showSection('exam-hall-view');
         loadQuestion();
@@ -261,25 +293,18 @@
 
     function downloadPDF() {
         const element = document.getElementById('pdf-content');
-        const opt = {
-            margin: 1,
-            filename: lastActiveSubject + '_Result.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, backgroundColor: '#0f111a' },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
+        html2pdf().from(element).save(`${lastActiveSubject}_Score.pdf`);
     }
 
+    // Init dashboard
     window.onload = () => {
-        document.getElementById('horizontal-list').innerHTML = allSubjects.map(s => `
-            <div class="mini-card" style="border-color:${s.color}">
+        const list = document.getElementById('horizontal-list');
+        list.innerHTML = allSubjects.map(s => `
+            <div class="mini-card d-flex align-items-center gap-2">
                 <i class="${s.icon}" style="color:${s.color}"></i>
-                <span style="font-size:0.7rem">${s.id}</span>
+                <span style="font-size:0.7rem; white-space:nowrap">${s.id}</span>
             </div>`).join('');
     };
 </script>
 </body>
-    </html>
-
-        
+</html>
