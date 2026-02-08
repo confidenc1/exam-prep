@@ -114,6 +114,36 @@ function renderQuestion() {
     
     document.getElementById('current-sub-label').innerText = currentSubject;
     document.getElementById('q-count').innerText = `Question ${currentQIdx + 1} of ${examData[currentSubject].length}`;
+    // 8. SHOW CORRECTIONS (Review Mode)
+function showCorrections() {
+    const area = document.getElementById('correction-area');
+    const list = document.getElementById('correction-list');
+    area.style.display = 'block';
+    list.innerHTML = ''; // Clear previous
+
+    selectedSubjects.forEach(s => {
+        let subHtml = `<h4 class="mt-4 text-primary border-bottom pb-2">${s}</h4>`;
+        examData[s].forEach((q, i) => {
+            const userAns = userAnswers[s][i];
+            const isCorrect = userAns === q.a;
+            
+            subHtml += `
+                <div class="p-3 mb-2 rounded ${isCorrect ? 'bg-light-success' : 'bg-light-danger'}" 
+                     style="border-left: 5px solid ${isCorrect ? '#28a745' : '#dc3545'}; background: ${isCorrect ? '#f0fff4' : '#fff5f5'}">
+                    <p class="mb-1"><strong>Q${i+1}:</strong> ${q.q}</p>
+                    <p class="mb-0 small">
+                        Your Answer: <span class="${isCorrect ? 'text-success' : 'text-danger'}">${userAns !== null ? q.options[userAns] : 'Skipped'}</span><br>
+                        Correct Answer: <span class="text-success fw-bold">${q.options[q.a]}</span>
+                    </p>
+                </div>`;
+        });
+        list.innerHTML += subHtml;
+    });
+    
+    // Scroll to the corrections
+    area.scrollIntoView({ behavior: 'smooth' });
+}
+    
 
     let html = q.p ? `<div class="passage-box p-3 mb-3 bg-light border-start border-4 border-warning">${q.p}</div>` : '';
     html += `<div class="mb-4 fs-5 fw-bold">${q.q}</div>`;
