@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSA JAMB PRO v5.0 - Enhanced</title>
+    <title>FSA JAMB PRO v5.1 - Fixed</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -48,18 +48,17 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
         .pulse { animation: pulse 2s infinite; }
 
-        /* Responsive */
         @media (max-width: 576px) { .tab-item { min-width: 80px; padding: 12px 5px; font-size: 0.9rem; } }
     </style>
 </head>
 <body>
 
 <div class="header d-flex justify-content-between align-items-center shadow-lg">
-    <div class="fw-bold fs-4"><i class="fas fa-graduation-cap me-2"></i>FSA-JAMB v5.0</div>
+    <div class="fw-bold fs-4"><i class="fas fa-graduation-cap me-2"></i>FSA-JAMB v5.1</div>
     <div id="timer" class="badge bg-dark fs-5 px-3 py-2 shadow">02:00:00</div>
     <div>
         <button class="btn btn-sm btn-warning me-1 fw-bold" onclick="toggleCalc()"><i class="fas fa-calculator"></i></button>
-        <button class="btn btn-sm btn-info fw-bold" onclick="toggleReview()"><i class="fas fa-flag" id="review-icon"></i></button>
+        <button class="btn btn-sm btn-info fw-bold me-1" onclick="toggleReview()" id="review-btn"><i class="fas fa-flag" id="review-icon"></i></button>
     </div>
 </div>
 
@@ -146,27 +145,6 @@
 
 <button class="fab" onclick="toggleHelp()" title="Help & Tips"><i class="fas fa-question-circle"></i></button>
 
-<!-- Help Modal -->
-<div class="modal fade" id="helpModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="fas fa-lightbulb me-2"></i>JAMB Tips</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <ul class="list-unstyled">
-                    <li class="mb-3 p-3 border rounded"><strong>⏰ Time Mgmt:</strong> 2hrs for 180Q (~40s/Q)</li>
-                    <li class="mb-3 p-3 border rounded"><strong>📱 Mobile Optimized:</strong> Pinch-zoom disabled for CBT feel</li>
-                    <li class="mb-3 p-3 border rounded"><strong>🚩 Flag Questions:</strong> Tap flag icon to mark for review</li>
-                    <li class="mb-3 p-3 border rounded"><strong>📊 Progress:</strong> Track unanswered (yellow flags)</li>
-                    <li class="mb-3 p-3 border rounded"><strong>💾 Offline:</strong> Add *.json files for subjects</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const allSubs = [
@@ -175,14 +153,7 @@
         {id:"Crk", icon:"📖"}, {id:"Economics", icon:"📈"}, {id:"Commerce", icon:"🛒"}, {id:"Accounting", icon:"💼"}
     ];
     let selected = ["English"], examData = {}, activeSub = "English", activeIdx = 0, userAns = {}, 
-        reviewMode = false, timerInterval, timeLeft = 7200, flagged = {}, bootstrap;
-
-    // Init Bootstrap
-    document.addEventListener('DOMContentLoaded', function() {
-        bootstrap = window.bootstrap || { Modal: function(){} };
-        init();
-        document.getElementById('helpModal').addEventListener('show.bs.modal', toggleHelp);
-    });
+        reviewMode = false, timerInterval, timeLeft = 7200, flagged = {};
 
     function init() {
         const grid = document.getElementById('subject-grid');
@@ -222,17 +193,21 @@
                 flagged[s] = new Array(examData[s].length).fill(false);
             } catch(e) { 
                 alert(`Error: ${s.toLowerCase()}.json not found! Create it with 50+ JAMB questions.`);
-                btn.innerHTML = 'START EXAMINATION';
+                btn.innerHTML = '<i class="fas fa-play-circle me-2"></i>START EXAMINATION';
                 btn.disabled = false;
+                btn.classList.add('pulse');
                 return; 
             }
         }
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('exam-screen').style.display = 'block';
-        document.getElementById('tab-container').innerHTML = selected.map(s => 
-            `<div class="tab-item active" id="tab-${s}" onclick="switchTab('${s}')"><i class="fas fa-book me-1"></i>${s}</div>`).join('');
+        document.getElementById('tab-container').innerHTML = selected.map((s, i) => 
+            `<div class="tab-item ${i===0?'active':''}" id="tab-${s}" onclick="switchTab('${s}')"><i class="fas fa-book me-1"></i>${s}</div>`).join('');
         switchTab("English");
         startTimer(7200);
+        btn.innerHTML = '<i class="fas fa-play-circle me-2"></i>START EXAMINATION';
+        btn.disabled = false;
+        btn.classList.remove('pulse');
     }
 
     function switchTab(sName) {
@@ -273,11 +248,6 @@
         render(); 
     }
 
-    function toggleFlag() {
-        flagged[activeSub][activeIdx] = !flagged[activeSub][activeIdx];
-        render();
-    }
-
     function moveQ(d) { 
         const newIdx = activeIdx + d;
         if (newIdx >= 0 && newIdx < examData[activeSub].length) { 
@@ -287,32 +257,59 @@
     }
 
     function toggleReview() {
-        reviewMode = !reviewMode;
-        document.getElementById('review-icon').className = reviewMode ? 'fas fa-eye-slash' : 'fas fa-flag';
-        // Scroll to first flagged/unanswered
-        if (reviewMode) {
-            for (let i = 0; i < examData[activeSub].length; i++) {
-                if (userAns[activeSub][i] === null || flagged[activeSub][i]) {
-                    activeIdx = i;
-                    render();
-                    break;
-                }
+        const firstUnanswered = [];
+        for (let i = 0; i < examData[activeSub].length; i++) {
+            if (userAns[activeSub][i] === null || flagged[activeSub][i]) {
+                firstUnanswered.push(i);
             }
+        }
+        if (firstUnanswered.length > 0) {
+            activeIdx = firstUnanswered[0];
+            render();
+        } else {
+            alert('All questions answered!');
         }
     }
 
     function finish() {
         if (!confirm("Submit exam? Answers can't be changed!")) return;
         clearInterval(timerInterval);
-        let grandTotal = 0, totalQs = 0, report = '', statusClass = 'orange';
+        let grandTotal = 0, report = '', statusClass = 'orange';
         selected.forEach(s => {
             let score = 0, subQs = examData[s].length;
             examData[s].forEach((q, i) => { if (userAns[s][i] === q.a) score++; });
             const p = Math.round((score / subQs) * 100);
             grandTotal += p;
-            totalQs += subQs;
             const subStatus = p >= 80 ? 'gold' : p >= 60 ? 'green' : 'orange';
             report += `
                 <div class="row align-items-center mb-4 p-3 rounded shadow-sm bg-light">
                     <div class="col-8"><i class="fas fa-${getIcon(s)} text-primary me-2"></i><strong>${s}</strong></div>
-                    <
+                    <div class="col-4 text-end">
+                        <div class="h5 fw-bold text-${subStatus === 'gold' ? 'warning' : subStatus}">${score}/${subQs}</div>
+                        <small class="text-muted">${p}%</small>
+                    </div>
+                </div>`;
+        });
+        grandTotal = Math.round(grandTotal / selected.length);
+        document.getElementById('total-score').innerText = grandTotal;
+        document.getElementById('total-score').className = `score-circle ${grandTotal >= 280 ? 'gold' : grandTotal >= 220 ? 'green' : grandTotal >= 180 ? 'orange' : 'red'}`;
+        
+        let msg = grandTotal >= 280 ? "🏆 Medicine/Law Unlocked! Elite Score!" : 
+                  grandTotal >= 220 ? "✅ Competitive Score! Top Universities!" : 
+                  grandTotal >= 180 ? "📈 Good Effort! More Practice Needed" : "💪 Keep Practicing! You're Getting There!";
+        document.getElementById('status-msg').innerHTML = msg;
+        document.getElementById('breakdown').innerHTML = report;
+
+        document.getElementById('exam-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+    }
+
+    function reviewMode() {
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('exam-screen').style.display = 'block';
+    }
+
+    function startTimer(t) {
+        timeLeft = t;
+        timerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
