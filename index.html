@@ -36,12 +36,6 @@
         .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
         .subject-card { background: var(--card); border: 2px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px 15px; text-align: center; cursor: pointer; transition: 0.3s; }
         .subject-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-
-        #calc-modal {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            z-index: 3000; background: #1e1f2b; border: 2px solid var(--primary); 
-            border-radius: 15px; padding: 15px; width: 280px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
     </style>
 </head>
 <body>
@@ -66,7 +60,7 @@
         <div class="navbar-top">
             <div id="subjects-nav" class="d-flex gap-2"></div>
             <div class="d-flex align-items-center gap-3">
-                <i class="fas fa-calculator fs-4" style="cursor: pointer;" onclick="toggleCalc()"></i>
+                <i class="fas fa-calculator fs-4"></i>
                 <span id="exam-timer" class="badge bg-light text-dark fs-6">02:00:00</span>
                 <button class="btn btn-sm btn-light" onclick="submitExam(true)">End Exam</button>
             </div>
@@ -88,32 +82,6 @@
             <button class="btn btn-outline-light rounded-pill px-5 py-2" onclick="prevQuestion()"><i class="fas fa-chevron-left"></i> Prev</button>
             <button class="btn btn-success rounded-pill px-5 py-2" onclick="submitExam()">Submit All</button>
             <button class="btn btn-outline-light rounded-pill px-5 py-2" onclick="nextQuestion()">Next <i class="fas fa-chevron-right"></i></button>
-        </div>
-    </div>
-
-    <div id="calc-modal">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-bold text-primary">Calculator</span>
-            <button class="btn-close btn-close-white" onclick="toggleCalc()"></button>
-        </div>
-        <input type="text" id="calc-display" class="form-control mb-2 text-end bg-dark text-white border-0 fs-4" value="0" readonly>
-        <div class="row g-1">
-            <div class="col-3"><button class="btn btn-danger w-100 py-2" onclick="clearCalc()">C</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 py-2" onclick="pressCalc('/')">/</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 py-2" onclick="pressCalc('*')">×</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 py-2" onclick="pressCalc('-')">-</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('7')">7</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('8')">8</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('9')">9</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 py-2" onclick="pressCalc('+')">+</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('4')">4</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('5')">5</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('6')">6</button></div>
-            <div class="col-3"><button class="btn btn-primary w-100 py-2" onclick="solveCalc()">=</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('1')">1</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('2')">2</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('3')">3</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('0')">0</button></div>
         </div>
     </div>
 
@@ -145,37 +113,12 @@
         <a class="nav-link active" onclick="showSection('dashboard-view')"><i class="fas fa-home d-block fs-2"></i><span>Home</span></a>
         <a class="nav-link" onclick="showSection('stats-view')"><i class="fas fa-chart-line d-block fs-2"></i><span>Stats</span></a>
         <a class="nav-link"><i class="fas fa-trophy d-block fs-2"></i><span>Rank</span></a>
+        <a class="nav-link"><i class="fas fa-cog d-block fs-2"></i><span>Settings</span></a>
     </div>
 </div>
 
 <script>
-    // THE MASTER SUBJECT DATA (Put your questions here)
-    const subjectQuestions = {
-        "mathematics": [
-            {"q": "Solve for x: 3x - 7 = 14", "options": ["5", "7", "9", "21"], "answer": "b", "exp": "3x = 14+7; 3x=21; x=7."},
-            {"q": "Find the area of a circle with radius 7cm (Take π = 22/7)", "options": ["44cm²", "154cm²", "144cm²", "49cm²"], "answer": "b", "exp": "Area = πr² = (22/7)*7*7 = 154."}
-        ],
-        "english": [
-            {"q": "Choose the correctly spelled word", "options": ["Accomodation", "Accommodation", "Acomodation", "Accomodasion"], "answer": "b", "exp": "Accommodation has double 'c' and double 'm'."},
-            {"q": "The boy ____ his book on the table yesterday.", "options": ["lay", "laid", "lied", "lain"], "answer": "b", "exp": "Past tense of 'lay' is 'laid'."}
-        ],
-        "biology": [
-            {"q": "Which of these is the powerhouse of the cell?", "options": ["Nucleus", "Ribosome", "Mitochondria", "Vacuole"], "answer": "c", "exp": "Mitochondria generates ATP for the cell."}
-        ],
-        "chemistry": [
-            {"q": "What is the atomic number of Oxygen?", "options": ["6", "7", "8", "9"], "answer": "c", "exp": "Oxygen is the 8th element in the periodic table."}
-        ],
-        "physics": [
-            {"q": "What is the unit of Force?", "options": ["Watt", "Joule", "Newton", "Pascal"], "answer": "c", "exp": "Force is measured in Newtons (N)."}
-        ],
-        "accounting": [{"q": "Asset - Liabilities =", "options": ["Capital", "Income", "Loss", "Debit"], "answer": "a", "exp": "Accounting equation: Capital = Assets - Liabilities."}],
-        "commerce": [{"q": "Trade between two countries is called?", "options": ["Home trade", "Retail trade", "International trade", "Wholesale"], "answer": "c", "exp": "Foreign or International trade occurs between nations."}],
-        "economics": [{"q": "The basic problem of Economics is?", "options": ["Money", "Scarcity", "Inflation", "Wealth"], "answer": "b", "exp": "Scarcity is the fundamental economic problem."}],
-        "government": [{"q": "A system of government by the few is?", "options": ["Democracy", "Oligarchy", "Monarchy", "Autocracy"], "answer": "b", "exp": "Oligarchy is rule by a small group of people."}],
-        "literature": [{"q": "The person who writes a play is a?", "options": ["Poet", "Novelist", "Playwright", "Author"], "answer": "c", "exp": "A playwright is the creator of dramatic works."}],
-        "crk": [{"q": "Who led the Israelites out of Egypt?", "options": ["Joshua", "Aaron", "Moses", "Joseph"], "answer": "c", "exp": "God used Moses to lead the Exodus."}]
-    };
-
+    // List of subjects based on your GitHub file structure
     const allSubjects = [
         { id: "accounting", name: "Accounting", icon: "fas fa-file-invoice-dollar", color: "#4caf50" },
         { id: "biology", name: "Biology", icon: "fas fa-dna", color: "#8bc34a" },
@@ -202,31 +145,6 @@
         document.addEventListener('keydown', handleKeys);
     }
 
-    /* Calculator */
-    let calcStr = "0";
-    function toggleCalc() {
-        const m = document.getElementById('calc-modal');
-        m.style.display = m.style.display === 'block' ? 'none' : 'block';
-    }
-    function pressCalc(v) {
-        if (calcStr === "0") calcStr = v;
-        else calcStr += v;
-        document.getElementById('calc-display').value = calcStr;
-    }
-    function clearCalc() {
-        calcStr = "0";
-        document.getElementById('calc-display').value = calcStr;
-    }
-    function solveCalc() {
-        try {
-            calcStr = String(eval(calcStr));
-            document.getElementById('calc-display').value = calcStr;
-        } catch(e) {
-            document.getElementById('calc-display').value = "Error";
-            calcStr = "0";
-        }
-    }
-
     function populateSubjects() {
         document.getElementById('subject-grid').innerHTML = allSubjects.map(s => `
             <div class="subject-card" onclick="startExam('${s.id}')">
@@ -236,25 +154,35 @@
         `).join('');
     }
 
-    function startExam(subjectId) {
-        // Load from our built-in object instead of fetching external files
-        if (subjectQuestions[subjectId]) {
-            currentQuestions = subjectQuestions[subjectId];
+    async function startExam(subjectId) {
+        try {
+            // Fetch questions from the specific JSON file in your repo
+            const response = await fetch(`${subjectId}.json`);
+            if (!response.ok) throw new Error('Subject file not found');
+            
+            currentQuestions = await response.json();
             const subjectObj = allSubjects.find(s => s.id === subjectId);
             currentSubject = subjectObj ? subjectObj.name : subjectId;
+
             showSection('exam-hall-view');
             resetExam();
             buildSubjectsNav();
             buildPalette();
             loadQuestion();
             startTimer();
-        } else {
-            alert("No questions available for " + subjectId + " yet.");
+        } catch (error) {
+            alert("Could not load " + subjectId + ".json. Please ensure the file is in the same directory.");
+            console.error(error);
         }
     }
 
-    function resetExam() { currentQuestionIndex = 0; isReviewMode = false; userSelections = {}; flags = {}; timeLeft = 7200; }
+    function resetExam() {
+        currentQuestionIndex = 0; isReviewMode = false; userSelections = {}; flags = {}; timeLeft = 7200;
+        document.querySelectorAll('.palette-btn').forEach(b => b.className = 'palette-btn unanswered');
+    }
+
     function buildSubjectsNav() { document.getElementById('subjects-nav').innerHTML = `<span class="badge bg-primary">${currentSubject}</span>`; }
+
     function buildPalette() {
         const palette = document.getElementById('question-palette');
         palette.innerHTML = currentQuestions.map((_, i) => `<button class="palette-btn unanswered" onclick="goToQuestion(${i})">${i+1}</button>`).join('');
@@ -279,23 +207,31 @@
         document.getElementById('question-text').innerHTML = q.q;
         document.getElementById('q-counter').innerText = `Q${currentQuestionIndex + 1}/${currentQuestions.length}`;
         const container = document.getElementById('options-container');
+        
         container.innerHTML = q.options.map((opt, i) => {
             const letter = String.fromCharCode(97 + i);
             const isActive = userSelections[currentQuestionIndex] === letter;
-            return `<button class="option-btn ${isActive ? 'active' : ''}" onclick="selectOption(${i}, this)">${letter.toUpperCase()}. ${opt}</button>`;
+            return `<button class="option-btn ${isActive ? 'active' : ''}" 
+                    onclick="selectOption(${i}, this)">${letter.toUpperCase()}. ${opt}</button>`;
         }).join('');
+
         document.getElementById('explanation').style.display = isReviewMode ? 'block' : 'none';
         if (isReviewMode) showExplanation();
         updatePalette();
     }
 
-    function selectOption(index, btn) { if (isReviewMode) return; userSelections[currentQuestionIndex] = String.fromCharCode(97 + index); loadQuestion(); }
+    function selectOption(index, btn) {
+        if (isReviewMode) return;
+        userSelections[currentQuestionIndex] = String.fromCharCode(97 + index);
+        loadQuestion(); 
+    }
 
     function showExplanation() {
         const q = currentQuestions[currentQuestionIndex];
         const correct = (q.answer || '').toLowerCase().trim();
         const user = userSelections[currentQuestionIndex];
-        document.getElementById('exp-text').innerText = q.exp || 'No explanation provided.';
+        document.getElementById('exp-text').innerText = q.exp || 'No explanation provided for this question.';
+        
         setTimeout(() => {
             document.querySelectorAll('.option-btn').forEach((b, i) => {
                 const letter = String.fromCharCode(97 + i);
@@ -307,4 +243,95 @@
 
     function flagQuestion() { flags[currentQuestionIndex] = !flags[currentQuestionIndex]; updatePalette(); }
 
-    function startTimer() 
+    function startTimer() {
+        clearInterval(examTimer);
+        examTimer = setInterval(() => {
+            timeLeft--;
+            const h = Math.floor(timeLeft / 3600), m = Math.floor((timeLeft % 3600)/60), s = timeLeft % 60;
+            document.getElementById('exam-timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            if (timeLeft <= 0) submitExam(true);
+        }, 1000);
+    }
+
+    function nextQuestion() { if (currentQuestionIndex < currentQuestions.length - 1) currentQuestionIndex++; loadQuestion(); }
+    function prevQuestion() { if (currentQuestionIndex > 0) currentQuestionIndex--; loadQuestion(); }
+
+    function submitExam(force = false) {
+        if (!force && !confirm('Submit exam?')) return;
+        clearInterval(examTimer);
+        let score = 0, total = currentQuestions.length;
+        currentQuestions.forEach((q, i) => {
+            if (userSelections[i] === (q.answer || '').toLowerCase().trim()) score++;
+        });
+        const percent = total > 0 ? Math.round((score / total) * 100) : 0;
+        
+        document.getElementById('final-score').textContent = `${percent}%`;
+        document.getElementById('result-subject-name').textContent = currentSubject;
+        document.getElementById('result-stats').textContent = `Correct: ${score}/${total} | Time Used: ${Math.floor((7200 - timeLeft)/60)}m`;
+        
+        scoresHistory.push({subject: currentSubject, score: percent, date: new Date().toLocaleDateString()});
+        localStorage.setItem('jambScores', JSON.stringify(scoresHistory));
+        
+        drawScoreChart(score, total - score);
+        document.getElementById('retake-btn').onclick = () => startExam(allSubjects.find(s => s.name === currentSubject).id);
+        showSection('result-view');
+    }
+
+    function drawScoreChart(correct, wrong) {
+        const canvas = document.getElementById('score-chart');
+        if (window.myChart) window.myChart.destroy();
+        window.myChart = new Chart(canvas.getContext('2d'), {
+            type: 'doughnut',
+            data: { labels: ['Correct', 'Wrong'], datasets: [{ data: [correct, wrong], backgroundColor: ['#198754', '#dc3545'] }] },
+            options: { responsive: true }
+        });
+    }
+
+    function startReview() {
+        isReviewMode = true;
+        showSection('exam-hall-view');
+        currentQuestionIndex = 0;
+        loadQuestion();
+    }
+
+    function loadHistoryChart() {
+        const ctx = document.getElementById('history-chart').getContext('2d');
+        const labels = scoresHistory.slice(-10).map(s => s.subject.substring(0,5));
+        if (window.historyChartInstance) window.historyChartInstance.destroy();
+        window.historyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Score %', data: scoresHistory.slice(-10).map(s => s.score), backgroundColor: '#0d6efd' }] },
+            options: { scales: { y: { beginAtZero: true, max: 100 } } }
+        });
+        document.getElementById('history-list').innerHTML = scoresHistory.slice(-5).reverse().map(s => `
+            <div class="d-flex justify-content-between alert alert-dark py-2 px-3 mb-2" style="font-size:0.85rem">
+                <span>${s.subject}</span><strong>${s.score}%</strong><span>${s.date}</span>
+            </div>
+        `).join('');
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('result-view');
+        html2pdf().from(element).set({ filename: `JAMB_Result_${currentSubject}.pdf` }).save();
+    }
+
+    function showSection(id) {
+        document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+        window.scrollTo(0,0);
+        if (id === 'stats-view') loadHistoryChart();
+    }
+
+    function handleKeys(e) {
+        if (document.getElementById('exam-hall-view').style.display !== 'block') return;
+        const key = e.key.toLowerCase();
+        if (['a','b','c','d'].includes(key)) {
+            const idx = key.charCodeAt(0) - 97;
+            selectOption(idx);
+        } else if (key === 'n') nextQuestion();
+        else if (key === 'p') prevQuestion();
+        else if (key === 's') submitExam();
+    }
+</script>
+</body>
+</html>
