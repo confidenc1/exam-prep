@@ -6,50 +6,35 @@
     <title>FSA JAMB PRACTICES APP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        body { background-color: #2e3075; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
-        .app-container { background-color: #0f111a; min-height: 100vh; padding-bottom: 80px; }
-        .app-section { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        body { background-color: #0f111a; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        .app-container { min-height: 100vh; padding-bottom: 80px; }
+        .app-section { display: none; padding: 20px; }
         #dashboard-view { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Dashboard Styles */
         .header-box { padding: 25px 20px; background-color: #2e3075; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
         .section-title { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin: 20px 0 10px; }
         .subject-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
-        .subject-scroll::-webkit-scrollbar { display: none; }
         .mini-card { min-width: 140px; padding: 12px; background: #161722; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
-        
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .quick-card { height: 100px; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
+        .quick-card { height: 100px; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; border: none; }
         .bg-purple { background: linear-gradient(135deg, #6259a8, #4c4485); }
         .bg-orange { background: linear-gradient(135deg, #bc743c, #9e5d2d); }
         .bg-teal { background: linear-gradient(135deg, #1d9086, #146e66); }
         .bg-grey { background: linear-gradient(135deg, #5b757b, #465a5f); }
-
-        /* Exam Selection Styles */
         .subject-select-card { background: #1e1f2b; border: 2px solid transparent; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
         .subject-select-card.selected { border-color: #0d6efd; background: rgba(13, 110, 253, 0.1); }
-        
-        /* Exam Hall Styles */
-        .question-box { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 20px; min-height: 150px; border: 1px solid rgba(255,255,255,0.1); }
+        .question-box { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 20px; min-height: 120px; border: 1px solid rgba(255,255,255,0.1); }
         .option-btn { background: #161722; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; width: 100%; text-align: left; color: white; transition: 0.2s; }
-        .option-btn:active { background: #2e3075; }
         .option-btn.active { border-color: #0d6efd; background: rgba(13, 110, 253, 0.2); }
-
-        /* Navigation */
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #2e3075; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1000; }
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #2e3075; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; }
         .nav-link { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.65rem; text-align: center; }
         .nav-link.active { color: white; }
         .nav-link i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
     </style>
 </head>
 <body>
-
 <div class="app-container">
-    <div id="dashboard-view" class="app-section" style="padding:0; display: block;">
+    <div id="dashboard-view" class="app-section" style="padding:0; display:block;">
         <div class="header-box">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
@@ -65,7 +50,7 @@
             <div class="section-title"><i class="fas fa-rocket text-primary"></i> Quick access</div>
             <div class="grid-container">
                 <div class="quick-card bg-purple" onclick="showSection('practice-view')"><i class="fas fa-desktop"></i><span>Practice Questions</span></div>
-                <div class="quick-card bg-orange" onclick="openStudyGuide()"><i class="fas fa-file-alt"></i><span>Notes</span></div>
+                <div class="quick-card bg-orange" onclick="showSection('study-guide-view')"><i class="fas fa-file-alt"></i><span>Notes</span></div>
                 <div class="quick-card bg-teal" onclick="showSection('literary-view')"><i class="fas fa-book"></i><span>Literary Texts</span></div>
                 <div class="quick-card bg-grey" onclick="showSection('syllabus-view')"><i class="fas fa-archive"></i><span>Syllabus</span></div>
             </div>
@@ -78,45 +63,30 @@
             <h4 class="fw-bold mb-0">CBT Mock Exam</h4>
         </div>
         <p class="text-muted text-center small">Select up to 4 subjects for your session.</p>
-        <div id="practice-subject-grid" class="grid-container mb-4" style="grid-template-columns: 1fr 1fr;"></div>
+        <div id="practice-subject-grid" class="grid-container mb-4"></div>
         <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold" onclick="goToExamHall()">Start Practice Session</button>
     </div>
 
     <div id="exam-hall-view" class="app-section">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 id="exam-subject-title" class="fw-bold mb-0 text-primary">English</h5>
+            <h5 id="exam-subject-title" class="fw-bold mb-0 text-primary">Subject</h5>
             <div class="badge bg-danger p-2" id="exam-timer">02:00:00</div>
         </div>
-        
         <div class="question-box">
-            <div class="d-flex justify-content-between mb-2">
-                <span class="badge bg-dark">Question 1 of 40</span>
-            </div>
-            <p id="question-text" class="mb-0">Please wait, loading question...</p>
+            <span class="badge bg-dark mb-2" id="q-counter">Question 1 of 40</span>
+            <p id="question-text">Loading from your JSON...</p>
         </div>
-
         <div id="options-container">
-            <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text">Option text here</span></button>
-            <button class="option-btn" onclick="selectOption(this)">B. <span class="opt-text">Option text here</span></button>
-            <button class="option-btn" onclick="selectOption(this)">C. <span class="opt-text">Option text here</span></button>
-            <button class="option-btn" onclick="selectOption(this)">D. <span class="opt-text">Option text here</span></button>
+            <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text"></span></button>
+            <button class="option-btn" onclick="selectOption(this)">B. <span class="opt-text"></span></button>
+            <button class="option-btn" onclick="selectOption(this)">C. <span class="opt-text"></span></button>
+            <button class="option-btn" onclick="selectOption(this)">D. <span class="opt-text"></span></button>
         </div>
-
         <div class="d-flex justify-content-between mt-4">
-            <button class="btn btn-outline-light rounded-pill px-4">Previous</button>
+            <button class="btn btn-outline-light rounded-pill px-4" onclick="prevQuestion()">Previous</button>
             <button class="btn btn-primary rounded-pill px-4" onclick="showDashboard()">Submit</button>
-            <button class="btn btn-outline-light rounded-pill px-4">Next</button>
+            <button class="btn btn-outline-light rounded-pill px-4" onclick="nextQuestion()">Next</button>
         </div>
-    </div>
-
-    <div id="study-guide-view" class="app-section">
-        <div class="d-flex align-items-center mb-4"><button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button><h4 class="fw-bold mb-0">Notes</h4></div>
-        <div id="vertical-guide-list"></div>
-    </div>
-
-    <div id="note-viewer" class="app-section">
-        <div class="d-flex align-items-center mb-4"><button class="btn text-white p-0 me-3" onclick="showSection('study-guide-view')"><i class="fas fa-arrow-left fs-4"></i></button><h4 id="note-title" class="fw-bold mb-0 text-warning">Notes</h4></div>
-        <div id="note-content"></div>
     </div>
 
     <div class="nav-bottom">
@@ -128,7 +98,6 @@
 </div>
 
 <script>
-    // FULL SUBJECT LIST
     const allSubjects = [
         { id: "English Language", icon: "fas fa-book", color: "#bc743c" },
         { id: "Mathematics", icon: "fas fa-calculator", color: "#1d9086" },
@@ -137,13 +106,23 @@
         { id: "Biology", icon: "fas fa-lungs", color: "#bc743c" },
         { id: "Government", icon: "fas fa-landmark", color: "#8a2be2" },
         { id: "Economics", icon: "fas fa-chart-line", color: "#1d9086" },
+        { id: "Financial Accounting", icon: "fas fa-balance-scale", color: "#1d9086" },
         { id: "Literature-In-English", icon: "fas fa-book-open", color: "#8a2be2" },
         { id: "Commerce", icon: "fas fa-shopping-cart", color: "#bc743c" },
         { id: "CRS", icon: "fas fa-cross", color: "#1d9086" }
     ];
 
-    let noteData = {};
     let selectedSubjects = [];
+    let allQuestionsData = {}; // Stores your JSON data
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+
+    async function loadJSONData() {
+        try {
+            const res = await fetch('study_guide.json?v=' + Date.now());
+            allQuestionsData = await res.json();
+        } catch(e) { console.error("JSON Error:", e); }
+    }
 
     function startTimer(duration, displayId) {
         let timer = duration, h, m, s;
@@ -154,10 +133,6 @@
             document.getElementById(displayId).textContent = `${h<10?"0"+h:h}:${m<10?"0"+m:m}:${s<10?"0"+s:s}`;
             if (--timer < 0) timer = duration;
         }, 1000);
-    }
-
-    async function loadNotes() {
-        try { const res = await fetch('study_guide.json?v=' + Date.now()); noteData = await res.json(); } catch(e) {}
     }
 
     function showSection(id) {
@@ -188,37 +163,36 @@
 
     function goToExamHall() {
         if(selectedSubjects.length === 0) return alert("Pick a subject first!");
-        showSection('exam-hall-view');
-        document.getElementById('exam-subject-title').innerText = selectedSubjects[0];
-        document.getElementById('question-text').innerText = "Which of the following is a synonym for 'Vivid'?";
+        const subject = selectedSubjects[0];
+        
+        // CHECK YOUR JSON: Ensure it has a "Questions" key
+        if(allQuestionsData.Questions && allQuestionsData.Questions[subject]) {
+            currentQuestions = allQuestionsData.Questions[subject];
+            currentQuestionIndex = 0;
+            showSection('exam-hall-view');
+            document.getElementById('exam-subject-title').innerText = subject;
+            loadQuestion();
+        } else {
+            alert("No questions found in JSON for " + subject);
+        }
+    }
+
+    function loadQuestion() {
+        const q = currentQuestions[currentQuestionIndex];
+        document.getElementById('question-text').innerText = q.question;
+        document.getElementById('q-counter').innerText = `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
         const opts = document.querySelectorAll('.opt-text');
-        opts[0].innerText = "Blurred"; opts[1].innerText = "Clear and Bright"; opts[2].innerText = "Dark"; opts[3].innerText = "Quiet";
-    }
-
-    function selectOption(btn) {
+        q.options.forEach((o, i) => opts[i].innerText = o);
         document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
     }
 
-    function viewNote(id) {
-        showSection('note-viewer');
-        document.getElementById('note-title').innerText = id;
-        const notes = noteData[id];
-        document.getElementById('note-content').innerHTML = notes ? notes.map(n => `<div class="note-card"><h6>${n.topic}</h6><div class="small text-white-50">${n.content}</div></div>`).join('') : `<p class="text-center mt-5">No notes found.</p>`;
-    }
-
-    function openStudyGuide() {
-        showSection('study-guide-view');
-        document.getElementById('vertical-guide-list').innerHTML = allSubjects.map(s => `
-            <div class="guide-item" onclick="viewNote('${s.id}')">
-                <div class="guide-icon" style="background:${s.color}22"><i class="${s.icon}" style="color:${s.color}"></i></div>
-                <span class="fw-bold">${s.id}</span>
-            </div>`).join('');
-    }
-
+    function nextQuestion() { if(currentQuestionIndex < currentQuestions.length - 1) { currentQuestionIndex++; loadQuestion(); } }
+    function prevQuestion() { if(currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(); } }
+    function selectOption(btn) { document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
     function showDashboard() { showSection('dashboard-view'); }
 
     window.onload = () => {
+        loadJSONData();
         document.getElementById('horizontal-list').innerHTML = allSubjects.slice(0,6).map(s => `
             <div class="mini-card" style="border-color:${s.color}">
                 <i class="${s.icon}" style="color:${s.color}"></i>
@@ -226,7 +200,6 @@
             </div>`).join('');
         startTimer(7200, 'timer-display');
         startTimer(7200, 'exam-timer');
-        loadNotes();
     };
 </script>
 </body>
