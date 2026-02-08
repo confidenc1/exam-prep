@@ -1,0 +1,78 @@
+[
+  {
+    "q": "Which part of the cell is known as the 'powerhouse' because it generates most of the chemical energy?",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Animal_cell_structure_en.svg/600px-Animal_cell_structure_en.svg.png",
+    "options": ["Nucleus", "Ribosome", "Mitochondria", "Golgi Body"],
+    "a": 2
+  },
+  {
+    "q": "Identify the type of joint shown in the human skeletal diagram at the shoulder.",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Shoulder_joint.svg/400px-Shoulder_joint.svg.png",
+    "options": ["Hinge joint", "Ball and socket joint", "Pivot joint", "Gliding joint"],
+    "a": 1
+  },
+  {
+    "q": "In the diagram of the human heart, which chamber pumps oxygenated blood to the rest of the body?",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Diagram_of_the_human_heart_%28cropped%29.svg/600px-Diagram_of_the_human_heart_%28cropped%29.svg.png",
+    "options": ["Right Atrium", "Right Ventricle", "Left Atrium", "Left Ventricle"],
+    "a": 3
+  },
+  {
+    "q": "Which of the following represents a secondary consumer in the food chain shown?",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Food_web_diagram.svg/600px-Food_web_diagram.svg.png",
+    "options": ["Grass", "Grasshopper", "Lizard", "Hawk"],
+    "a": 2
+  },
+  {
+    "q": "The structure in a plant cell responsible for photosynthesis as seen in the diagram is:",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Plant_cell_structure_svg.svg/600px-Plant_cell_structure_svg.svg.png",
+    "options": ["Cell wall", "Chloroplast", "Vacuole", "Cytoplasm"],
+    "a": 1
+  },
+  {
+    "q": "What is the function of the structure labeled 'A' in the diagram of the human ear?",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Human_ear.svg/600px-Human_ear.svg.png",
+    "options": ["Balance", "Sound collection", "Pressure equalization", "Nerve transmission"],
+    "a": 1
+  },
+  {
+    "q": "In the genetic cross shown (Tt x Tt), what is the probability of producing a short plant (tt)?",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Punnett_square_mendel_flowers.svg/400px-Punnett_square_mendel_flowers.svg.png",
+    "options": ["25%", "50%", "75%", "100%"],
+    "a": 0
+  },
+  { "q": "Which blood group is known as the universal donor?", "options": ["Group A", "Group B", "Group AB", "Group O"], "a": 3 },
+  { "q": "Which organism exhibits the level of organization called 'System'?", "options": ["Amoeba", "Hydra", "Earthworm", "Bird"], "a": 3 },
+  { "q": "The part of the brain responsible for balance and posture is:", "options": ["Cerebrum", "Cerebellum", "Medulla Oblongata", "Hypothalamus"], "a": 1 },
+  { "q": "In the nitrogen cycle, which bacteria converts ammonia to nitrites?", "options": ["Nitrosomonas", "Nitrobacter", "Azotobacter", "Rhizobium"], "a": 0 },
+  { "q": "Which hormone is responsible for the 'fight or flight' response?", "options": ["Insulin", "Thyroxin", "Adrenaline", "Estrogen"], "a": 2 },
+  { "q": "The basic unit of excretion in the human kidney is the:", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Nephron-en.svg/400px-Nephron-en.svg.png", "options": ["Ureter", "Nephron", "Alveolus", "Urethra"], "a": 1 },
+  { "q": "A deficiency of Vitamin D in children leads to:", "options": ["Scurvy", "Rickets", "Beriberi", "Night blindness"], "a": 1 },
+  { "q": "Which of the following is a function of the liver?", "options": ["Production of insulin", "Deamination of excess amino acids", "Storage of urine", "Digestion of starch"], "a": 1 },
+  { "q": "The process by which plants lose water in the form of vapor through the stomata is:", "options": ["Guttation", "Transpiration", "Evaporation", "Respiration"], "a": 1 },
+  { "q": "Identify the dental formula of an adult human.", "options": ["i2/2, c1/1, pm2/2, m3/3", "i2/1, c1/1, pm2/2, m2/2", "i3/3, c1/1, pm4/4, m3/3", "i2/2, c0/0, pm3/3, m3/3"], "a": 0 },
+  { "q": "Which of the following is an infectious disease?", "options": ["Diabetes", "Tuberculosis", "Hypertension", "Rickets"], "a": 1 },
+  { "q": "The type of fruit formed from a single flower with several carpels is:", "options": ["Simple fruit", "Aggregate fruit", "Multiple fruit", "Dry fruit"], "a": 1 },
+  { "q": "Which organism is a primary producer in an aquatic ecosystem?", "options": ["Fish", "Tadpole", "Phytoplankton", "Water snail"], "a": 2 },
+  { "q": "The main waste product of respiration in animals is:", "options": ["Oxygen", "Carbon dioxide", "Urea", "Sweat"], "a": 1 },
+  { "q": "Which of the following is a function of the skeleton?", "options": ["Transport of oxygen", "Protection of delicate organs", "Digestion of food", "Perception of light"], "a": 1 },
+  { "q": "The part of the eye that controls the amount of light entering is the:", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Eye_outer_view.svg/400px-Eye_outer_view.svg.png", "options": ["Retina", "Iris", "Lens", "Cornea"], "a": 1 },
+  { "q": "Which of these insects undergoes incomplete metamorphosis?", "options": ["Butterfly", "Housefly", "Cockroach", "Mosquito"], "a": 2 },
+  { "q": "The fluid part of the blood in which cells are suspended is:", "options": ["Serum", "Plasma", "Lymph", "Platelets"], "a": 1 },
+  { "q": "The structure used by Amoeba for movement and capturing food is:", "options": ["Cilia", "Flagella", "Pseudopodia", "Tentacles"], "a": 2 },
+  { "q": "In a cell, where is the genetic information (DNA) stored?", "options": ["Cytoplasm", "Nucleus", "Vacuole", "Cell membrane"], "a": 1 },
+  { "q": "Which of the following is a biotic factor in an ecosystem?", "options": ["Temperature", "Rainfall", "Predation", "Soil pH"], "a": 2 },
+  { "q": "The specialized respiratory organ in fish is the:", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Fish_gills_en.svg/400px-Fish_gills_en.svg.png", "options": ["Lungs", "Gills", "Trachea", "Skin"], "a": 1 },
+  { "q": "Which of the following is an autotrophic organism?", "options": ["Mushroom", "Green plant", "Human", "Goat"], "a": 1 },
+  { "q": "The sensory cells in the retina sensitive to dim light are:", "options": ["Cones", "Rods", "Optic nerves", "Blind spot"], "a": 1 },
+  { "q": "The enzyme in human saliva that breaks down starch is:", "options": ["Pepsin", "Ptyalin", "Rennin", "Lipase"], "a": 1 },
+  { "q": "Identify the male reproductive part of a flower.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Flower_diagram2.svg/400px-Flower_diagram2.svg.png", "options": ["Pistil", "Stamen", "Petal", "Sepal"], "a": 1 },
+  { "q": "Which of the following is an example of continuous variation?", "options": ["Blood group", "Sex", "Height", "Tongue rolling"], "a": 2 },
+  { "q": "The process by which green plants manufacture food using sunlight is:", "options": ["Respiration", "Photosynthesis", "Chemosynthesis", "Transpiration"], "a": 1 },
+  { "q": "Which organelle is responsible for protein synthesis?", "options": ["Mitochondria", "Ribosome", "Lysosome", "Vacuole"], "a": 1 },
+  { "q": "The symbiotic relationship where both organisms benefit is:", "options": ["Parasitism", "Commensalism", "Mutualism", "Saprophytism"], "a": 2 },
+  { "q": "Which part of the plant is responsible for the absorption of water and minerals?", "options": ["Stem", "Leaf", "Root", "Flower"], "a": 2 },
+  { "q": "What is the movement of water molecules through a semi-permeable membrane called?", "options": ["Diffusion", "Osmosis", "Plasmolysis", "Active Transport"], "a": 1 },
+  { "q": "Which of the following bones is found in the human leg?", "options": ["Humerus", "Femur", "Ulna", "Radius"], "a": 1 }
+    ]
+  
