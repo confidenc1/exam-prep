@@ -37,7 +37,6 @@
         .subject-card { background: var(--card); border: 2px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px 15px; text-align: center; cursor: pointer; transition: 0.3s; }
         .subject-card:hover { border-color: var(--primary); transform: translateY(-5px); }
 
-        /* Calculator Styles */
         #calc-modal {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             z-index: 3000; background: #1e1f2b; border: 2px solid var(--primary); 
@@ -176,7 +175,6 @@
         document.addEventListener('keydown', handleKeys);
     }
 
-    /* Calculator Logic */
     let calcStr = "0";
     function toggleCalc() {
         const m = document.getElementById('calc-modal');
@@ -228,12 +226,8 @@
         }
     }
 
-    function resetExam() {
-        currentQuestionIndex = 0; isReviewMode = false; userSelections = {}; flags = {}; timeLeft = 7200;
-    }
-
+    function resetExam() { currentQuestionIndex = 0; isReviewMode = false; userSelections = {}; flags = {}; timeLeft = 7200; }
     function buildSubjectsNav() { document.getElementById('subjects-nav').innerHTML = `<span class="badge bg-primary">${currentSubject}</span>`; }
-
     function buildPalette() {
         const palette = document.getElementById('question-palette');
         palette.innerHTML = currentQuestions.map((_, i) => `<button class="palette-btn unanswered" onclick="goToQuestion(${i})">${i+1}</button>`).join('');
@@ -268,11 +262,7 @@
         updatePalette();
     }
 
-    function selectOption(index, btn) {
-        if (isReviewMode) return;
-        userSelections[currentQuestionIndex] = String.fromCharCode(97 + index);
-        loadQuestion(); 
-    }
+    function selectOption(index, btn) { if (isReviewMode) return; userSelections[currentQuestionIndex] = String.fromCharCode(97 + index); loadQuestion(); }
 
     function showExplanation() {
         const q = currentQuestions[currentQuestionIndex];
@@ -329,13 +319,10 @@
         });
     }
 
-    function startReview() {
-        isReviewMode = true;
-        showSection('exam-hall-view');
-        currentQuestionIndex = 0;
-        loadQuestion();
-    }
+    function startReview() { isReviewMode = true; showSection('exam-hall-view'); currentQuestionIndex = 0; loadQuestion(); }
 
     function loadHistoryChart() {
-        const canvas = document.getElementById('history-chart');
-        if(!canvas) re
+        const ctx = document.getElementById('history-chart').getContext('2d');
+        if (!ctx) return;
+        const labels = scoresHistory.slice(-10).map(s => s.subject.substring(0,5));
+        if (window.historyChartInsta
