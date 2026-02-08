@@ -1,9 +1,9 @@
 /**
- * FSA JAMB PRO v5.1 - Official App Logic
- * Handles 10 Subjects across all departments
+ * FSA JAMB PRO v5.1 - MASTER ENGINE
+ * Includes: 10 Subjects, Timer, Calculator, JAMB 8-Key, and Review Mode
  */
 
-// 1. ALL SUBJECTS DATA
+// 1. DATA CONFIGURATION
 const allSubs = [
     {id:"English", icon:"📚", required: true}, 
     {id:"Mathematics", icon:"📐"}, 
@@ -25,14 +25,14 @@ let currentQIdx = 0;
 let timerInterval;
 let timeLeft = 7200; // 2 Hours
 
-// 2. INITIALIZE DASHBOARD (Runs on Page Load)
+// 2. INITIALIZE DASHBOARD
 function init() {
     const grid = document.getElementById('subject-grid');
     if(!grid) return;
     
     grid.innerHTML = allSubs.map(s => `
         <div class="col-xl-3 col-lg-4 col-6 mb-3">
-            <div class="subject-card ${selectedSubjects.includes(s.id)?'selected':''}" id="card-${s.id}" onclick="toggleSubject('${s.id}')">
+            <div class="subject-card ${selectedSubjects.includes(s.id)?'selected':''}" onclick="toggleSubject('${s.id}')">
                 <div class="fs-1 mb-2">${s.icon}</div>
                 <div class="fw-bold">${s.id}</div>
                 ${s.required ? '<small class="badge bg-success">Mandatory</small>' : ''}
@@ -42,43 +42,40 @@ function init() {
     updateStartButton();
 }
 
-// 3. SELECTION LOGIC
 function toggleSubject(id) {
     const sub = allSubs.find(s => s.id === id);
-    if (sub.required) return; // Cannot deselect English
+    if (sub.required) return;
 
     const index = selectedSubjects.indexOf(id);
     if (index > -1) {
         selectedSubjects.splice(index, 1);
     } else if (selectedSubjects.length < 4) {
         selectedSubjects.push(id);
-    } else {
-        alert("You can only select 4 subjects in total (English + 3 others).");
     }
     init();
 }
 
 function updateStartButton() {
     const btn = document.getElementById('start-btn');
-    const count = selectedSubjects.length;
-    btn.classList.toggle('disabled', count < 4);
-    document.getElementById('selection-count').innerText = `${count}/4 subjects selected`;
+    if(btn) {
+        btn.classList.toggle('disabled', selectedSubjects.length < 4);
+        document.getElementById('selection-count').innerText = `${selectedSubjects.length}/4 subjects selected`;
+    }
 }
 
-// 4. EXAM ENGINE
+// 3. EXAM CORE
 async function beginExam() {
     const btn = document.getElementById('start-btn');
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Preparing Paper...`;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading Questions...`;
     
     for (let sub of selectedSubjects) {
         try {
-            // Fetches your JSON files (e.g., biology.json, chemistry.json)
             const response = await fetch(`${sub.toLowerCase()}.json`);
             if (!response.ok) throw new Error();
             examData[sub] = await response.json();
             userAnswers[sub] = new Array(examData[sub].length).fill(null);
         } catch (e) {
-            alert(`Error: ${sub.toLowerCase()}.json not found! Please ensure all 10 JSON files are in your GitHub folder.`);
+            alert(`Error: ${sub.toLowerCase()}.json not found! Make sure filenames are lowercase on GitHub.`);
             location.reload();
             return;
         }
@@ -92,7 +89,6 @@ async function beginExam() {
     startTimer();
 }
 
-// 5. NAVIGATION
 function setupTabs() {
     const container = document.getElementById('tab-container');
     container.innerHTML = selectedSubjects.map(s => 
@@ -114,48 +110,16 @@ function renderQuestion() {
     
     document.getElementById('current-sub-label').innerText = currentSubject;
     document.getElementById('q-count').innerText = `Question ${currentQIdx + 1} of ${examData[currentSubject].length}`;
-    // 8. SHOW CORRECTIONS (Review Mode)
-function showCorrections() {
-    const area = document.getElementById('correction-area');
-    const list = document.getElementById('correction-list');
-    area.style.display = 'block';
-    list.innerHTML = ''; // Clear previous
 
-    selectedSubjects.forEach(s => {
-        let subHtml = `<h4 class="mt-4 text-primary border-bottom pb-2">${s}</h4>`;
-        examData[s].forEach((q, i) => {
-            const userAns = userAnswers[s][i];
-            const isCorrect = userAns === q.a;
-            
-            subHtml += `
-                <div class="p-3 mb-2 rounded ${isCorrect ? 'bg-light-success' : 'bg-light-danger'}" 
-                     style="border-left: 5px solid ${isCorrect ? '#28a745' : '#dc3545'}; background: ${isCorrect ? '#f0fff4' : '#fff5f5'}">
-                    <p class="mb-1"><strong>Q${i+1}:</strong> ${q.q}</p>
-                    <p class="mb-0 small">
-                        Your Answer: <span class="${isCorrect ? 'text-success' : 'text-danger'}">${userAns !== null ? q.options[userAns] : 'Skipped'}</span><br>
-                        Correct Answer: <span class="text-success fw-bold">${q.options[q.a]}</span>
-                    </p>
-                </div>`;
-        });
-        list.innerHTML += subHtml;
-    });
-    
-    // Scroll to the corrections
-    area.scrollIntoView({ behavior: 'smooth' });
-}
-    
-
-    let html = q.p ? `<div class="passage-box p-3 mb-3 bg-light border-start border-4 border-warning">${q.p}</div>` : '';
+    let html = q.p ? `<div class="passage-box p-3 mb-3 bg-light border-start border-4 border-warning" style="max-height:200px; overflow-y:auto;">${q.p}</div>` : '';
     html += `<div class="mb-4 fs-5 fw-bold">${q.q}</div>`;
     
     q.options.forEach((opt, i) => {
         const isSelected = userAnswers[currentSubject][currentQIdx] === i;
-        html += `
-            <button class="option ${isSelected ? 'selected' : ''}" onclick="saveAnswer(${i})">
-                <strong>${String.fromCharCode(65+i)}.</strong> ${opt}
-            </button>`;
+        html += `<button class="option ${isSelected ? 'selected' : ''}" onclick="saveAnswer(${i})">
+            <strong>${String.fromCharCode(65+i)}.</strong> ${opt}
+        </button>`;
     });
-    
     container.innerHTML = html;
 }
 
@@ -172,15 +136,14 @@ function moveQ(step) {
     }
 }
 
-// 6. TOOLS (TIMER & CALCULATOR)
+// 4. TIMER & CALCULATOR
 function startTimer() {
     timerInterval = setInterval(() => {
         timeLeft--;
         let h = Math.floor(timeLeft / 3600);
         let m = Math.floor((timeLeft % 3600) / 60);
         let s = timeLeft % 60;
-        document.getElementById('timer').innerText = 
-            `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         if(timeLeft <= 0) finish();
     }, 1000);
 }
@@ -192,15 +155,24 @@ function toggleCalc() {
 function calcInput(val) {
     const display = document.getElementById('calc-display');
     if(val === 'C') display.value = '';
-    else if(val === '=') {
-        try { display.value = eval(display.value); } catch { display.value = "Error"; }
-    }
+    else if(val === '=') { try { display.value = eval(display.value); } catch { display.value = "Error"; } }
     else display.value += val;
 }
 
-// 7. FINISH
+// 5. JAMB 8-KEY NAVIGATION
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('exam-screen').style.display === 'block') {
+        const key = e.key.toLowerCase();
+        if (['a', 'b', 'c', 'd'].includes(key)) saveAnswer(['a', 'b', 'c', 'd'].indexOf(key));
+        if (key === 'n') moveQ(1);
+        if (key === 'p') moveQ(-1);
+        if (key === 's') finish();
+    }
+});
+
+// 6. FINISH & REVIEW
 function finish() {
-    if(!confirm("Submit Exam? You cannot go back!")) return;
+    if(!confirm("Are you sure you want to submit?")) return;
     clearInterval(timerInterval);
     
     let totalScore = 0;
@@ -208,26 +180,35 @@ function finish() {
 
     selectedSubjects.forEach(s => {
         let correct = 0;
-        examData[s].forEach((q, i) => {
-            if(userAnswers[s][i] === q.a) correct++;
-        });
+        examData[s].forEach((q, i) => { if(userAnswers[s][i] === q.a) correct++; });
         let subScore = Math.round((correct / examData[s].length) * 100);
         totalScore += subScore;
-        reportHtml += `
-            <div class="d-flex justify-content-between border-bottom py-2">
-                <span>${s}</span>
-                <span class="fw-bold">${correct}/${examData[s].length}</span>
-            </div>`;
+        reportHtml += `<div class="d-flex justify-content-between border-bottom py-2"><span>${s}</span><b>${correct}/${examData[s].length}</b></div>`;
     });
 
     document.getElementById('exam-screen').style.display = 'none';
     document.getElementById('result-screen').style.display = 'block';
-    
-    // Scale score out of 400 (JAMB Standard)
-    let finalJAMBScore = Math.round((totalScore / (selectedSubjects.length * 100)) * 400);
-    document.getElementById('total-score').innerText = finalJAMBScore;
+    document.getElementById('total-score').innerText = Math.round((totalScore / 400) * 400); // Scale to JAMB 400
     document.getElementById('breakdown').innerHTML = reportHtml;
 }
 
-// Run init on load
+function showCorrections() {
+    const list = document.getElementById('correction-list');
+    document.getElementById('correction-area').style.display = 'block';
+    list.innerHTML = '';
+
+    selectedSubjects.forEach(s => {
+        list.innerHTML += `<h4 class="mt-4 text-primary">${s}</h4>`;
+        examData[s].forEach((q, i) => {
+            const isCorrect = userAnswers[s][i] === q.a;
+            list.innerHTML += `
+                <div class="p-2 mb-2 border-start border-4 ${isCorrect?'border-success bg-light':'border-danger bg-light'}">
+                    <p class="mb-1"><b>Q${i+1}:</b> ${q.q}</p>
+                    <small>Correct: <b class="text-success">${q.options[q.a]}</b> | Your Answer: <b class="${isCorrect?'text-success':'text-danger'}">${userAnswers[s][i] !== null ? q.options[userAnswers[s][i]] : 'Skipped'}</b></small>
+                </div>`;
+        });
+    });
+}
+
 window.onload = init;
+    
