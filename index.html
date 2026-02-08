@@ -62,7 +62,7 @@
             <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
             <h4 class="fw-bold mb-0">CBT Mock Exam</h4>
         </div>
-        <p class="text-muted text-center small">Select up to 4 subjects for your session.</p>
+        <p class="text-muted text-center small">Select your subjects (max 4) to start the practice hall.</p>
         <div id="practice-subject-grid" class="grid-container mb-4"></div>
         <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold" onclick="goToExamHall()">Start Practice Session</button>
     </div>
@@ -74,7 +74,7 @@
         </div>
         <div class="question-box">
             <span class="badge bg-dark mb-2" id="q-counter">Question 1 of 40</span>
-            <p id="question-text">Loading from your JSON...</p>
+            <p id="question-text">Fetching questions from JSON...</p>
         </div>
         <div id="options-container">
             <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text"></span></button>
@@ -113,15 +113,18 @@
     ];
 
     let selectedSubjects = [];
-    let allQuestionsData = {}; // Stores your JSON data
+    let allData = {};
     let currentQuestions = [];
     let currentQuestionIndex = 0;
 
-    async function loadJSONData() {
+    // 1. Automatically fetch your JSON when the page loads
+    async function initData() {
         try {
             const res = await fetch('study_guide.json?v=' + Date.now());
-            allQuestionsData = await res.json();
-        } catch(e) { console.error("JSON Error:", e); }
+            allData = await res.json();
+        } catch (e) {
+            console.error("Could not load your JSON file.");
+        }
     }
 
     function startTimer(duration, displayId) {
@@ -161,19 +164,26 @@
         }
     }
 
+    // 2. Load questions from your JSON's "Questions" key
     function goToExamHall() {
-        if(selectedSubjects.length === 0) return alert("Pick a subject first!");
+        if(selectedSubjects.length === 0) return alert("Please select a subject!");
+        
         const subject = selectedSubjects[0];
         
-        // CHECK YOUR JSON: Ensure it has a "Questions" key
-        if(allQuestionsData.Questions && allQuestionsData.Questions[subject]) {
-            currentQuestions = allQuestionsData.Questions[subject];
+        // Ensure your JSON has a "Questions" object containing the subjects
+        if(allData.Questions && allData.Questions[subject]) {
+            currentQuestions = allData.Questions[subject];
+            
+            // Limit to 60 for English, 40 for others
+            const limit = (subject === "English Language") ? 60 : 40;
+            currentQuestions = currentQuestions.slice(0, limit);
+            
             currentQuestionIndex = 0;
             showSection('exam-hall-view');
             document.getElementById('exam-subject-title').innerText = subject;
             loadQuestion();
         } else {
-            alert("No questions found in JSON for " + subject);
+            alert("No questions found in JSON for " + subject + ". Check your file structure.");
         }
     }
 
@@ -192,7 +202,7 @@
     function showDashboard() { showSection('dashboard-view'); }
 
     window.onload = () => {
-        loadJSONData();
+        initData();
         document.getElementById('horizontal-list').innerHTML = allSubjects.slice(0,6).map(s => `
             <div class="mini-card" style="border-color:${s.color}">
                 <i class="${s.icon}" style="color:${s.color}"></i>
