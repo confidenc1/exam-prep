@@ -149,6 +149,33 @@
 </div>
 
 <script>
+    // THE MASTER SUBJECT DATA (Put your questions here)
+    const subjectQuestions = {
+        "mathematics": [
+            {"q": "Solve for x: 3x - 7 = 14", "options": ["5", "7", "9", "21"], "answer": "b", "exp": "3x = 14+7; 3x=21; x=7."},
+            {"q": "Find the area of a circle with radius 7cm (Take π = 22/7)", "options": ["44cm²", "154cm²", "144cm²", "49cm²"], "answer": "b", "exp": "Area = πr² = (22/7)*7*7 = 154."}
+        ],
+        "english": [
+            {"q": "Choose the correctly spelled word", "options": ["Accomodation", "Accommodation", "Acomodation", "Accomodasion"], "answer": "b", "exp": "Accommodation has double 'c' and double 'm'."},
+            {"q": "The boy ____ his book on the table yesterday.", "options": ["lay", "laid", "lied", "lain"], "answer": "b", "exp": "Past tense of 'lay' is 'laid'."}
+        ],
+        "biology": [
+            {"q": "Which of these is the powerhouse of the cell?", "options": ["Nucleus", "Ribosome", "Mitochondria", "Vacuole"], "answer": "c", "exp": "Mitochondria generates ATP for the cell."}
+        ],
+        "chemistry": [
+            {"q": "What is the atomic number of Oxygen?", "options": ["6", "7", "8", "9"], "answer": "c", "exp": "Oxygen is the 8th element in the periodic table."}
+        ],
+        "physics": [
+            {"q": "What is the unit of Force?", "options": ["Watt", "Joule", "Newton", "Pascal"], "answer": "c", "exp": "Force is measured in Newtons (N)."}
+        ],
+        "accounting": [{"q": "Asset - Liabilities =", "options": ["Capital", "Income", "Loss", "Debit"], "answer": "a", "exp": "Accounting equation: Capital = Assets - Liabilities."}],
+        "commerce": [{"q": "Trade between two countries is called?", "options": ["Home trade", "Retail trade", "International trade", "Wholesale"], "answer": "c", "exp": "Foreign or International trade occurs between nations."}],
+        "economics": [{"q": "The basic problem of Economics is?", "options": ["Money", "Scarcity", "Inflation", "Wealth"], "answer": "b", "exp": "Scarcity is the fundamental economic problem."}],
+        "government": [{"q": "A system of government by the few is?", "options": ["Democracy", "Oligarchy", "Monarchy", "Autocracy"], "answer": "b", "exp": "Oligarchy is rule by a small group of people."}],
+        "literature": [{"q": "The person who writes a play is a?", "options": ["Poet", "Novelist", "Playwright", "Author"], "answer": "c", "exp": "A playwright is the creator of dramatic works."}],
+        "crk": [{"q": "Who led the Israelites out of Egypt?", "options": ["Joshua", "Aaron", "Moses", "Joseph"], "answer": "c", "exp": "God used Moses to lead the Exodus."}]
+    };
+
     const allSubjects = [
         { id: "accounting", name: "Accounting", icon: "fas fa-file-invoice-dollar", color: "#4caf50" },
         { id: "biology", name: "Biology", icon: "fas fa-dna", color: "#8bc34a" },
@@ -175,6 +202,7 @@
         document.addEventListener('keydown', handleKeys);
     }
 
+    /* Calculator */
     let calcStr = "0";
     function toggleCalc() {
         const m = document.getElementById('calc-modal');
@@ -208,11 +236,10 @@
         `).join('');
     }
 
-    async function startExam(subjectId) {
-        try {
-            const response = await fetch(`${subjectId}.json`);
-            if (!response.ok) throw new Error('Subject file not found');
-            currentQuestions = await response.json();
+    function startExam(subjectId) {
+        // Load from our built-in object instead of fetching external files
+        if (subjectQuestions[subjectId]) {
+            currentQuestions = subjectQuestions[subjectId];
             const subjectObj = allSubjects.find(s => s.id === subjectId);
             currentSubject = subjectObj ? subjectObj.name : subjectId;
             showSection('exam-hall-view');
@@ -221,8 +248,8 @@
             buildPalette();
             loadQuestion();
             startTimer();
-        } catch (error) {
-            alert("Could not load " + subjectId + ".json. Please ensure the file is in the same directory.");
+        } else {
+            alert("No questions available for " + subjectId + " yet.");
         }
     }
 
@@ -280,49 +307,4 @@
 
     function flagQuestion() { flags[currentQuestionIndex] = !flags[currentQuestionIndex]; updatePalette(); }
 
-    function startTimer() {
-        clearInterval(examTimer);
-        examTimer = setInterval(() => {
-            timeLeft--;
-            const h = Math.floor(timeLeft / 3600), m = Math.floor((timeLeft % 3600)/60), s = timeLeft % 60;
-            document.getElementById('exam-timer').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            if (timeLeft <= 0) submitExam(true);
-        }, 1000);
-    }
-
-    function nextQuestion() { if (currentQuestionIndex < currentQuestions.length - 1) currentQuestionIndex++; loadQuestion(); }
-    function prevQuestion() { if (currentQuestionIndex > 0) currentQuestionIndex--; loadQuestion(); }
-
-    function submitExam(force = false) {
-        if (!force && !confirm('Submit exam?')) return;
-        clearInterval(examTimer);
-        let score = 0, total = currentQuestions.length;
-        currentQuestions.forEach((q, i) => { if (userSelections[i] === (q.answer || '').toLowerCase().trim()) score++; });
-        const percent = total > 0 ? Math.round((score / total) * 100) : 0;
-        document.getElementById('final-score').textContent = `${percent}%`;
-        document.getElementById('result-subject-name').textContent = currentSubject;
-        document.getElementById('result-stats').textContent = `Correct: ${score}/${total} | Time Used: ${Math.floor((7200 - timeLeft)/60)}m`;
-        scoresHistory.push({subject: currentSubject, score: percent, date: new Date().toLocaleDateString()});
-        localStorage.setItem('jambScores', JSON.stringify(scoresHistory));
-        drawScoreChart(score, total - score);
-        document.getElementById('retake-btn').onclick = () => startExam(allSubjects.find(s => s.name === currentSubject).id);
-        showSection('result-view');
-    }
-
-    function drawScoreChart(correct, wrong) {
-        const canvas = document.getElementById('score-chart');
-        if (window.myChart) window.myChart.destroy();
-        window.myChart = new Chart(canvas.getContext('2d'), {
-            type: 'doughnut',
-            data: { labels: ['Correct', 'Wrong'], datasets: [{ data: [correct, wrong], backgroundColor: ['#198754', '#dc3545'] }] },
-            options: { responsive: true }
-        });
-    }
-
-    function startReview() { isReviewMode = true; showSection('exam-hall-view'); currentQuestionIndex = 0; loadQuestion(); }
-
-    function loadHistoryChart() {
-        const ctx = document.getElementById('history-chart').getContext('2d');
-        if (!ctx) return;
-        const labels = scoresHistory.slice(-10).map(s => s.subject.substring(0,5));
-        if (window.historyChartInsta
+    function startTimer() 
