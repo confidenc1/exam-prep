@@ -8,103 +8,93 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- ORIGINAL DESIGN THEME --- */
-        body { background-color: #0f111a; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-        
-        .app-section { display: none; padding: 20px; min-height: 100vh; }
+        body { background-color: #2e3075; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        .app-container { background-color: #0f111a; min-height: 100vh; padding-bottom: 80px; }
+        .app-section { display: none; padding: 20px; }
         #dashboard-view { display: block; }
 
-        /* Top Navigation Bar Style */
-        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .timer-text { font-weight: bold; font-size: 1.2rem; color: #ffffff; opacity: 0.8; }
+        /* Header Area */
+        .header-box { padding: 25px 20px; background-color: #2e3075; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
+        .utme-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 5px 15px; font-size: 0.7rem; }
 
-        /* Subject Selection Grid (Horizontal Scroll) */
-        .subject-grid { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; margin-bottom: 30px; scrollbar-width: none; }
-        .subject-grid::-webkit-scrollbar { display: none; }
-        
-        .subject-card { 
-            min-width: 100px; height: 100px; background: #161722; border-radius: 15px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s;
+        /* Subject Row (Horizontal) */
+        .section-title { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin: 20px 0 10px; }
+        .subject-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
+        .subject-scroll::-webkit-scrollbar { display: none; }
+        .mini-card { 
+            min-width: 140px; padding: 12px; background: #161722; border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px;
         }
-        .subject-card.active { border: 1px solid #ff8c00; background: rgba(255,140,0,0.05); }
-        .subject-card i { font-size: 1.2rem; margin-bottom: 8px; color: #ff8c00; }
-        .subject-card span { font-size: 0.75rem; font-weight: 500; }
+        .mini-card i { padding: 8px; border-radius: 8px; font-size: 0.9rem; }
 
-        /* Main Action Cards (CBT & Study Guide) */
-        .action-card { 
-            border-radius: 20px; padding: 25px; height: 160px; border: none; 
-            cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;
-            margin-bottom: 20px; transition: transform 0.2s;
-        }
-        .action-card:active { transform: scale(0.96); }
-        .btn-purple { background: linear-gradient(135deg, #4e2a84, #311b92); }
-        .btn-orange { background: linear-gradient(135deg, #e65100, #ff8f00); opacity: 0.9; }
-        .action-card h6 { font-size: 1.1rem; font-weight: bold; line-height: 1.3; }
+        /* Quick Access Cards */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .quick-card { height: 100px; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; border: none; cursor: pointer; }
+        .quick-card i { font-size: 1.2rem; background: rgba(255,255,255,0.2); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+        .quick-card span { font-size: 0.75rem; font-weight: 600; }
 
-        /* Vertical List View for Study Guide */
-        .guide-item {
-            background: #1e1f2b; border-radius: 14px; padding: 18px;
-            margin-bottom: 15px; display: flex; align-items: center;
-            border: 1px solid rgba(255,255,255,0.05); cursor: pointer;
-        }
-        .guide-icon-box {
-            width: 48px; height: 48px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; margin-right: 15px;
-        }
-        .guide-item span { font-weight: 600; font-size: 0.95rem; }
+        .bg-purple { background: linear-gradient(135deg, #6259a8, #4c4485); }
+        .bg-orange { background: linear-gradient(135deg, #bc743c, #9e5d2d); }
+        .bg-teal { background: linear-gradient(135deg, #1d9086, #146e66); }
+        .bg-grey { background: linear-gradient(135deg, #5b757b, #465a5f); }
 
-        /* Note Content Display */
-        .note-card { 
-            background: #1e1f2b; border-radius: 15px; padding: 20px; 
-            margin-bottom: 20px; border-left: 5px solid #ff8c00; 
-        }
+        /* Study Guide Vertical List */
+        .guide-group-title { font-size: 0.8rem; color: #888; text-transform: uppercase; margin: 20px 0 10px; letter-spacing: 1px; }
+        .guide-item { background: #1e2029; border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .guide-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 15px; }
 
-        /* Bottom Menu */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #0f111a;
-            display: flex; justify-content: space-around; padding: 15px 0;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-        .nav-link { color: #4d4f5c; text-decoration: none; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; }
-        .nav-link.active { color: #6a11cb; }
-        .nav-link i { font-size: 1.2rem; margin-bottom: 5px; }
+        /* Note Content */
+        .note-card { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 15px; border-left: 5px solid #ff8c00; }
+
+        /* Bottom Nav */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #2e3075; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-link { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.65rem; text-align: center; }
+        .nav-link.active { color: white; }
+        .nav-link i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
     </style>
 </head>
 <body>
 
-    <div id="dashboard-view" class="app-section">
-        <div class="top-nav">
-            <div class="d-flex align-items-center">
-                <div class="rounded-circle bg-secondary me-3" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-user"></i>
+<div class="app-container">
+    <div id="dashboard-view" class="app-section" style="padding: 0; display: block;">
+        <div class="header-box">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle" style="width: 45px; height: 45px; background: #5c5ed3; display: flex; align-items: center; justify-content: center;"><i class="fas fa-user"></i></div>
+                    <div><h6 class="mb-0 fw-bold">Hello confidence 👋</h6><small style="opacity: 0.7; font-size: 0.7rem;">Let's start learning</small></div>
                 </div>
-                <div>
-                    <h6 class="mb-0 fw-bold">Hello Candidate 👋</h6>
-                    <small class="text-muted" style="font-size: 0.7rem;">Your success starts here</small>
-                </div>
+                <div class="utme-badge">UTME (JAMB... <i class="fas fa-chevron-down ms-1"></i></div>
             </div>
-            <div class="timer-text">02:00:00</div>
         </div>
 
-        <div class="subject-grid">
-            <div class="subject-card active"><i class="fas fa-book"></i><span>English</span></div>
-            <div class="subject-card"><i class="fas fa-calculator"></i><span>Mathematics</span></div>
-            <div class="subject-card"><i class="fas fa-flask"></i><span>Physics</span></div>
-            <div class="subject-card"><i class="fas fa-vial"></i><span>Chemistry</span></div>
-        </div>
+        <div class="px-3">
+            <div class="section-title"><i class="fas fa-fire text-danger"></i> My Subject</div>
+            <div id="horizontal-list" class="subject-scroll"></div>
 
-        <div class="row">
-            <div class="col-6">
-                <div class="action-card btn-purple" onclick="alert('Starting Practice Mode...')">
-                    <i class="fas fa-laptop-code fs-2"></i>
-                    <h6>CBT Mock<br>Exam</h6>
+            <div class="section-title"><i class="fas fa-rocket text-primary"></i> Quick access</div>
+            <div class="grid-container">
+                <div class="quick-card bg-purple">
+                    <i class="fas fa-desktop"></i><span>Practice Questions</span>
+                </div>
+                <div class="quick-card bg-orange" onclick="openStudyGuide()">
+                    <i class="fas fa-file-alt"></i><span>Notes</span>
+                </div>
+                <div class="quick-card bg-teal">
+                    <i class="fas fa-book"></i><span>Literary Texts</span>
+                </div>
+                <div class="quick-card bg-grey">
+                    <i class="fas fa-archive"></i><span>Syllabus</span>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="action-card btn-orange" onclick="openStudyGuide()">
-                    <i class="fas fa-book-open fs-2"></i>
-                    <h6>Study<br>Guide</h6>
+
+            <div class="section-title"><i class="fas fa-history text-warning"></i> Resume last session</div>
+            <div class="p-3 rounded-4 mb-3" style="background: #1e1f2b;">
+                <div class="d-flex align-items-center">
+                    <div class="bg-dark p-3 rounded-3 me-3"><i class="fas fa-book-open text-primary"></i></div>
+                    <div>
+                        <h6 class="mb-0 small fw-bold text-white-50">The Lekki Headmaster</h6>
+                        <small class="text-white">Chapter 2: The Enticement</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -112,96 +102,98 @@
 
     <div id="study-guide-view" class="app-section">
         <div class="d-flex align-items-center mb-4">
-            <button class="btn text-white p-0 me-3" onclick="showView('dashboard-view')">
-                <i class="fas fa-arrow-left fs-4"></i>
-            </button>
-            <h4 class="fw-bold mb-0">Notes</h4>
+            <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
+            <h4 class="fw-bold mb-0">Study Notes</h4>
         </div>
-        
-        <p class="text-muted small mb-3 text-uppercase fw-bold">My Subjects</p>
-        <div id="guide-list-container">
-            </div>
+        <div id="vertical-guide-list"></div>
     </div>
 
     <div id="note-viewer" class="app-section">
         <div class="d-flex align-items-center mb-4">
-            <button class="btn text-white p-0 me-3" onclick="showView('study-guide-view')">
-                <i class="fas fa-arrow-left fs-4"></i>
-            </button>
-            <h4 id="active-subject-title" class="fw-bold mb-0 text-warning">Subject Name</h4>
+            <button class="btn text-white p-0 me-3" onclick="backToGuide()"><i class="fas fa-arrow-left fs-4"></i></button>
+            <h4 id="note-title" class="fw-bold mb-0 text-warning">Notes</h4>
         </div>
-        <div id="note-content-body">
-            </div>
+        <div id="note-content"></div>
     </div>
 
-    <div class="bottom-nav">
+    <div class="nav-bottom">
         <a href="#" class="nav-link active"><i class="fas fa-home"></i>Home</a>
-        <a href="#" class="nav-link"><i class="fas fa-key"></i>Activate</a>
-        <a href="#" class="nav-link"><i class="fas fa-user-circle"></i>Profile</a>
-        <a href="#" class="nav-link"><i class="fas fa-info-circle"></i>Help</a>
+        <a href="#" class="nav-link"><i class="fas fa-trophy"></i>Activate</a>
+        <a href="#" class="nav-link"><i class="fas fa-user"></i>Account</a>
+        <a href="#" class="nav-link"><i class="fas fa-cog"></i>Settings</a>
     </div>
+</div>
 
-    <script>
-        // All subjects for the vertical list
-        const subjectData = [
-            { name: "English Language", icon: "fas fa-book", color: "#8b5e3c" },
-            { name: "Mathematics", icon: "fas fa-calculator", color: "#2d8a7d" },
-            { name: "Physics", icon: "fas fa-broadcast-tower", color: "#3b7d4f" },
-            { name: "Chemistry", icon: "fas fa-flask", color: "#a67c52" },
-            { name: "Biology", icon: "fas fa-lungs", color: "#3b7d4f" },
-            { name: "Government", icon: "fas fa-landmark", color: "#8a2be2" },
-            { name: "Literature-In-English", icon: "fas fa-book-open", color: "#8a2be2" },
-            { name: "Financial Accounting", icon: "fas fa-chart-pie", color: "#2d8a7d" },
-            { name: "Economics", icon: "fas fa-chart-line", color: "#2d8a7d" }
-        ];
+<script>
+    const allSubjects = [
+        { id: "English Language", icon: "fas fa-book", color: "#bc743c", category: "main" },
+        { id: "Mathematics", icon: "fas fa-calculator", color: "#1d9086", category: "main" },
+        { id: "Physics", icon: "fas fa-broadcast-tower", color: "#3b7d4f", category: "main" },
+        { id: "Chemistry", icon: "fas fa-flask", color: "#bc743c", category: "main" },
+        { id: "Biology", icon: "fas fa-lungs", color: "#bc743c", category: "main" },
+        { id: "Government", icon: "fas fa-book-open", color: "#8a2be2", category: "main" },
+        { id: "Literature-In-English", icon: "fas fa-pills", color: "#8a2be2", category: "main" },
+        { id: "Financial Accounting", icon: "fas fa-chart-pie", color: "#1d9086", category: "main" },
+        { id: "Economics", icon: "fas fa-chart-line", color: "#1d9086", category: "main" },
+        { id: "Agricultural Science", icon: "fas fa-sun", color: "#bc743c", category: "other" },
+        { id: "Geography", icon: "fas fa-globe", color: "#1d9086", category: "other" }
+    ];
 
-        let studyData = {};
+    let noteData = {};
 
-        // Fetch Study Guide JSON
-        async function loadContent() {
-            try {
-                const response = await fetch('study_guide.json');
-                studyData = await response.json();
-            } catch (err) { console.log("JSON not found yet."); }
+    async function loadNotes() {
+        try {
+            const res = await fetch('study_guide.json');
+            noteData = await res.json();
+        } catch(e) { console.log("JSON Load Failed"); }
+    }
+
+    function init() {
+        loadNotes();
+        const horizontal = document.getElementById('horizontal-list');
+        horizontal.innerHTML = allSubjects.filter(s => s.category === 'main').map(s => `
+            <div class="mini-card" style="border-color: ${s.color};">
+                <i class="${s.icon}" style="background: ${s.color}22; color: ${s.color};"></i>
+                <span style="font-size: 0.7rem;">${s.id}</span>
+            </div>
+        `).join('');
+    }
+
+    function openStudyGuide() {
+        document.getElementById('dashboard-view').style.display = 'none';
+        document.getElementById('study-guide-view').style.display = 'block';
+        const list = document.getElementById('vertical-guide-list');
+        let html = '<div class="guide-group-title">My Subjects</div>';
+        html += allSubjects.filter(s => s.category === 'main').map(renderItem).join('');
+        html += '<div class="guide-group-title">Other Subjects</div>';
+        html += allSubjects.filter(s => s.category === 'other').map(renderItem).join('');
+        list.innerHTML = html;
+    }
+
+    function renderItem(s) {
+        return `<div class="guide-item" onclick="viewSubject('${s.id}')">
+            <div class="guide-icon" style="background: ${s.color}22"><i class="${s.icon}" style="color: ${s.color}"></i></div>
+            <span class="fw-bold" style="font-size:0.85rem">${s.id}</span>
+        </div>`;
+    }
+
+    function viewSubject(id) {
+        document.getElementById('study-guide-view').style.display = 'none';
+        document.getElementById('note-viewer').style.display = 'block';
+        document.getElementById('note-title').innerText = id;
+        const body = document.getElementById('note-content');
+        const notes = noteData[id];
+        if(notes) {
+            body.innerHTML = notes.map(n => `<div class="note-card"><h6 class="fw-bold mb-2">${n.topic}</h6><div class="small text-white-50" style="white-space: pre-wrap;">${n.content}</div></div>`).join('');
+        } else {
+            body.innerHTML = `<p class="text-center mt-5 text-muted">Notes for ${id} coming soon!</p>`;
         }
+    }
 
-        function showView(viewId) {
-            document.querySelectorAll('.app-section').forEach(section => section.style.display = 'none');
-            document.getElementById(viewId).style.display = 'block';
-        }
+    function showDashboard() { document.getElementById('study-guide-view').style.display = 'none'; document.getElementById('dashboard-view').style.display = 'block'; }
+    function backToGuide() { document.getElementById('note-viewer').style.display = 'none'; document.getElementById('study-guide-view').style.display = 'block'; }
 
-        function openStudyGuide() {
-            showView('study-guide-view');
-            const container = document.getElementById('guide-list-container');
-            container.innerHTML = subjectData.map(s => `
-                <div class="guide-item" onclick="viewSubjectNotes('${s.name}')">
-                    <div class="guide-icon-box" style="background: ${s.color}22">
-                        <i class="${s.icon}" style="color: ${s.color}"></i>
-                    </div>
-                    <span>${s.name}</span>
-                </div>
-            `).join('');
-        }
-
-        function viewSubjectNotes(subjectName) {
-            showView('note-viewer');
-            document.getElementById('active-subject-title').innerText = subjectName;
-            const body = document.getElementById('note-content-body');
-            
-            const content = studyData[subjectName];
-            if(content) {
-                body.innerHTML = content.map(t => `
-                    <div class="note-card">
-                        <h5 class="fw-bold mb-2">${t.topic}</h5>
-                        <div class="text-white-50 small" style="white-space: pre-wrap; line-height: 1.6;">${t.content}</div>
-                    </div>
-                `).join('');
-            } else {
-                body.innerHTML = `<div class="text-center mt-5 text-muted">No notes found for ${subjectName} yet.</div>`;
-            }
-        }
-
-        window.onload = loadContent;
-    </script>
+    window.onload = init;
+</script>
 </body>
 </html>
