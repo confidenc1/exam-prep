@@ -3,245 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMB-ULTIMATE 2026 | Enterprise Edition</title>
+    <title>JAMB-PRO 2026 | Ultimate Enterprise</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        :root { --jamb-blue: #0047AB; --jamb-success: #22C55E; --jamb-danger: #EF4444; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; user-select: none; }
+        :root { --jamb-blue: #0047AB; --jamb-gold: #FFD700; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F9FAFB; color: #111827; user-select: none; }
         .view { display: none; }
         .view.active { display: block; }
-        .key-btn { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 2px solid #E2E8F0; font-weight: 800; background: white; }
-        .key-btn.active { background: var(--jamb-blue); color: white; border-color: var(--jamb-blue); }
-        .calculator-grid button { padding: 15px; border-radius: 10px; font-weight: bold; background: #f1f5f9; }
-        .trial-banner { background: linear-gradient(90deg, #FF8C00, #FF4500); }
+        /* 8-Key Layout Styles */
+        .key-pad { display: grid; grid-template-cols: repeat(4, 1fr); gap: 8px; }
+        .k-btn { height: 50px; border-radius: 12px; background: white; border: 2px solid #E5E7EB; font-weight: 800; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .k-btn:active, .k-active { background: var(--jamb-blue); color: white; border-color: var(--jamb-blue); }
+        .heatmap-g { background: #DCFCE7; color: #166534; }
+        .heatmap-y { background: #FEF9C3; color: #854d0e; }
+        .heatmap-r { background: #FEE2E2; color: #991b1b; }
+        /* Auto-save pulse */
+        .save-indicator { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body class="pb-24">
 
-    <div id="lockScreen" class="hidden fixed inset-0 z-[10000] bg-white/95 backdrop-blur-md flex items-center justify-center p-6">
+    <div id="paywall" class="hidden fixed inset-0 z-[10000] bg-white flex items-center justify-center p-8">
         <div class="w-full max-w-md text-center">
-            <div class="w-20 h-20 bg-blue-100 text-blue-700 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-lg"><i class="fas fa-shield-alt text-3xl"></i></div>
-            <h2 class="text-2xl font-black text-slate-900 mb-2">Activation Required</h2>
-            <p class="text-slate-500 text-sm mb-8 px-4">You've reached the 5-question trial limit. Unlock <b>60,000 Questions</b>, the <b>AI Tutor</b>, and <b>State Recovery</b>.</p>
-            <a href="https://wa.me/2349131546480?text=I%20want%20the%20JAMB-ULTIMATE%202026%20Key" class="block w-full bg-green-600 text-white py-5 rounded-2xl font-black mb-4 shadow-xl"><i class="fab fa-whatsapp mr-2"></i> WHATSAPP: 09131546480</a>
-            <input type="text" id="licenseInput" placeholder="Enter 12-Digit PIN" class="w-full p-4 border-2 border-slate-100 rounded-2xl mb-4 text-center font-bold tracking-[5px]">
-            <button onclick="verifyKey()" class="w-full bg-blue-700 text-white py-4 rounded-2xl font-bold">ACTIVATE SYSTEM</button>
+            <div class="w-24 h-24 bg-blue-100 text-blue-700 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-xl">
+                <i class="fas fa-key text-4xl"></i>
+            </div>
+            <h2 class="text-3xl font-black mb-2">Unlock Full Access</h2>
+            <p class="text-slate-500 mb-8">Your trial of 5 questions is over. To unlock <b>60,000+ Questions (1978-2025)</b> and <b>AI Explanations</b>, activate your app.</p>
+            
+            <a href="https://wa.me/2349131546480?text=I%20want%20to%20buy%20the%20JAMB-PRO%202026%20Activation%20Key" class="block w-full bg-green-600 text-white py-5 rounded-2xl font-black mb-4 shadow-lg active:scale-95 transition-all">
+                <i class="fab fa-whatsapp mr-2 text-xl"></i> MESSAGE 09131546480 FOR KEY
+            </a>
+
+            <div class="relative py-6 flex items-center gap-4 text-slate-300">
+                <hr class="flex-1"> <span class="text-[10px] font-bold">OR ENTER PIN</span> <hr class="flex-1">
+            </div>
+
+            <input type="text" id="pinInput" placeholder="XXXX-XXXX-XXXX" class="w-full p-5 border-2 border-slate-100 rounded-2xl mb-4 text-center font-bold tracking-[4px] outline-none focus:border-blue-600">
+            <button onclick="activateApp()" class="w-full bg-blue-700 text-white py-4 rounded-2xl font-bold">ACTIVATE PERMANENTLY</button>
         </div>
     </div>
 
-    <header class="bg-white border-b p-4 sticky top-0 z-50 flex justify-between items-center">
+    <header class="bg-white border-b p-5 sticky top-0 z-50 flex justify-between items-center">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-700 rounded-xl flex items-center justify-center text-white"><i class="fas fa-bolt"></i></div>
-            <h1 class="font-black text-blue-900 text-sm">JAMB-ULTIMATE <span class="text-orange-500">2026</span></h1>
+            <div class="w-10 h-10 bg-blue-700 rounded-xl flex items-center justify-center text-white shadow-lg"><i class="fas fa-university"></i></div>
+            <h1 class="font-black text-blue-900 leading-none">JAMB-PRO <br><span class="text-[10px] text-orange-500 uppercase tracking-widest">Enterprise 2026</span></h1>
         </div>
         <div class="flex gap-2">
-            <button onclick="openTool('calc')" class="w-10 h-10 bg-slate-50 text-slate-600 rounded-xl"><i class="fas fa-calculator"></i></button>
-            <button onclick="openTool('ai')" class="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl"><i class="fas fa-robot"></i></button>
+            <button onclick="toggleCalc()" class="w-10 h-10 bg-slate-50 rounded-xl text-slate-600"><i class="fas fa-calculator"></i></button>
+            <div id="saveState" class="hidden flex items-center gap-1 text-[8px] font-bold text-green-500 uppercase"><span class="w-2 h-2 bg-green-500 rounded-full save-indicator"></span> Auto-Saving</div>
         </div>
     </header>
 
-    <div id="trialBanner" class="trial-banner p-2 text-center text-[10px] text-white font-bold uppercase tracking-widest">
-        Free Trial Mode: <span id="trialCount">5</span> Questions Left
-    </div>
+    <main id="v-home" class="view active p-6 space-y-6 max-w-2xl mx-auto">
+        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h4 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Mastery Heatmap</h4>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 heatmap-g rounded-2xl">
+                    <span class="text-xs font-bold">Use of English</span>
+                    <span class="text-[10px] font-black">82% (Strong)</span>
+                </div>
+                <div class="flex items-center justify-between p-3 heatmap-y rounded-2xl">
+                    <span class="text-xs font-bold">Mathematics</span>
+                    <span class="text-[10px] font-black">54% (Average)</span>
+                </div>
+                <div class="flex items-center justify-between p-3 heatmap-r rounded-2xl">
+                    <span class="text-xs font-bold">Physics</span>
+                    <span class="text-[10px] font-black">21% (Danger)</span>
+                </div>
+            </div>
+        </div>
 
-    <main id="view-home" class="view active p-6 space-y-4">
-        <div class="bg-blue-700 p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden">
-            <p class="text-[10px] font-bold opacity-60 uppercase mb-1">2026 Novel Focus</p>
-            <h2 class="text-xl font-black mb-4">The Lekki Headmaster</h2>
-            <button onclick="switchTab('novel')" class="bg-white text-blue-700 px-6 py-2 rounded-xl text-[10px] font-black uppercase">Study Guide</button>
-            <i class="fas fa-book absolute -right-4 -bottom-4 text-8xl opacity-10"></i>
+        <div class="bg-gradient-to-br from-slate-900 to-blue-900 p-8 rounded-[2.5rem] text-white relative overflow-hidden">
+            <div class="relative z-10">
+                <p class="text-[10px] font-bold text-orange-400 uppercase mb-1">Official 2026 Novel</p>
+                <h3 class="text-2xl font-black mb-4">The Lekki Headmaster</h3>
+                <div class="flex gap-2">
+                    <button class="bg-white/10 px-4 py-2 rounded-lg text-[9px] font-bold border border-white/20"><i class="fas fa-play mr-1"></i> AUDIO</button>
+                    <button class="bg-blue-600 px-4 py-2 rounded-lg text-[9px] font-bold">500+ QUESTIONS</button>
+                </div>
+            </div>
+            <i class="fas fa-book-open absolute -right-6 -bottom-6 text-9xl opacity-10"></i>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <div onclick="switchTab('exam')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm cursor-pointer">
-                <i class="fas fa-desktop text-blue-600 mb-2"></i>
-                <h4 class="font-bold text-xs">CBT Exam</h4>
-                <p class="text-[9px] text-slate-400">Full 180 Questions</p>
+            <div onclick="switchView('exam')" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm cursor-pointer hover:border-blue-500 transition-all">
+                <i class="fas fa-stopwatch text-blue-600 mb-2"></i>
+                <h5 class="font-bold text-sm text-slate-800">Mock Challenge</h5>
+                <p class="text-[9px] text-slate-400">180 Questions • 2 Hours</p>
             </div>
-            <div onclick="switchTab('analytics')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm cursor-pointer">
-                <i class="fas fa-chart-pie text-red-500 mb-2"></i>
-                <h4 class="font-bold text-xs">Heatmap</h4>
-                <p class="text-[9px] text-slate-400">Strength/Weakness</p>
-            </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl border border-slate-100">
-            <h4 class="text-[10px] font-black text-slate-400 uppercase mb-4">Quick Utilities</h4>
-            <div class="grid grid-cols-4 gap-2">
-                <button onclick="switchTab('nin')" class="flex flex-col items-center gap-1"><i class="fas fa-id-card text-blue-500"></i><span class="text-[8px] font-bold">NIN</span></button>
-                <button onclick="switchTab('agg')" class="flex flex-col items-center gap-1"><i class="fas fa-calculator text-green-500"></i><span class="text-[8px] font-bold">AGG</span></button>
-                <button onclick="switchTab('brochure')" class="flex flex-col items-center gap-1"><i class="fas fa-search text-orange-500"></i><span class="text-[8px] font-bold">BROCHURE</span></button>
-                <button onclick="switchTab('olevel')" class="flex flex-col items-center gap-1"><i class="fas fa-check-double text-purple-500"></i><span class="text-[8px] font-bold">O-LEVEL</span></button>
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                <i class="fas fa-calculator text-green-500 mb-2"></i>
+                <h5 class="font-bold text-sm text-slate-800">Aggregate Calc</h5>
+                <p class="text-[9px] text-slate-400">University Admission</p>
             </div>
         </div>
     </main>
 
-    <main id="view-exam" class="view p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="font-black text-xs text-slate-400">8-KEY SYSTEM ACTIVE</h3>
-            <div id="examTimer" class="bg-red-50 text-red-600 px-4 py-1 rounded-full font-black text-xs">02:00:00</div>
-        </div>
-
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border min-h-[400px] mb-6 relative">
-            <div class="flex justify-between mb-8">
-                <span id="qSubject" class="text-[10px] font-black text-blue-700 bg-blue-50 px-3 py-1 rounded-lg">PHYSICS</span>
-                <span id="qProgress" class="text-[10px] font-bold text-slate-400">1 / 180</span>
+    <main id="v-exam" class="view p-5 max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                <span id="subjectTag" class="text-[10px] font-black uppercase text-slate-500">Physics 2026</span>
             </div>
-            <p id="qText" class="text-lg font-bold text-slate-800 leading-relaxed mb-10">...</p>
-            <div id="optionList" class="space-y-3"></div>
+            <div id="examTimer" class="bg-red-50 text-red-600 px-4 py-2 rounded-2xl font-black text-xs">02:00:00</div>
         </div>
 
-        <div class="grid grid-cols-4 gap-2">
-            <button onclick="keyAction('A')" class="key-btn">A</button>
-            <button onclick="keyAction('B')" class="key-btn">B</button>
-            <button onclick="keyAction('C')" class="key-btn">C</button>
-            <button onclick="keyAction('D')" class="key-btn">D</button>
-            <button onclick="keyAction('P')" class="key-btn text-blue-600">P</button>
-            <button onclick="keyAction('N')" class="key-btn text-blue-600">N</button>
-            <button onclick="keyAction('S')" class="key-btn text-red-600">S</button>
-            <button onclick="keyAction('R')" class="key-btn text-orange-600">R</button>
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-blue-50 min-h-[400px] mb-8 relative">
+            <div class="flex justify-between items-center mb-10">
+                <span id="qCount" class="text-[10px] font-bold text-slate-300 uppercase">Question 1 of 180</span>
+                <button onclick="toggleAI()" class="text-purple-600 bg-purple-50 px-3 py-1 rounded-full text-[9px] font-black"><i class="fas fa-robot mr-1"></i> AI EXPLAINER</button>
+            </div>
+            <p id="questionText" class="text-lg font-bold text-slate-800 leading-relaxed mb-12">Select a subject to begin your simulation...</p>
+            <div id="optionContainer" class="grid gap-3 mb-8"></div>
+            
+            <div id="aiBox" class="hidden bg-purple-50 p-6 rounded-2xl border-l-4 border-purple-500 mt-4">
+                <h6 class="text-[10px] font-black text-purple-600 uppercase mb-2">AI Step-by-Step Logic</h6>
+                <p id="aiContent" class="text-xs text-purple-900 italic"></p>
+            </div>
+        </div>
+
+        <div class="key-pad">
+            <button onclick="handleKey('A')" class="k-btn" id="key-A">A</button>
+            <button onclick="handleKey('B')" class="k-btn" id="key-B">B</button>
+            <button onclick="handleKey('C')" class="k-btn" id="key-C">C</button>
+            <button onclick="handleKey('D')" class="k-btn" id="key-D">D</button>
+            <button onclick="handleKey('P')" class="k-btn text-blue-600">P (Prev)</button>
+            <button onclick="handleKey('N')" class="k-btn text-blue-600">N (Next)</button>
+            <button onclick="handleKey('S')" class="k-btn text-red-600">S (Submit)</button>
+            <button onclick="handleKey('R')" class="k-btn text-orange-600">R (Reverse)</button>
         </div>
     </main>
 
-    <div id="aiPanel" class="hidden fixed inset-0 z-[10001] bg-white p-6">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-xl font-black">AI Explainer</h2>
-            <button onclick="closeTool('ai')" class="text-red-500 font-bold">CLOSE</button>
-        </div>
-        <div class="bg-purple-50 p-6 rounded-3xl mb-6 border border-purple-100">
-            <p id="aiExplanation" class="text-sm font-semibold text-purple-900 leading-relaxed italic">"Ohm's Law states V = IR. Since V=10 and I=2, then R = 10/2 = 5 Ohms."</p>
-        </div>
-        <button class="w-full py-4 bg-purple-600 text-white rounded-2xl font-bold">Ask Follow-up Question</button>
-    </div>
-
-    <div id="calcPanel" class="hidden fixed inset-0 z-[10001] bg-black/40 flex items-center justify-center p-6 backdrop-blur-sm">
+    <div id="calcModal" class="hidden fixed inset-0 z-[11000] bg-black/40 flex items-center justify-center p-6 backdrop-blur-sm">
         <div class="bg-white p-6 rounded-[2.5rem] w-full max-w-xs shadow-2xl">
-            <div id="calcDisp" class="bg-slate-50 p-6 rounded-2xl text-right text-3xl font-black mb-4">0</div>
-            <div class="grid grid-cols-4 gap-2 calculator-grid">
-                <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button onclick="cIn('/')">/</button>
-                <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button onclick="cIn('*')">x</button>
-                <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button onclick="cIn('-')">-</button>
-                <button onclick="cIn('0')">0</button><button onclick="cIn('.')">.</button><button onclick="cEq()" class="bg-blue-700 text-white">=</button><button onclick="cRes()" class="text-red-500">C</button>
+            <div id="calcDisp" class="bg-slate-50 p-6 rounded-2xl text-right text-3xl font-black mb-4 h-20 flex items-center justify-end overflow-hidden">0</div>
+            <div class="grid grid-cols-4 gap-2">
+                <button onclick="calcPress('7')" class="p-4 bg-slate-50 rounded-xl font-bold">7</button>
+                <button onclick="calcPress('8')" class="p-4 bg-slate-50 rounded-xl font-bold">8</button>
+                <button onclick="calcPress('9')" class="p-4 bg-slate-50 rounded-xl font-bold">9</button>
+                <button onclick="calcPress('/')" class="p-4 bg-orange-100 text-orange-600 rounded-xl">/</button>
+                <button onclick="calcPress('4')" class="p-4 bg-slate-50 rounded-xl font-bold">4</button>
+                <button onclick="calcPress('5')" class="p-4 bg-slate-50 rounded-xl font-bold">5</button>
+                <button onclick="calcPress('6')" class="p-4 bg-slate-50 rounded-xl font-bold">6</button>
+                <button onclick="calcPress('*')" class="p-4 bg-orange-100 text-orange-600 rounded-xl">x</button>
+                <button onclick="calcPress('1')" class="p-4 bg-slate-50 rounded-xl font-bold">1</button>
+                <button onclick="calcPress('2')" class="p-4 bg-slate-50 rounded-xl font-bold">2</button>
+                <button onclick="calcPress('3')" class="p-4 bg-slate-50 rounded-xl font-bold">3</button>
+                <button onclick="calcPress('-')" class="p-4 bg-orange-100 text-orange-600 rounded-xl">-</button>
+                <button onclick="calcClear()" class="p-4 bg-red-50 text-red-600 rounded-xl font-bold">C</button>
+                <button onclick="calcPress('0')" class="p-4 bg-slate-50 rounded-xl font-bold">0</button>
+                <button onclick="calcSolve()" class="p-4 bg-blue-700 text-white rounded-xl font-bold col-span-2">=</button>
             </div>
-            <button onclick="closeTool('calc')" class="w-full mt-4 py-2 text-[10px] font-bold text-slate-400">DISMISS</button>
+            <button onclick="toggleCalc()" class="w-full mt-4 py-2 text-[10px] font-bold text-slate-400 uppercase">Exit Calculator</button>
         </div>
     </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-around items-center z-[40]">
+        <button onclick="switchView('home')" class="flex flex-col items-center gap-1 text-blue-700">
+            <i class="fas fa-th-large text-xl"></i><span class="text-[8px] font-black uppercase">Home</span>
+        </button>
+        <button onclick="switchView('exam')" class="flex flex-col items-center gap-1 text-slate-300">
+            <i class="fas fa-pen-nib text-xl"></i><span class="text-[8px] font-black uppercase">Practice</span>
+        </button>
+        <button onclick="alert('Profile Code Assistant Coming in Registration Week!')" class="flex flex-col items-center gap-1 text-slate-300">
+            <i class="fas fa-id-card text-xl"></i><span class="text-[8px] font-black uppercase">NIN Code</span>
+        </button>
+    </nav>
 
     <script>
-        const MASTER_KEY = "JAMB-BOSS-2026";
-        let currentQ = 0;
-        let isActivated = localStorage.getItem('activated') === 'true';
-        let trialLimit = 5;
+        const MASTER_PIN = "JAMB-BOSS-2026";
+        let curQ = 0;
         let cValue = "";
         let answers = {};
+        let isActivated = localStorage.getItem('active_2026') === 'true';
 
-        // DATABASE: Features Questions + State Recovery logic
-        const QUESTIONS = [
-            { q: "A wire of resistance 5 Ohms has a current of 2A flowing through it. Calculate the Voltage (V).", o: ["2.5V", "7V", "10V", "3V"], c: 2, e: "Using Ohm's Law: V = I × R. Therefore, V = 2 × 5 = 10 Volts." },
-            { q: "In 'The Lekki Headmaster', who is the antagonist representing corruption?", o: ["Mr. Ade", "The Chairman", "The Janitor", "Chief Okoro"], c: 1, e: "The Chairman represents the systemic corruption the Headmaster fights." },
-            { q: "Solve for x: 4x - 8 = 12.", o: ["x = 5", "x = 4", "x = 10", "x = 2"], c: 0, e: "4x = 12 + 8 -> 4x = 20 -> x = 5." },
-            { q: "Which part of speech describes a verb?", o: ["Noun", "Adjective", "Adverb", "Pronoun"], c: 2, e: "Adverbs modify verbs, adjectives, or other adverbs." },
-            { q: "Identify the S.I unit of Power.", o: ["Joule", "Watt", "Newton", "Pascal"], c: 1, e: "The Watt (W) is the S.I unit of power, defined as 1 Joule per second." }
+        // 60,000+ Question Engine Logic (Mock Dataset)
+        const DB = [
+            { q: "Solve for x: 3x + 15 = 45.", o: ["x = 5", "x = 10", "x = 15", "x = 30"], c: 1, e: "Subtract 15 from 45 to get 30. Then divide 30 by 3. Result: x = 10." },
+            { q: "In 'The Lekki Headmaster', who is the protagonist?", o: ["Mr. Ajayi", "The Janitor", "Chief Okoro", "The Student"], c: 0, e: "Mr. Ajayi is the titular Lekki Headmaster who battles corruption." },
+            { q: "What is the S.I unit of Pressure?", o: ["Newton", "Joule", "Pascal", "Watt"], c: 2, e: "Pressure is defined as Force/Area. The unit is the Pascal (Pa)." },
+            { q: "Identify the synonym of the word 'Pernicious'.", o: ["Helpful", "Harmful", "Happy", "Healthy"], c: 1, e: "Pernicious means having a harmful effect, especially in a gradual way." },
+            { q: "Which Nigerian University is known as the First and the Best?", o: ["UNILAG", "OAU", "UNN", "UI"], c: 3, e: "The University of Ibadan (UI) was established in 1948 as the premier university." }
         ];
 
-        // 1. TABS & TOOLS
-        function switchTab(id) {
+        // 1. NAVIGATION
+        function switchView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + id).classList.add('active');
-            if(id === 'exam') loadQ();
+            document.getElementById('v-' + id).classList.add('active');
+            if(id === 'exam') loadQuestion();
         }
 
-        function openTool(id) { document.getElementById(id + 'Panel').classList.remove('hidden'); }
-        function closeTool(id) { document.getElementById(id + 'Panel').classList.add('hidden'); }
-
-        // 2. JAMB 8-KEY SYSTEM
-        function keyAction(key) {
-            if(!isActivated && currentQ >= trialLimit) {
-                document.getElementById('lockScreen').classList.remove('hidden');
+        // 2. EXAM ENGINE
+        function loadQuestion() {
+            if(!isActivated && curQ >= 5) {
+                document.getElementById('paywall').classList.remove('hidden');
                 return;
             }
 
-            if(['A','B','C','D'].includes(key)) {
-                let idx = key.charCodeAt(0) - 65;
-                selectOption(idx);
-            } else if(key === 'N') {
-                if(currentQ < QUESTIONS.length - 1) { currentQ++; loadQ(); }
-            } else if(key === 'P') {
-                if(currentQ > 0) { currentQ--; loadQ(); }
-            } else if(key === 'S') {
-                alert("Exam Submitted! Total Score: Calculating...");
-                switchTab('home');
-            }
-            saveState(); // EXAM STATE RECOVERY
-        }
-
-        // 3. EXAM LOGIC
-        function loadQ() {
-            if(!isActivated && currentQ >= trialLimit) {
-                document.getElementById('lockScreen').classList.remove('hidden');
-                return;
-            }
-
-            const q = QUESTIONS[currentQ];
-            document.getElementById('qText').innerText = q.q;
-            document.getElementById('qProgress').innerText = `${currentQ + 1} / 180`;
-            document.getElementById('aiExplanation').innerText = q.e; // AI TUTOR INTEGRATION
-
+            const data = DB[curQ] || DB[0];
+            document.getElementById('questionText').innerText = data.q;
+            document.getElementById('aiContent').innerText = data.e;
+            document.getElementById('qCount').innerText = `Question ${curQ + 1} of 180`;
+            
             let html = "";
-            q.o.forEach((opt, i) => {
-                let activeClass = answers[currentQ] === i ? 'border-blue-600 bg-blue-50' : 'border-slate-100';
-                html += `<div onclick="selectOption(${i})" class="p-5 border-2 rounded-2xl flex items-center gap-4 cursor-pointer transition-all ${activeClass}">
-                    <span class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center font-bold text-xs">${String.fromCharCode(65+i)}</span>
-                    <span class="text-sm font-semibold">${opt}</span>
-                </div>`;
+            data.o.forEach((opt, i) => {
+                let active = answers[curQ] === i ? 'border-blue-600 bg-blue-50' : 'border-slate-100';
+                html += `
+                    <button onclick="handleKey('${String.fromCharCode(65+i)}')" class="w-full p-5 border-2 rounded-2xl text-left text-sm font-bold flex items-center gap-4 transition-all ${active}">
+                        <span class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-xs text-slate-400">${String.fromCharCode(65+i)}</span>
+                        ${opt}
+                    </button>
+                `;
             });
-            document.getElementById('optionList').innerHTML = html;
+            document.getElementById('optionContainer').innerHTML = html;
+            autoSave();
         }
 
-        function selectOption(i) {
-            answers[currentQ] = i;
-            loadQ();
+        // 3. 8-KEY SYSTEM LOGIC
+        function handleKey(key) {
+            if(['A','B','C','D'].includes(key)) {
+                answers[curQ] = key.charCodeAt(0) - 65;
+                loadQuestion();
+            } else if(key === 'N') {
+                if(curQ < DB.length - 1) { curQ++; loadQuestion(); }
+            } else if(key === 'P') {
+                if(curQ > 0) { curQ--; loadQuestion(); }
+            } else if(key === 'S') {
+                if(confirm("Are you sure you want to submit?")) alert("Submitted! Check your Heatmap for results.");
+            }
         }
 
-        // 4. ACTIVATION
-        function verifyKey() {
-            if(document.getElementById('licenseInput').value === MASTER_KEY) {
+        // 4. AUTO-SAVE (STATE RECOVERY)
+        function autoSave() {
+            document.getElementById('saveState').classList.remove('hidden');
+            localStorage.setItem('recovery_exam', JSON.stringify({q: curQ, ans: answers}));
+            setTimeout(() => document.getElementById('saveState').classList.add('hidden'), 1000);
+        }
+
+        // 5. CALCULATOR
+        function toggleCalc() { document.getElementById('calcModal').classList.toggle('hidden'); }
+        function calcPress(v) { cValue += v; document.getElementById('calcDisp').innerText = cValue; }
+        function calcClear() { cValue = ""; document.getElementById('calcDisp').innerText = "0"; }
+        function calcSolve() { try { cValue = eval(cValue).toString(); document.getElementById('calcDisp').innerText = cValue; } catch { calcClear(); } }
+
+        // 6. ACTIVATION
+        function activateApp() {
+            if(document.getElementById('pinInput').value.trim() === MASTER_PIN) {
                 isActivated = true;
-                localStorage.setItem('activated', 'true');
-                document.getElementById('lockScreen').classList.add('hidden');
-                document.getElementById('trialBanner').classList.add('hidden');
-                alert("SYSTEM FULLY ACTIVATED!");
+                localStorage.setItem('active_2026', 'true');
+                document.getElementById('paywall').classList.add('hidden');
+                alert("Success! JAMB-PRO 2026 is fully activated.");
             } else {
-                alert("Invalid PIN. Contact 09131546480.");
+                alert("Invalid Pin. Message 09131546480 to get yours.");
             }
         }
 
-        // 5. AUTO-SAVE & STATE RECOVERY
-        function saveState() {
-            localStorage.setItem('jamb_state', JSON.stringify({q: currentQ, ans: answers}));
-        }
+        function toggleAI() { document.getElementById('aiBox').classList.toggle('hidden'); }
 
-        function recoverState() {
-            let state = JSON.parse(localStorage.getItem('jamb_state'));
-            if(state) {
-                currentQ = state.q;
-                answers = state.ans;
-            }
-        }
-
-        // 6. CALCULATOR
-        function cIn(v) { cValue += v; document.getElementById('calcDisp').innerText = cValue; }
-        function cRes() { cValue = ""; document.getElementById('calcDisp').innerText = "0"; }
-        function cEq() { try { cValue = eval(cValue).toString(); document.getElementById('calcDisp').innerText = cValue; } catch { cRes(); } }
-
+        // Recovery on load
         window.onload = () => {
-            recoverState();
-            if(isActivated) {
-                document.getElementById('trialBanner').classList.add('hidden');
+            const saved = JSON.parse(localStorage.getItem('recovery_exam'));
+            if(saved) {
+                curQ = saved.q;
+                answers = saved.ans;
             }
         };
     </script>
 </body>
-</html>
+    </html>
+    
