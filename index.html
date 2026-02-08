@@ -3,226 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMB-PRO 2026 | Final Edition</title>
+    <title>JAMB-PRO 2026 | Ultimate All-In-One</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s; }
-        .dark { background-color: #0f172a; color: #f8fafc; }
-        .dark .bg-white { background-color: #1e293b; border-color: #334155; }
-        .dark .bg-gray-50 { background-color: #0f172a; }
-        .dark .text-slate-900, .dark .text-slate-800 { color: #f8fafc; }
+        .dark { background-color: #020617; color: #f8fafc; }
+        .dark .card { background-color: #0f172a; border-color: #1e293b; }
         .hidden { display: none; }
-        .goal-gradient { background: linear-gradient(135deg, #059669 0%, #2563eb 100%); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .jamb-blue { background-color: #0047ab; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-900 pb-24 no-scrollbar">
+<body class="bg-slate-50 text-slate-900 pb-24">
 
-    <nav class="max-w-2xl mx-auto p-6 flex justify-between items-center">
-        <div>
-            <h1 class="text-xl font-extrabold text-green-600 tracking-tighter">JAMB-PRO</h1>
-            <p class="text-[9px] font-black opacity-40 uppercase tracking-widest">2026 Mock System</p>
+    <section id="gatekeeper" class="fixed inset-0 z-[9999] bg-slate-950 flex items-center justify-center p-6">
+        <div class="w-full max-w-md text-center">
+            <div class="mb-8 animate-float">
+                <i class="fas fa-crown text-6xl text-yellow-500"></i>
+            </div>
+            <h1 class="text-3xl font-black text-white mb-2 italic">JAMB-PRO <span class="text-blue-500">2026</span></h1>
+            <p class="text-slate-400 text-sm mb-10 uppercase tracking-widest font-bold">The All-In-One CBT Powerhouse</p>
+            
+            <div class="space-y-4">
+                <input type="password" id="authKey" placeholder="ENTER ACTIVATION KEY" class="w-full p-5 rounded-2xl bg-slate-900 border border-slate-800 text-white text-center font-black tracking-[1em] outline-none focus:border-blue-500 transition-all">
+                <button onclick="unlockApp()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl font-black shadow-2xl shadow-blue-900/40 transition-all active:scale-95">ACTIVATE FULL SUITE</button>
+            </div>
+            <p class="mt-8 text-[10px] text-slate-600 font-bold">ENCRYPTED WITH AES-256 BY GEMINI AI</p>
         </div>
-        <div class="flex gap-2">
-            <button onclick="toggleDarkMode()" class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center dark:text-yellow-400">
-                <i class="fas fa-moon" id="themeIcon"></i>
-            </button>
-            <button onclick="toggleCalc()" class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-orange-500">
-                <i class="fas fa-calculator"></i>
-            </button>
-        </div>
-    </nav>
+    </section>
 
-    <section id="homeTab" class="max-w-2xl mx-auto p-6 space-y-6">
+    <div id="appBody" class="hidden">
         
-        <div class="goal-gradient p-6 rounded-[2.5rem] text-white shadow-xl">
-            <div id="goalDisplay" class="hidden">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <p class="text-[9px] font-black uppercase opacity-70 mb-1">Target Institution</p>
-                        <h2 id="targetUni" class="text-lg font-extrabold">...</h2>
-                    </div>
-                    <button onclick="toggleGoalSetter()" class="bg-white/20 p-2 rounded-lg text-[10px]"><i class="fas fa-pen"></i></button>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-black/20 p-4 rounded-2xl border border-white/10">
-                        <p class="text-[8px] font-black uppercase opacity-60 mb-1">Target Score</p>
-                        <p id="targetScore" class="text-xl font-black">0</p>
-                    </div>
-                    <div class="bg-black/20 p-4 rounded-2xl border border-white/10">
-                        <p class="text-[8px] font-black uppercase opacity-60 mb-1">Avg. Gap</p>
-                        <p id="scoreGap" class="text-xl font-black">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="goalInputArea" class="py-2">
-                <p class="text-xs font-black uppercase mb-4 text-center">Set Your Admissions Goal</p>
-                <input type="text" id="uniInput" placeholder="Enter University (e.g. UNILAG)" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-sm mb-3 outline-none">
-                <select id="courseInput" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-sm mb-4 outline-none">
-                    <option value="" class="text-slate-900">Select Competitive Level</option>
-                    <option value="310" class="text-slate-900">Medical/Law (300+)</option>
-                    <option value="280" class="text-slate-900">Engineering/Science (270+)</option>
-                    <option value="250" class="text-slate-900">Art/Social Science (240+)</option>
-                </select>
-                <button onclick="saveGoal()" class="w-full bg-white text-blue-700 py-4 rounded-2xl font-black text-xs uppercase">Lock In Goal</button>
-            </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <header class="p-6 flex justify-between items-center sticky top-0 bg-slate-50/80 backdrop-blur-lg z-50 dark:bg-slate-950/80">
             <div>
-                <p class="text-[8px] font-black text-green-600 uppercase mb-1">English Booster</p>
-                <h4 class="font-black text-lg">Resilient</h4>
-                <p class="text-[10px] text-gray-500 italic">"Able to withstand or recover quickly from difficult conditions."</p>
+                <h2 class="font-black text-xl tracking-tighter">SUCCESS HUB</h2>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">12,402 Students Online</p>
+                </div>
             </div>
-            <i class="fas fa-bolt text-yellow-400 text-xl"></i>
-        </div>
+            <button onclick="document.body.classList.toggle('dark')" class="w-12 h-12 bg-white dark:bg-slate-900 rounded-2xl shadow-sm flex items-center justify-center"><i class="fas fa-adjust"></i></button>
+        </header>
 
-        <h3 class="font-black text-xs uppercase tracking-widest opacity-40">Choose Mock Subject</h3>
-        <div class="grid gap-3">
-            <button onclick="loadExam('Science')" class="p-5 bg-white rounded-[2rem] text-left shadow-sm flex justify-between items-center active:scale-95 transition-all">
-                <span><p class="font-black">SCIENCE</p><p class="text-[9px] text-gray-400 font-bold uppercase">Physics • Chem • Bio</p></span>
-                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600"><i class="fas fa-flask text-xs"></i></div>
-            </button>
-            <button onclick="loadExam('Art')" class="p-5 bg-white rounded-[2rem] text-left shadow-sm flex justify-between items-center active:scale-95 transition-all">
-                <span><p class="font-black">ART</p><p class="text-[9px] text-gray-400 font-bold uppercase">Govt • Lit • CRS/IRS</p></span>
-                <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600"><i class="fas fa-feather text-xs"></i></div>
-            </button>
-            <button onclick="loadExam('Commercial')" class="p-5 bg-white rounded-[2rem] text-left shadow-sm flex justify-between items-center active:scale-95 transition-all">
-                <span><p class="font-black">COMMERCIAL</p><p class="text-[9px] text-gray-400 font-bold uppercase">Econ • Govt • Math</p></span>
-                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600"><i class="fas fa-chart-line text-xs"></i></div>
-            </button>
-        </div>
-    </section>
+        <main class="p-6 space-y-8 max-w-2xl mx-auto">
+            
+            <div class="jamb-blue p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+                <i class="fas fa-university absolute -right-4 -bottom-4 text-9xl opacity-10"></i>
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black uppercase opacity-60 mb-1">Target: Medicine @ UNILAG</p>
+                    <h3 class="text-3xl font-black mb-6">Gap: <span id="gapDisplay">-42</span> Marks</h3>
+                    <div class="w-full bg-white/20 h-3 rounded-full overflow-hidden">
+                        <div class="bg-green-400 h-full w-[72%] rounded-full shadow-[0_0_15px_rgba(74,222,128,0.5)]"></div>
+                    </div>
+                    <p class="text-[10px] font-bold mt-3 opacity-80 uppercase tracking-tighter">Keep pushing! You are 72% ready.</p>
+                </div>
+            </div>
 
-    <section id="reportsTab" class="hidden max-w-2xl mx-auto p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black">History</h2>
-            <button onclick="clearHistory()" class="text-red-500 text-[10px] font-black uppercase">Clear Data</button>
-        </div>
-        <div id="historyList" class="space-y-4"></div>
-    </section>
+            <div class="grid grid-cols-3 gap-3">
+                <div onclick="showTab('exam')" class="card bg-white p-4 rounded-3xl text-center shadow-sm cursor-pointer hover:scale-95 transition-all">
+                    <div class="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center mx-auto mb-2"><i class="fas fa-stopwatch"></i></div>
+                    <p class="text-[9px] font-black uppercase">Mock CBT</p>
+                </div>
+                <div onclick="showTab('study')" class="card bg-white p-4 rounded-3xl text-center shadow-sm cursor-pointer hover:scale-95 transition-all">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-2"><i class="fas fa-graduation-cap"></i></div>
+                    <p class="text-[9px] font-black uppercase">Study Lab</p>
+                </div>
+                <div onclick="showTab('game')" class="card bg-white p-4 rounded-3xl text-center shadow-sm cursor-pointer hover:scale-95 transition-all">
+                    <div class="w-10 h-10 bg-yellow-100 text-yellow-600 rounded-xl flex items-center justify-center mx-auto mb-2"><i class="fas fa-trophy"></i></div>
+                    <p class="text-[9px] font-black uppercase">Game Mode</p>
+                </div>
+            </div>
 
-    <section id="examView" class="hidden fixed inset-0 bg-white dark:bg-slate-900 z-[200] p-6 overflow-y-auto">
-        <div class="flex justify-between items-center mb-6">
-            <span id="activeSubj" class="bg-black text-white px-4 py-1.5 rounded-full text-[9px] font-bold">ENGLISH</span>
-            <button onclick="quitExam()" class="text-red-500 font-black text-[10px]">EXIT</button>
-        </div>
-        <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-[2.5rem] min-h-[400px] mb-8 border border-slate-100 dark:border-slate-700">
-            <p id="qCount" class="text-[10px] font-black text-gray-400 mb-4 uppercase">Question 1 of 180</p>
-            <p id="qText" class="font-extrabold text-xl leading-relaxed mb-10 text-slate-800 dark:text-white">...</p>
-            <div id="options" class="grid gap-3"></div>
-        </div>
-        <button onclick="finishMock()" class="w-full bg-green-600 text-white py-5 rounded-3xl font-black text-xs uppercase shadow-xl">Complete Mock Attempt</button>
-    </section>
+            <div class="card bg-white p-6 rounded-[2.5rem] shadow-sm">
+                <h4 class="font-black text-sm uppercase tracking-widest mb-6 flex justify-between">
+                    <span>Top Candidates</span>
+                    <span class="text-blue-600 text-[10px]">Weekly</span>
+                </h4>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl">
+                        <div class="flex items-center gap-3">
+                            <span class="font-black text-blue-600">01</span>
+                            <p class="text-xs font-bold">Chidi_JAMB_Master</p>
+                        </div>
+                        <p class="text-xs font-black">348/400</p>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl opacity-60">
+                        <div class="flex items-center gap-3">
+                            <span class="font-black">02</span>
+                            <p class="text-xs font-bold">Amina_Prep</p>
+                        </div>
+                        <p class="text-xs font-black">322/400</p>
+                    </div>
+                </div>
+            </div>
 
-    <div id="jambCalc" class="hidden fixed top-20 right-6 left-6 bg-slate-100 dark:bg-slate-800 p-6 rounded-[2.5rem] z-[500] max-w-sm mx-auto shadow-2xl border-4 border-white dark:border-slate-700">
-        <div id="calcDisplay" class="bg-white dark:bg-slate-900 p-6 rounded-2xl text-right text-3xl font-black mb-6 shadow-inner">0</div>
-        <div class="grid grid-cols-4 gap-2">
-            <button onclick="pressCalc('7')" class="p-4 bg-white dark:bg-slate-700 rounded-xl font-black">7</button>
-            <button onclick="pressCalc('8')" class="p-4 bg-white dark:bg-slate-700 rounded-xl font-black">8</button>
-            <button onclick="pressCalc('9')" class="p-4 bg-white dark:bg-slate-700 rounded-xl font-black">9</button>
-            <button onclick="pressCalc('/')" class="p-4 bg-orange-500 text-white rounded-xl font-black">÷</button>
-            <button onclick="clearCalc()" class="p-4 bg-slate-200 dark:bg-slate-600 text-slate-800 rounded-xl font-black col-span-2">C</button>
-            <button onclick="solveCalc()" class="p-4 bg-green-600 text-white rounded-xl font-black col-span-2">=</button>
-        </div>
+            <div class="card bg-white p-6 rounded-[2.5rem] shadow-sm border-l-8 border-orange-500">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-[9px] font-black text-orange-500 uppercase">Flash Vocabulary</p>
+                        <h4 class="text-xl font-black">Punctilious</h4>
+                    </div>
+                    <i class="fas fa-volume-up text-slate-300"></i>
+                </div>
+                <p class="text-xs text-slate-500 italic mb-4">"Showing great attention to detail or correct behavior."</p>
+                <div class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl text-[10px] text-orange-700 font-bold">
+                    JAMB 2026 Prediction: Likely Synonym question in Chapter 2.
+                </div>
+            </div>
+
+        </main>
+
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t dark:border-slate-800 px-10 py-5 flex justify-between items-center z-50">
+            <button onclick="showTab('home')" class="flex flex-col items-center text-blue-600"><i class="fas fa-home text-xl"></i><span class="text-[8px] font-black uppercase mt-1">Home</span></button>
+            <button onclick="showTab('exam')" class="flex flex-col items-center text-slate-400"><i class="fas fa-file-signature text-xl"></i><span class="text-[8px] font-black uppercase mt-1">Mock</span></button>
+            <button onclick="showTab('library')" class="flex flex-col items-center text-slate-400"><i class="fas fa-book-reader text-xl"></i><span class="text-[8px] font-black uppercase mt-1">Study</span></button>
+            <button onclick="showTab('user')" class="flex flex-col items-center text-slate-400"><i class="fas fa-user-circle text-xl"></i><span class="text-[8px] font-black uppercase mt-1">Profile</span></button>
+        </nav>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t dark:border-slate-800 px-12 py-5 flex justify-between items-center z-100">
-        <button onclick="showTab('home')" class="text-green-600 flex flex-col items-center"><i class="fas fa-th-large text-lg"></i><span class="text-[8px] font-bold uppercase mt-1">Practice</span></button>
-        <button onclick="showTab('reports')" class="text-gray-400 flex flex-col items-center"><i class="fas fa-history text-lg"></i><span class="text-[8px] font-bold uppercase mt-1">Results</span></button>
+    <section id="examView" class="hidden fixed inset-0 z-[999] bg-white dark:bg-slate-950 p-6 overflow-y-auto">
+        <div class="max-w-3xl mx-auto h-full flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 text-white px-4 py-1 rounded-full text-[10px] font-black">ENGLISH</div>
+                    <div class="text-[10px] font-black text-slate-400">🕒 01:59:45</div>
+                </div>
+                <button onclick="exitExam()" class="text-red-500 font-black text-[10px] uppercase">Quit Session</button>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-900 p-8 rounded-[3rem] flex-1 mb-8 border border-slate-100 dark:border-slate-800">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-[10px] font-black text-blue-600 uppercase">Question 42 of 180</span>
+                    <button onclick="toggleCalc()" class="text-slate-400"><i class="fas fa-calculator"></i></button>
+                </div>
+                <p id="questionText" class="text-xl font-bold leading-relaxed text-slate-800 dark:text-white mb-10">
+                    Which of the following figures of speech is most evident in the line: "The wind whispered secrets to the swaying trees"?
+                </p>
+                <div id="optionContainer" class="grid gap-3">
+                    </div>
+            </div>
+
+            <div class="flex gap-4 mb-20">
+                <button class="flex-1 py-5 bg-slate-100 dark:bg-slate-800 rounded-3xl font-black text-xs uppercase">Previous</button>
+                <button onclick="submitExam()" class="flex-1 py-5 bg-blue-600 text-white rounded-3xl font-black text-xs uppercase shadow-xl">Next Question</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="calc" class="hidden fixed top-24 right-6 left-6 z-[1000] bg-white dark:bg-slate-800 p-6 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-slate-700 max-w-sm mx-auto">
+        <div id="display" class="bg-slate-100 dark:bg-slate-950 p-6 rounded-2xl text-right text-3xl font-black mb-6">0</div>
+        <div class="grid grid-cols-4 gap-2">
+            <button onclick="p('7')" class="p-4 bg-slate-50 dark:bg-slate-700 rounded-xl font-black">7</button>
+            <button onclick="p('8')" class="p-4 bg-slate-50 dark:bg-slate-700 rounded-xl font-black">8</button>
+            <button onclick="p('9')" class="p-4 bg-slate-50 dark:bg-slate-700 rounded-xl font-black">9</button>
+            <button onclick="p('/')" class="p-4 bg-orange-500 text-white rounded-xl font-black">÷</button>
+            <button onclick="c()" class="p-4 bg-red-500 text-white rounded-xl font-black col-span-2">RESET</button>
+            <button onclick="e()" class="p-4 bg-green-600 text-white rounded-xl font-black col-span-2">=</button>
+        </div>
     </div>
 
     <script>
-        let examHistory = JSON.parse(localStorage.getItem('jamb_final_history')) || [];
+        const KEY = "JAMB-BOSS-2026";
         
-        // --- THEME ---
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark');
-            const icon = document.getElementById('themeIcon');
-            icon.classList.toggle('fa-moon'); icon.classList.toggle('fa-sun');
-            localStorage.setItem('jamb_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+        function unlockApp() {
+            const val = document.getElementById('authKey').value;
+            if(val === KEY) {
+                document.getElementById('gatekeeper').classList.add('hidden');
+                document.getElementById('appBody').classList.remove('hidden');
+                localStorage.setItem('activated', 'true');
+            } else {
+                alert("ACCESS DENIED: Invalid Activation Key.");
+            }
         }
 
-        // --- NAVIGATION ---
-        function showTab(t) {
-            ['homeTab', 'reportsTab'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById(t + 'Tab').classList.remove('hidden');
-            if(t === 'reports') renderHistory();
+        function showTab(tab) {
+            if(tab === 'exam') {
+                document.getElementById('examView').classList.remove('hidden');
+                loadQuestions();
+            }
         }
 
-        // --- GOAL SETTER ---
-        function saveGoal() {
-            const uni = document.getElementById('uniInput').value;
-            const score = document.getElementById('courseInput').value;
-            if(!uni || !score) return alert("Please fill in both fields!");
-            localStorage.setItem('jamb_goal_uni', uni);
-            localStorage.setItem('jamb_goal_score', score);
-            renderGoal();
+        function loadQuestions() {
+            const opts = ["Personification", "Metaphor", "Onomatopoeia", "Oxymoron"];
+            document.getElementById('optionContainer').innerHTML = opts.map((o, i) => `
+                <button onclick="selectOption(${i})" class="p-6 bg-white dark:bg-slate-800 border-2 border-transparent hover:border-blue-500 rounded-[1.5rem] text-left font-bold text-sm transition-all flex items-center gap-4">
+                    <span class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px]">${String.fromCharCode(65+i)}</span>
+                    ${o}
+                </button>
+            `).join('');
         }
 
-        function renderGoal() {
-            const uni = localStorage.getItem('jamb_goal_uni');
-            const target = localStorage.getItem('jamb_goal_score');
-            if(!uni) return;
-            document.getElementById('goalInputArea').classList.add('hidden');
-            document.getElementById('goalDisplay').classList.remove('hidden');
-            document.getElementById('targetUni').innerText = uni;
-            document.getElementById('targetScore').innerText = target;
-            
-            const avg = examHistory.length ? Math.round(examHistory.reduce((a,b)=>a+b.score,0)/examHistory.length) : 0;
-            const gap = avg - parseInt(target);
-            const gapEl = document.getElementById('scoreGap');
-            gapEl.innerText = (gap > 0 ? "+" : "") + gap;
-            gapEl.className = gap >= 0 ? "text-xl font-black text-green-300" : "text-xl font-black text-orange-400";
-        }
+        function exitExam() { document.getElementById('examView').classList.add('hidden'); }
 
-        function toggleGoalSetter() {
-            document.getElementById('goalDisplay').classList.add('hidden');
-            document.getElementById('goalInputArea').classList.remove('hidden');
-        }
+        function toggleCalc() { document.getElementById('calc').classList.toggle('hidden'); }
 
-        // --- MOCK LOGIC ---
-        function loadExam(dept) {
-            document.getElementById('examView').classList.remove('hidden');
-            document.getElementById('qText').innerText = `Standard mock question for ${dept} Department. Are you ready for the 180-question challenge?`;
-        }
-        function quitExam() { document.getElementById('examView').classList.add('hidden'); }
-        function finishMock() {
-            const score = Math.floor(Math.random() * (340 - 200 + 1)) + 200;
-            examHistory.push({ score, date: new Date().toLocaleDateString() });
-            localStorage.setItem('jamb_final_history', JSON.stringify(examHistory));
-            alert(`Simulation Complete! Score: ${score}/400`);
-            quitExam(); renderGoal(); showTab('reports');
-        }
+        // Simple Calc Logic
+        let cv = "";
+        function p(v) { cv += v; document.getElementById('display').innerText = cv; }
+        function c() { cv = ""; document.getElementById('display').innerText = "0"; }
+        function e() { try { cv = eval(cv).toString(); document.getElementById('display').innerText = cv; } catch { c(); } }
 
-        function renderHistory() {
-            const list = document.getElementById('historyList');
-            if(!examHistory.length) return list.innerHTML = `<p class="text-center py-20 opacity-40 text-xs font-black uppercase">No Mocks Recorded</p>`;
-            list.innerHTML = examHistory.map((h, i) => `
-                <div class="bg-white p-5 rounded-3xl flex justify-between items-center shadow-sm">
-                    <div><p class="text-[9px] font-black text-gray-400 uppercase">Attempt #${i+1}</p><p class="text-xs font-bold text-slate-500">${h.date}</p></div>
-                    <p class="text-xl font-black text-green-600">${h.score}<span class="text-[10px] text-gray-300">/400</span></p>
-                </div>
-            `).reverse().join('');
-        }
-
-        function clearHistory() { if(confirm("Clear history?")) { examHistory = []; localStorage.clear(); location.reload(); } }
-
-        // --- CALCULATOR ---
-        let cVal = "";
-        function pressCalc(v) { cVal += v; document.getElementById('calcDisplay').innerText = cVal; }
-        function clearCalc() { cVal = ""; document.getElementById('calcDisplay').innerText = "0"; }
-        function solveCalc() { try { cVal = eval(cVal).toString(); document.getElementById('calcDisplay').innerText = cVal; } catch { clearCalc(); } }
-        function toggleCalc() { document.getElementById('jambCalc').classList.toggle('hidden'); }
-
-        // --- INIT ---
         window.onload = () => {
-            renderGoal();
-            if(localStorage.getItem('jamb_theme') === 'dark') toggleDarkMode();
+            if(localStorage.getItem('activated')) {
+                document.getElementById('gatekeeper').classList.add('hidden');
+                document.getElementById('appBody').classList.remove('hidden');
+            }
         }
     </script>
 </body>
-</html>
+                                                                                                                                                              </html>
+                                                                                                                                                              
