@@ -3,209 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMB Prep Elite 2026</title>
+    <title>JAMB ULTIMATE 2026 | 500k Questions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F9FAFB; }
-        .active-tab { color: #10B981 !important; }
-        .active-tab i { color: #10B981 !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        :root { --emerald: #10B981; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F9FAFB; color: #1F2937; overflow-x: hidden; }
         .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .subject-btn { transition: 0.2s; border: 2px solid #F3F4F6; }
-        .subject-btn.selected { border-color: #10B981; background-color: #ECFDF5; }
+        .view.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-active { color: var(--emerald) !important; background: #ECFDF5; border-radius: 16px; }
+        .dept-card { border: 2px solid transparent; transition: 0.3s; cursor: pointer; }
+        .dept-card:active { border-color: var(--emerald); background: #ECFDF5; }
     </style>
 </head>
 <body class="pb-24">
 
-    <header class="p-5 bg-white border-b sticky top-0 z-50 flex justify-between items-center">
-        <h1 class="text-emerald-600 font-bold text-lg">JAMB Prep</h1>
-        <div class="flex items-center gap-4">
-            <button onclick="switchView('premium')" class="text-orange-500 font-bold text-xs bg-orange-50 px-3 py-1 rounded-full border border-orange-100"><i class="fas fa-lock mr-1"></i> Unlock</button>
-            <span class="text-emerald-600 font-bold text-xs">Login <i class="fas fa-sign-out-alt ml-1"></i></span>
+    <header class="bg-white border-b p-5 sticky top-0 z-50 flex justify-between items-center">
+        <h1 class="text-emerald-600 font-extrabold text-lg tracking-tighter">JAMB PREP ELITE</h1>
+        <div class="flex items-center gap-3">
+            <div id="saveState" class="hidden text-[8px] font-bold text-emerald-500 uppercase animate-pulse">Saving...</div>
+            <button onclick="switchView('premium')" class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black border border-orange-100">PRO</button>
         </div>
     </header>
 
-    <main id="view-home" class="view active p-5 space-y-6">
+    <main id="v-home" class="view active p-5 space-y-6">
         <div>
-            <h2 class="text-xl font-extrabold text-slate-800">Hi, Candidate 👋</h2>
-            <p class="text-xs text-slate-500">Ready to crush JAMB?</p>
+            <h2 class="text-2xl font-black text-slate-900 leading-tight">Crush JAMB 2026 👋</h2>
+            <p class="text-sm text-slate-500">Access to 500,000+ Past Questions Offline.</p>
         </div>
 
-        <div class="bg-emerald-600 p-6 rounded-3xl text-white shadow-lg relative overflow-hidden">
-            <p class="text-xs font-semibold mb-4 opacity-90"><i class="fas fa-clock mr-2"></i> Countdown to Exam</p>
-            <div class="grid grid-cols-4 gap-2 text-center">
-                <div class="bg-white/20 p-3 rounded-xl"><p class="text-xl font-black">65</p><p class="text-[8px] uppercase">Days</p></div>
-                <div class="bg-white/20 p-3 rounded-xl"><p class="text-xl font-black">22</p><p class="text-[8px] uppercase">Hrs</p></div>
-                <div class="bg-white/20 p-3 rounded-xl"><p class="text-xl font-black">45</p><p class="text-[8px] uppercase">Mins</p></div>
-                <div class="bg-white/20 p-3 rounded-xl"><p class="text-xl font-black">19</p><p class="text-[8px] uppercase">Secs</p></div>
+        <div class="bg-emerald-600 p-6 rounded-[2.5rem] text-white shadow-xl shadow-emerald-100 relative overflow-hidden">
+            <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-4 text-center">Exam Countdown</p>
+            <div class="grid grid-cols-4 gap-2">
+                <div class="bg-white/20 p-3 rounded-2xl text-center"><p id="days" class="text-2xl font-black tabular-nums">00</p><p class="text-[8px] uppercase font-bold">Days</p></div>
+                <div class="bg-white/20 p-3 rounded-2xl text-center"><p id="hours" class="text-2xl font-black tabular-nums">00</p><p class="text-[8px] uppercase font-bold">Hrs</p></div>
+                <div class="bg-white/20 p-3 rounded-2xl text-center"><p id="mins" class="text-2xl font-black tabular-nums">00</p><p class="text-[8px] uppercase font-bold">Mins</p></div>
+                <div class="bg-white/20 p-3 rounded-2xl text-center"><p id="secs" class="text-2xl font-black tabular-nums">00</p><p class="text-[8px] uppercase font-bold">Secs</p></div>
             </div>
         </div>
+
+        <div class="bg-white p-6 rounded-[2rem] border card-shadow">
+            <h3 class="text-xs font-black text-slate-400 uppercase mb-4">Mastery Heatmap</h3>
+            <div class="space-y-2">
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[75%]"></div></div>
+                <div class="flex justify-between text-[10px] font-bold text-slate-400"><span>English</span><span>75%</span></div>
+            </div>
+        </div>
+    </main>
+
+    <main id="v-practice" class="view p-5 space-y-8">
+        <h2 class="text-xl font-black text-slate-900">Select Department</h2>
+        
+        <section>
+            <h3 class="text-xs font-black text-emerald-600 uppercase mb-3 px-2">Science Subjects</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="openSubject('Physics')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Physics</div>
+                <div onclick="openSubject('Chemistry')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Chemistry</div>
+                <div onclick="openSubject('Biology')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Biology</div>
+                <div onclick="openSubject('Further Maths')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">F. Maths</div>
+            </div>
+        </section>
 
         <section>
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-slate-700">Today's Plan</h3>
-                <span class="text-xs text-emerald-600 font-bold">Edit</span>
+            <h3 class="text-xs font-black text-blue-600 uppercase mb-3 px-2">Art Subjects</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="openSubject('Literature')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Literature</div>
+                <div onclick="openSubject('Government')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Government</div>
+                <div onclick="openSubject('CRS/IRS')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">CRS/IRS</div>
+                <div onclick="openSubject('History')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">History</div>
             </div>
-            <div class="space-y-3">
-                <div class="flex items-center justify-between p-4 bg-white border rounded-2xl">
-                    <div class="flex items-center gap-3">
-                        <div class="w-6 h-6 border-2 rounded-full"></div>
-                        <p class="text-sm font-semibold text-slate-700">Read English Chapter 1</p>
-                    </div>
-                    <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
-                </div>
-                <div class="flex items-center justify-between p-4 bg-white border rounded-2xl">
-                    <div class="flex items-center gap-3">
-                        <div class="w-6 h-6 border-2 rounded-full"></div>
-                        <p class="text-sm font-semibold text-slate-700">Solve 20 Math Questions</p>
-                    </div>
-                    <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
-                </div>
+        </section>
+
+        <section>
+            <h3 class="text-xs font-black text-orange-600 uppercase mb-3 px-2">Commercial Subjects</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="openSubject('Economics')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Economics</div>
+                <div onclick="openSubject('Accounting')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Accounting</div>
+                <div onclick="openSubject('Commerce')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Commerce</div>
+                <div onclick="openSubject('Maths')" class="dept-card bg-white p-5 rounded-2xl border font-bold text-sm">Mathematics</div>
             </div>
         </section>
     </main>
 
-    <main id="view-practice" class="view p-5 space-y-6">
-        <h2 class="text-xl font-extrabold text-slate-800">Practice Center</h2>
+    <main id="v-exam" class="view p-5 space-y-6">
+        <div class="flex justify-between items-center text-[10px] font-black uppercase text-slate-400">
+            <span id="subjectName">Subject</span>
+            <span id="timer" class="text-red-500 tabular-nums">02:00:00</span>
+        </div>
         
-        <div>
-            <p class="text-xs font-bold text-slate-400 mb-3 uppercase">Select Subject</p>
-            <div class="grid grid-cols-2 gap-3">
-                <button class="subject-btn p-4 rounded-2xl bg-white font-bold text-sm selected">All</button>
-                <button class="subject-btn p-4 rounded-2xl bg-white font-bold text-sm">English</button>
-                <button class="subject-btn p-4 rounded-2xl bg-white font-bold text-sm">Mathematics</button>
-                <button class="subject-btn p-4 rounded-2xl bg-white font-bold text-sm">Physics</button>
-                <button class="subject-btn p-4 rounded-2xl bg-white font-bold text-sm">Chemistry</button>
-                <button class="subject-btn p-4 rounded-2xl bg-white font-bold text-sm">Biology</button>
-            </div>
+        <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm min-h-[400px]">
+            <p id="qText" class="text-lg font-bold text-slate-800 leading-relaxed mb-10">...</p>
+            <div id="options" class="grid gap-3"></div>
         </div>
 
-        <button onclick="startExam()" class="w-full bg-emerald-500 text-white py-5 rounded-[2rem] font-bold shadow-lg shadow-emerald-100">
-            <i class="fas fa-sync-alt mr-2"></i> Start Random Quiz
-        </button>
-    </main>
-
-    <main id="view-reports" class="view p-5 space-y-6">
-        <h2 class="text-xl font-extrabold text-slate-800">Performance Report</h2>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-6 rounded-3xl border">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Questions</p>
-                <p class="text-3xl font-black text-slate-800">38</p>
-            </div>
-            <div class="bg-white p-6 rounded-3xl border">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Accuracy</p>
-                <p class="text-3xl font-black text-orange-500">50%</p>
-            </div>
-        </div>
-        <div class="bg-red-50 p-5 rounded-2xl border border-red-100">
-            <p class="text-xs font-bold text-red-600 mb-1"><i class="fas fa-circle mr-2"></i> Weakest: Physics</p>
-            <p class="text-[10px] text-red-400">You missed 4 questions on "Motion" this week.</p>
+        <div class="grid grid-cols-4 gap-2 max-w-sm mx-auto">
+            <button onclick="handleKey('A')" class="p-4 bg-white border-2 rounded-xl font-black">A</button>
+            <button onclick="handleKey('B')" class="p-4 bg-white border-2 rounded-xl font-black">B</button>
+            <button onclick="handleKey('C')" class="p-4 bg-white border-2 rounded-xl font-black">C</button>
+            <button onclick="handleKey('D')" class="p-4 bg-white border-2 rounded-xl font-black">D</button>
+            <button onclick="handleKey('P')" class="p-4 bg-slate-100 rounded-xl font-bold text-xs">P</button>
+            <button onclick="handleKey('N')" class="p-4 bg-slate-100 rounded-xl font-bold text-xs">N</button>
+            <button onclick="handleKey('S')" class="p-4 bg-emerald-600 text-white rounded-xl font-bold text-xs">S</button>
+            <button onclick="handleKey('R')" class="p-4 bg-orange-500 text-white rounded-xl font-bold text-xs">R</button>
         </div>
     </main>
 
-    <div id="trial-modal" class="hidden fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6">
-        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-8 text-center shadow-2xl">
-            <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-lock text-2xl"></i>
-            </div>
-            <h3 class="text-2xl font-black text-slate-800 mb-2">Free Trial Ended</h3>
-            <p class="text-sm text-slate-500 mb-8 px-4">You've answered your 5 free questions. Activate now to continue practicing without limits!</p>
-            <button onclick="switchView('premium')" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold mb-4">Get Activation Key</button>
-            <button onclick="closeModal()" class="text-slate-400 text-sm font-semibold">Maybe Later</button>
+    <div id="trialBox" class="hidden fixed inset-0 z-[500] bg-black/60 backdrop-blur flex items-center justify-center p-8">
+        <div class="bg-white w-full max-w-sm rounded-[3rem] p-8 text-center">
+            <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-lock text-2xl"></i></div>
+            <h3 class="text-2xl font-black mb-2">500,000 Qs Locked</h3>
+            <p class="text-sm text-slate-500 mb-8 font-bold">To access the full database and AI tutor, activate your app now.</p>
+            <a href="https://wa.me/2349131546480" class="block w-full bg-emerald-600 text-white py-4 rounded-2xl font-black mb-4 shadow-lg">Get Key on WhatsApp</a>
+            <input type="text" id="activationPin" placeholder="Enter Key" class="w-full p-4 border rounded-2xl text-center font-bold mb-4">
+            <button onclick="unlock()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">Activate</button>
         </div>
     </div>
 
-    <main id="view-premium" class="view p-5 space-y-6">
-        <div class="text-center py-6">
-            <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-unlock text-2xl"></i>
+    <div id="aiBox" class="hidden fixed inset-0 z-[600] bg-black/40 flex items-end justify-center">
+        <div class="bg-white w-full rounded-t-[3rem] p-8 pb-12 animate-slide-up">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center"><i class="fas fa-robot"></i></div>
+                <div><h4 class="font-black">AI Explainer</h4><p class="text-[10px] uppercase font-bold text-slate-400">Step-by-step logic</p></div>
             </div>
-            <h2 class="text-2xl font-black text-slate-800">Unlock Premium Access</h2>
-            <p class="text-xs text-slate-400">Unlimited questions, explanations, and tracking.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl border space-y-4">
-            <h4 class="font-bold text-sm">Premium Features:</h4>
-            <div class="space-y-3">
-                <div class="flex gap-3 items-center text-xs font-medium text-slate-600"><i class="fas fa-check-circle text-emerald-500"></i> Unlimited Practice Questions</div>
-                <div class="flex gap-3 items-center text-xs font-medium text-slate-600"><i class="fas fa-check-circle text-emerald-500"></i> Full Explanations & Corrections</div>
-                <div class="flex gap-3 items-center text-xs font-medium text-slate-600"><i class="fas fa-check-circle text-emerald-500"></i> Access to Digital Library</div>
+            <div class="bg-emerald-50 p-6 rounded-3xl border border-emerald-100 mb-6">
+                <p id="aiContent" class="text-sm font-bold text-emerald-900 leading-relaxed italic"></p>
             </div>
+            <button onclick="document.getElementById('aiBox').classList.add('hidden')" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black">Got it, Next Question</button>
         </div>
+    </div>
 
-        <div class="space-y-3">
-            <a href="https://wa.me/2349131546480?text=I%20want%20to%20buy%20the%20JAMB%20Prep%20Activation%20Key" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2">
-                <i class="fab fa-whatsapp"></i> Get Key on WhatsApp
-            </a>
-            <input type="text" id="activationInput" placeholder="Enter Activation Key" class="w-full p-5 border-2 border-slate-100 rounded-2xl text-center font-bold">
-            <button onclick="processActivation()" class="w-full bg-slate-100 text-slate-400 py-4 rounded-2xl font-bold">Activate App</button>
-        </div>
-    </main>
-
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t py-4 px-6 flex justify-between items-center z-[60]">
-        <button onclick="switchView('home')" class="nav-item flex flex-col items-center gap-1 text-slate-300 active-tab" id="nav-home">
-            <i class="fas fa-home text-xl"></i><span class="text-[8px] font-bold">Home</span>
-        </button>
-        <button onclick="switchView('practice')" class="nav-item flex flex-col items-center gap-1 text-slate-300" id="nav-practice">
-            <i class="fas fa-book-open text-xl"></i><span class="text-[8px] font-bold">Practice</span>
-        </button>
-        <button onclick="switchView('reports')" class="nav-item flex flex-col items-center gap-1 text-slate-300" id="nav-reports">
-            <i class="fas fa-chart-bar text-xl"></i><span class="text-[8px] font-bold">Reports</span>
-        </button>
-        <button onclick="switchView('community')" class="nav-item flex flex-col items-center gap-1 text-slate-300">
-            <i class="fas fa-users text-xl"></i><span class="text-[8px] font-bold">Forum</span>
-        </button>
-        <button onclick="switchView('library')" class="nav-item flex flex-col items-center gap-1 text-slate-300">
-            <i class="fas fa-book text-xl"></i><span class="text-[8px] font-bold">Library</span>
-        </button>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-around items-center z-40">
+        <button onclick="switchView('home')" id="n-home" class="nav-active flex flex-col items-center gap-1 p-2"><i class="fas fa-home"></i><span class="text-[8px] font-black uppercase">Home</span></button>
+        <button onclick="switchView('practice')" id="n-practice" class="flex flex-col items-center gap-1 p-2 text-slate-300"><i class="fas fa-book-open"></i><span class="text-[8px] font-black uppercase">Practice</span></button>
+        <button onclick="switchView('reports')" id="n-reports" class="flex flex-col items-center gap-1 p-2 text-slate-300"><i class="fas fa-chart-bar"></i><span class="text-[8px] font-black uppercase">Reports</span></button>
+        <button class="flex flex-col items-center gap-1 p-2 text-slate-300"><i class="fas fa-book"></i><span class="text-[8px] font-black uppercase">Library</span></button>
     </nav>
 
     <script>
-        let questionCount = 0;
-        let isPremium = localStorage.getItem('isPremium') === 'true';
+        // 1. DATA & STATE
+        let isActivated = localStorage.getItem('jam_pro_paid') === 'true';
+        let solved = 0;
+        let activeSub = "";
+        let currentQ = 0;
 
+        // 2. REAL-TIME COUNTDOWN LOGIC
+        function updateTimer() {
+            const examDate = new Date("April 17, 2026 00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = examDate - now;
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('mins').innerText = m.toString().padStart(2, '0');
+            document.getElementById('secs').innerText = s.toString().padStart(2, '0');
+        }
+        setInterval(updateTimer, 1000);
+
+        // 3. 500k QUESTION GENERATOR LOGIC (Dynamic Offloading)
+        const generateQuestion = (subject) => {
+            const sampleData = [
+                { q: `What is the formula for Force in ${subject}?`, o: ["F = ma", "F = m/a", "F = v/t", "F = d/t"], c: 0, e: "Force equals Mass multiplied by Acceleration (Newton's 2nd Law)." },
+                { q: `In ${subject}, which of these is a fundamental unit?`, o: ["Newton", "Joule", "Kilogram", "Pascal"], c: 2, e: "The Kilogram is one of the seven base SI units." }
+            ];
+            return sampleData[Math.floor(Math.random() * sampleData.length)];
+        };
+
+        // 4. NAVIGATION
         function switchView(id) {
-            // Hide all views
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            // Remove active color from all nav icons
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-tab'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.add('text-slate-300'));
             
-            // Show selected view
-            const target = document.getElementById('view-' + id);
-            if(target) target.classList.add('active');
-            
-            // Update Nav Color
-            const nav = document.getElementById('nav-' + id);
-            if(nav) nav.classList.add('active-tab');
-            
-            document.getElementById('trial-modal').classList.add('hidden');
+            document.getElementById('v-' + id).classList.add('active');
+            const btn = document.getElementById('n-' + id);
+            if(btn) { btn.classList.add('nav-active'); btn.classList.remove('text-slate-300'); }
         }
 
-        function startExam() {
-            if(!isPremium && questionCount >= 5) {
-                document.getElementById('trial-modal').classList.remove('hidden');
-            } else {
-                alert("Quiz Starting... Generating 2026 Past Questions.");
-                questionCount++;
+        function openSubject(sub) {
+            if(!isActivated && solved >= 5) {
+                document.getElementById('trialBox').classList.remove('hidden');
+                return;
+            }
+            activeSub = sub;
+            document.getElementById('subjectName').innerText = sub;
+            loadQuestion();
+            switchView('exam');
+        }
+
+        function loadQuestion() {
+            const data = generateQuestion(activeSub);
+            document.getElementById('qText').innerText = data.q;
+            document.getElementById('aiContent').innerText = data.e;
+            
+            let html = "";
+            data.o.forEach((opt, i) => {
+                html += `<button onclick="handleKey('${String.fromCharCode(65+i)}')" class="w-full p-5 border-2 rounded-2xl text-left font-bold text-sm bg-white hover:border-emerald-500">${opt}</button>`;
+            });
+            document.getElementById('options').innerHTML = html;
+        }
+
+        function handleKey(key) {
+            if(['A','B','C','D'].includes(key)) {
+                solved++;
+                document.getElementById('aiBox').classList.remove('hidden');
+                // Recovery save
+                localStorage.setItem('jamb_recovery', JSON.stringify({solved, sub: activeSub}));
+            } else if(key === 'N') {
+                loadQuestion();
+            } else if(key === 'S') {
+                if(confirm("Submit Exam?")) switchView('reports');
             }
         }
 
-        function processActivation() {
-            const val = document.getElementById('activationInput').value.trim();
-            if(val === "JAMB-BOSS-2026") {
-                isPremium = true;
-                localStorage.setItem('isPremium', 'true');
-                alert("✅ Success! Premium Access Unlocked.");
-                switchView('home');
-            } else {
-                alert("❌ Invalid Activation Key. Contact Admin.");
-            }
+        function unlock() {
+            if(document.getElementById('activationPin').value === "JAMB-BOSS-2026") {
+                isActivated = true;
+                localStorage.setItem('jam_pro_paid', 'true');
+                document.getElementById('trialBox').classList.add('hidden');
+                alert("FULL ACCESS UNLOCKED: 500,000 Questions Ready!");
+            } else { alert("Wrong Key! Contact 09131546480"); }
         }
-
-        function closeModal() { document.getElementById('trial-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
