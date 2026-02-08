@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSA JAMB PRO v5.1 - Fixed</title>
+    <title>FSA JAMB PRO v5.1 - Official CBT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -28,27 +28,20 @@
         .option { display: block; width: 100%; padding: 15px; margin-bottom: 10px; border: 2px solid #e9ecef; border-radius: 10px; text-align: left; background: white; transition: all 0.3s; cursor: pointer; font-size: 1rem; }
         .option:hover { border-color: var(--jamb-blue); transform: translateX(5px); box-shadow: 0 4px 12px rgba(13,71,161,0.15); }
         .option.selected { background: linear-gradient(135deg, var(--jamb-blue), #1976d2); color: white; border-color: var(--jamb-blue); transform: scale(1.02); }
-        .option.review { background: #fff3cd !important; border-color: #ffc107 !important; }
-        .passage-box { background: linear-gradient(135deg, #fffbe6, #fff2cc); border-left: 5px solid #ffc107; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; font-size: 0.95rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
         
-        #calc-panel { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: linear-gradient(135deg, #222, #333); color: white; transition: 0.4s; z-index: 2000; padding: 25px; box-shadow: -8px 0 25px rgba(0,0,0,0.4); overflow-y: auto; }
+        #calc-panel { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: #222; color: white; transition: 0.4s; z-index: 2000; padding: 25px; box-shadow: -8px 0 25px rgba(0,0,0,0.4); }
         #calc-panel.open { right: 0; }
-        .calc-btn { width: 60px; height: 60px; margin: 5px; font-size: 1.3rem; font-weight: bold; border-radius: 12px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
-        .calc-btn:active { transform: scale(0.95); }
+        .calc-btn { width: 50px; height: 50px; margin: 2px; font-weight: bold; }
 
-        .score-circle { width: 160px; height: 160px; border-radius: 50%; border: 12px solid; display: flex; align-items: center; justify-content: center; margin: 25px auto; font-size: 3.5rem; font-weight: 800; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .score-circle.gold { border-color: #ffd700; background: linear-gradient(135deg, #ffd700, #ffed4e); color: #333; }
-        .score-circle.green { border-color: var(--success); background: linear-gradient(135deg, var(--success), #20c997); }
-        .score-circle.orange { border-color: #fd7e14; background: linear-gradient(135deg, #fd7e14, #ffc107); }
-        .score-circle.red { border-color: #dc3545; background: linear-gradient(135deg, #dc3545, #e74c3c); }
+        .score-circle { width: 160px; height: 160px; border-radius: 50%; border: 12px solid; display: flex; align-items: center; justify-content: center; margin: 25px auto; font-size: 3.5rem; font-weight: 800; color: white; position: relative; }
+        .score-circle.gold { border-color: #ffd700; background: #ffd700; color: #333; }
+        .score-circle.green { border-color: var(--success); background: var(--success); }
+        .score-circle.orange { border-color: #fd7e14; background: #fd7e14; }
+        .score-circle.red { border-color: #dc3545; background: #dc3545; }
 
-        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: var(--jamb-blue); color: white; border: none; font-size: 1.5rem; box-shadow: 0 8px 25px rgba(13,71,161,0.4); z-index: 1500; transition: 0.3s; }
-        .fab:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(13,71,161,0.5); }
-
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: var(--jamb-blue); color: white; border: none; font-size: 1.5rem; z-index: 1500; }
         .pulse { animation: pulse 2s infinite; }
-
-        @media (max-width: 576px) { .tab-item { min-width: 80px; padding: 12px 5px; font-size: 0.9rem; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -58,49 +51,44 @@
     <div id="timer" class="badge bg-dark fs-5 px-3 py-2 shadow">02:00:00</div>
     <div>
         <button class="btn btn-sm btn-warning me-1 fw-bold" onclick="toggleCalc()"><i class="fas fa-calculator"></i></button>
-        <button class="btn btn-sm btn-info fw-bold me-1" onclick="toggleReview()" id="review-btn"><i class="fas fa-flag" id="review-icon"></i></button>
     </div>
 </div>
 
 <div id="calc-panel">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="mb-0"><i class="fas fa-calculator me-2"></i>Calculator</h5>
+        <h5 class="mb-0">Calculator</h5>
         <button class="btn btn-sm btn-outline-light" onclick="toggleCalc()">✕</button>
     </div>
-    <input type="text" id="calc-display" class="form-control mb-4 text-end fs-3 fw-bold" readonly style="background: #444; color: #fff; border: 2px solid #555; border-radius: 8px;">
-    <div class="row g-2 justify-content-center">
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('7')">7</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('8')">8</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('9')">9</button></div>
+    <input type="text" id="calc-display" class="form-control mb-3 text-end fs-4 fw-bold" readonly>
+    <div class="row g-1">
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('7')">7</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('8')">8</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('9')">9</button></div>
         <div class="col-3"><button class="btn btn-danger calc-btn w-100" onclick="calcInput('C')">C</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('4')">4</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('5')">5</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('6')">6</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('4')">4</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('5')">5</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('6')">6</button></div>
         <div class="col-3"><button class="btn btn-warning calc-btn w-100" onclick="calcInput('*')">×</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('1')">1</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('2')">2</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('3')">3</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('1')">1</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('2')">2</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('3')">3</button></div>
         <div class="col-3"><button class="btn btn-warning calc-btn w-100" onclick="calcInput('-')">-</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('0')">0</button></div>
-        <div class="col-3"><button class="btn btn-secondary calc-btn w-100" onclick="calcInput('.')">.</button></div>
+        <div class="col-3"><button class="btn btn-light calc-btn w-100" onclick="calcInput('0')">0</button></div>
         <div class="col-3"><button class="btn btn-warning calc-btn w-100" onclick="calcInput('/')">÷</button></div>
         <div class="col-3"><button class="btn btn-warning calc-btn w-100" onclick="calcInput('+')">+</button></div>
-        <div class="col-6"><button class="btn btn-success calc-btn w-100 fs-5" onclick="calcInput('=')">=</button></div>
+        <div class="col-3"><button class="btn btn-success calc-btn w-100" onclick="calcInput('=')">=</button></div>
     </div>
 </div>
 
 <div class="container mt-5">
     <div id="setup-screen">
         <div class="text-center mb-5">
-            <h2 class="fw-bold text-primary mb-3"><i class="fas fa-rocket me-2"></i>Student Dashboard</h2>
-            <p class="lead text-muted">Select English + 3 Subjects for JAMB UTME Practice</p>
-            <small class="text-success fw-bold"><i class="fas fa-check-circle me-1"></i>Offline • Timed • Realistic CBT</small>
+            <h2 class="fw-bold text-primary mb-3">Student Dashboard</h2>
+            <p class="lead text-muted">Select English + 3 Subjects</p>
         </div>
         <div class="row g-4 mb-5" id="subject-grid"></div>
         <div class="text-center">
-            <button id="start-btn" class="btn btn-primary btn-lg w-100 py-4 fw-bold shadow-lg disabled pulse" style="border-radius: 25px; font-size: 1.3rem;" onclick="beginExam()">
-                <i class="fas fa-play-circle me-2"></i>START EXAMINATION
-            </button>
+            <button id="start-btn" class="btn btn-primary btn-lg w-100 py-4 fw-bold disabled pulse" style="border-radius: 25px;" onclick="beginExam()">START EXAMINATION</button>
             <div id="selection-count" class="mt-3 text-muted"></div>
         </div>
     </div>
@@ -109,9 +97,9 @@
         <div class="subject-tabs mb-4" id="tab-container"></div>
         <div class="question-card">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 id="current-sub-label" class="text-primary fw-bold mb-0"><i class="fas fa-book me-2"></i></h5>
+                <h5 id="current-sub-label" class="text-primary fw-bold mb-0">Subject</h5>
                 <div>
-                    <span id="q-count" class="badge bg-secondary fs-6 px-3 py-2 me-2 shadow-sm"></span>
+                    <span id="q-count" class="badge bg-secondary fs-6 px-3 py-2 me-2"></span>
                     <div class="progress-bar-container" style="width: 150px; display: inline-block;">
                         <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
                     </div>
@@ -119,33 +107,25 @@
             </div>
             <div id="q-container"></div>
             <div class="d-flex justify-content-between mt-5">
-                <button class="btn btn-outline-secondary px-5 py-3 fw-bold shadow-sm" onclick="moveQ(-1)"><i class="fas fa-chevron-left me-2"></i>PREV</button>
-                <span class="align-self-center text-muted fs-6" id="q-nav"></span>
-                <button class="btn btn-primary px-5 py-3 fw-bold shadow-sm" onclick="moveQ(1)">NEXT<i class="fas fa-chevron-right ms-2"></i></button>
+                <button class="btn btn-outline-secondary px-4 py-2 fw-bold" onclick="moveQ(-1)">PREV</button>
+                <span class="align-self-center text-muted" id="q-nav"></span>
+                <button class="btn btn-primary px-4 py-2 fw-bold" onclick="moveQ(1)">NEXT</button>
             </div>
         </div>
-        <button class="btn btn-success w-100 mt-5 p-4 fw-bold shadow-lg pulse" style="border-radius: 25px; font-size: 1.2rem;" onclick="finish()">
-            <i class="fas fa-flag-checkered me-2"></i>SUBMIT FINISHED EXAM
-        </button>
+        <button class="btn btn-success w-100 mt-5 p-4 fw-bold shadow" style="border-radius: 25px;" onclick="finish()">SUBMIT EXAM</button>
     </div>
 
     <div id="result-screen" style="display:none;">
-        <div class="card border-0 shadow-xl p-5 text-center mx-auto" style="max-width: 600px;">
-            <h4 class="text-muted mb-4"><i class="fas fa-trophy me-2"></i>YOUR RESULTS</h4>
+        <div class="card border-0 shadow-lg p-5 text-center mx-auto" style="max-width: 600px;">
+            <h4>YOUR RESULTS</h4>
             <div class="score-circle gold" id="total-score">0</div>
-            <h3 id="status-msg" class="mt-4 mb-5 fw-bold"></h3>
+            <h3 id="status-msg" class="mt-4 mb-4 fw-bold"></h3>
             <div id="breakdown" class="text-start border-top pt-4 mb-5"></div>
-            <div class="row g-3">
-                <div class="col-6"><button class="btn btn-outline-primary w-100 py-3 fw-bold" onclick="reviewMode()"><i class="fas fa-redo me-2"></i>REVIEW EXAM</button></div>
-                <div class="col-6"><button class="btn btn-primary w-100 py-3 fw-bold" onclick="location.reload()"><i class="fas fa-play-circle me-2"></i>RETAKE EXAM</button></div>
-            </div>
+            <button class="btn btn-primary w-100 py-3 fw-bold" onclick="location.reload()">RETAKE EXAM</button>
         </div>
     </div>
 </div>
 
-<button class="fab" onclick="toggleHelp()" title="Help & Tips"><i class="fas fa-question-circle"></i></button>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const allSubs = [
         {id:"English", icon:"📚", required: true}, {id:"Mathematics", icon:"📐"}, {id:"Physics", icon:"⚛️"}, 
@@ -153,21 +133,20 @@
         {id:"Crk", icon:"📖"}, {id:"Economics", icon:"📈"}, {id:"Commerce", icon:"🛒"}, {id:"Accounting", icon:"💼"}
     ];
     let selected = ["English"], examData = {}, activeSub = "English", activeIdx = 0, userAns = {}, 
-        reviewMode = false, timerInterval, timeLeft = 7200, flagged = {};
+        timerInterval, timeLeft = 7200;
 
     function init() {
         const grid = document.getElementById('subject-grid');
         grid.innerHTML = allSubs.map(s => `
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+            <div class="col-xl-3 col-lg-4 col-6">
                 <div class="subject-card ${selected.includes(s.id)?'selected':''}" onclick="toggle('${s.id}')">
-                    <div class="fs-1 mb-3">${s.icon}</div>
-                    <div class="h5 fw-bold mb-1">${s.id}</div>
+                    <div class="fs-1 mb-2">${s.icon}</div>
+                    <div class="h5 fw-bold">${s.id}</div>
                     ${s.required ? '<small class="badge bg-success">Required</small>' : ''}
                 </div>
             </div>`).join('');
-        const count = selected.length;
-        document.getElementById('start-btn').classList.toggle('disabled', count < 4);
-        document.getElementById('selection-count').innerText = `${count}/4 subjects selected`;
+        document.getElementById('start-btn').classList.toggle('disabled', selected.length < 4);
+        document.getElementById('selection-count').innerText = `${selected.length}/4 subjects selected`;
     }
 
     function toggle(id) {
@@ -179,35 +158,22 @@
     }
 
     async function beginExam() {
-        if (selected.length < 4) return alert('Select 4 subjects!');
-        const btn = document.getElementById('start-btn');
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i> Loading Questions...`;
-        btn.disabled = true;
-        examData = {}; userAns = {}; flagged = {};
         for (let s of selected) {
             try {
-                const res = await fetch(`${s.toLowerCase()}.json?v=${Date.now()}`);
-                if (!res.ok) throw new Error('Not found');
+                const res = await fetch(`${s.toLowerCase()}.json`);
                 examData[s] = await res.json();
                 userAns[s] = new Array(examData[s].length).fill(null);
-                flagged[s] = new Array(examData[s].length).fill(false);
             } catch(e) { 
-                alert(`Error: ${s.toLowerCase()}.json not found! Create it with 50+ JAMB questions.`);
-                btn.innerHTML = '<i class="fas fa-play-circle me-2"></i>START EXAMINATION';
-                btn.disabled = false;
-                btn.classList.add('pulse');
+                alert(`Error: ${s.toLowerCase()}.json not found!`);
                 return; 
             }
         }
         document.getElementById('setup-screen').style.display = 'none';
         document.getElementById('exam-screen').style.display = 'block';
-        document.getElementById('tab-container').innerHTML = selected.map((s, i) => 
-            `<div class="tab-item ${i===0?'active':''}" id="tab-${s}" onclick="switchTab('${s}')"><i class="fas fa-book me-1"></i>${s}</div>`).join('');
+        document.getElementById('tab-container').innerHTML = selected.map(s => 
+            `<div class="tab-item" id="tab-${s}" onclick="switchTab('${s}')">${s}</div>`).join('');
         switchTab("English");
         startTimer(7200);
-        btn.innerHTML = '<i class="fas fa-play-circle me-2"></i>START EXAMINATION';
-        btn.disabled = false;
-        btn.classList.remove('pulse');
     }
 
     function switchTab(sName) {
@@ -218,98 +184,73 @@
     }
 
     function render() {
-        const questions = examData[activeSub];
-        const q = questions[activeIdx];
-        const answered = userAns[activeSub][activeIdx] !== null;
-        const progress = ((activeIdx + 1) / questions.length) * 100;
-        
+        const q = examData[activeSub][activeIdx];
         document.getElementById('current-sub-label').innerHTML = `<i class="fas fa-${getIcon(activeSub)} me-2"></i>${activeSub}`;
-        document.getElementById('q-count').innerHTML = `${activeIdx + 1}/${questions.length} <small class="text-muted">${answered ? '✓' : '○'}</small>`;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
-        document.getElementById('q-nav').innerText = `${activeSub} Q${activeIdx+1}`;
+        document.getElementById('q-count').innerText = `${activeIdx + 1}/${examData[activeSub].length}`;
+        document.getElementById('progress-bar').style.width = `${((activeIdx+1)/examData[activeSub].length)*100}%`;
         
-        let html = '';
-        if (q.p) html += `<div class="passage-box"><strong>Passage:</strong> ${q.p}</div>`;
+        let html = q.p ? `<div class="passage-box"><strong>Passage:</strong> ${q.p}</div>` : '';
         html += `<div class="mb-4 fs-4 fw-semibold">${q.q}</div>`;
         q.options.forEach((opt, i) => {
-            const isSelected = userAns[activeSub][activeIdx] === i;
-            const isFlagged = flagged[activeSub][activeIdx];
-            const cls = isSelected ? 'selected' : (isFlagged ? 'review' : '');
-            html += `<button class="option ${cls}" onclick="pick(${i})">
-                <strong>${String.fromCharCode(65+i)}.</strong> ${opt}
-                ${isFlagged ? '<i class="fas fa-flag float-end text-warning"></i>' : ''}
-            </button>`;
+            const isSel = userAns[activeSub][activeIdx] === i;
+            html += `<button class="option ${isSel?'selected':''}" onclick="pick(${i})">
+                <strong>${String.fromCharCode(65+i)}.</strong> ${opt}</button>`;
         });
         document.getElementById('q-container').innerHTML = html;
     }
 
-    function pick(i) { 
-        userAns[activeSub][activeIdx] = i; 
-        render(); 
-    }
-
+    function pick(i) { userAns[activeSub][activeIdx] = i; render(); }
     function moveQ(d) { 
-        const newIdx = activeIdx + d;
-        if (newIdx >= 0 && newIdx < examData[activeSub].length) { 
-            activeIdx = newIdx; 
-            render(); 
+        if (activeIdx + d >= 0 && activeIdx + d < examData[activeSub].length) { 
+            activeIdx += d; render(); 
         } 
     }
 
-    function toggleReview() {
-        const firstUnanswered = [];
-        for (let i = 0; i < examData[activeSub].length; i++) {
-            if (userAns[activeSub][i] === null || flagged[activeSub][i]) {
-                firstUnanswered.push(i);
-            }
-        }
-        if (firstUnanswered.length > 0) {
-            activeIdx = firstUnanswered[0];
-            render();
-        } else {
-            alert('All questions answered!');
-        }
+    function toggleCalc() { document.getElementById('calc-panel').classList.toggle('open'); }
+    let calcVal = "";
+    function calcInput(v) {
+        const d = document.getElementById('calc-display');
+        if (v==='C') calcVal = "";
+        else if (v==='=') { try { calcVal = eval(calcVal).toString(); } catch { calcVal = "Error"; } }
+        else calcVal += v;
+        d.value = calcVal;
     }
 
-    function finish() {
-        if (!confirm("Submit exam? Answers can't be changed!")) return;
-        clearInterval(timerInterval);
-        let grandTotal = 0, report = '', statusClass = 'orange';
-        selected.forEach(s => {
-            let score = 0, subQs = examData[s].length;
-            examData[s].forEach((q, i) => { if (userAns[s][i] === q.a) score++; });
-            const p = Math.round((score / subQs) * 100);
-            grandTotal += p;
-            const subStatus = p >= 80 ? 'gold' : p >= 60 ? 'green' : 'orange';
-            report += `
-                <div class="row align-items-center mb-4 p-3 rounded shadow-sm bg-light">
-                    <div class="col-8"><i class="fas fa-${getIcon(s)} text-primary me-2"></i><strong>${s}</strong></div>
-                    <div class="col-4 text-end">
-                        <div class="h5 fw-bold text-${subStatus === 'gold' ? 'warning' : subStatus}">${score}/${subQs}</div>
-                        <small class="text-muted">${p}%</small>
-                    </div>
-                </div>`;
-        });
-        grandTotal = Math.round(grandTotal / selected.length);
-        document.getElementById('total-score').innerText = grandTotal;
-        document.getElementById('total-score').className = `score-circle ${grandTotal >= 280 ? 'gold' : grandTotal >= 220 ? 'green' : grandTotal >= 180 ? 'orange' : 'red'}`;
-        
-        let msg = grandTotal >= 280 ? "🏆 Medicine/Law Unlocked! Elite Score!" : 
-                  grandTotal >= 220 ? "✅ Competitive Score! Top Universities!" : 
-                  grandTotal >= 180 ? "📈 Good Effort! More Practice Needed" : "💪 Keep Practicing! You're Getting There!";
-        document.getElementById('status-msg').innerHTML = msg;
-        document.getElementById('breakdown').innerHTML = report;
-
-        document.getElementById('exam-screen').style.display = 'none';
-        document.getElementById('result-screen').style.display = 'block';
-    }
-
-    function reviewMode() {
-        document.getElementById('result-screen').style.display = 'none';
-        document.getElementById('exam-screen').style.display = 'block';
+    function getIcon(s) {
+        const icons = {"English":"book","Mathematics":"calculator","Physics":"atom","Chemistry":"flask","Biology":"dna","Government":"landmark","Crk":"bible","Economics":"chart-line","Commerce":"shopping-cart","Accounting":"briefcase"};
+        return icons[s] || "file";
     }
 
     function startTimer(t) {
         timeLeft = t;
         timerInterval = setInterval(() => {
-            if (timeLeft <= 0) {
+            timeLeft--;
+            let h = Math.floor(timeLeft/3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60;
+            document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            if (timeLeft <= 0) { clearInterval(timerInterval); finish(); }
+        }, 1000);
+    }
+
+    function finish() {
+        if (!confirm("Submit exam?")) return;
+        clearInterval(timerInterval);
+        let totalScore = 0, report = "";
+        selected.forEach(s => {
+            let correct = 0;
+            examData[s].forEach((q, i) => { if (userAns[s][i] === q.a) correct++; });
+            let score = Math.round((correct/examData[s].length)*100);
+            totalScore += score;
+            report += `<div class="mb-2"><strong>${s}:</strong> ${correct}/${examData[s].length} (${score}%)</div>`;
+        });
+        let jambScore = Math.round((totalScore/400)*400); // Scale out of 400
+        document.getElementById('total-score').innerText = jambScore;
+        document.getElementById('total-score').className = `score-circle ${jambScore>=250?'gold':'green'}`;
+        document.getElementById('breakdown').innerHTML = report;
+        document.getElementById('exam-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
