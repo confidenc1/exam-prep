@@ -1,0 +1,89 @@
+{
+  "English Language": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Concord:** Rules of agreement between subject and verb.\n• **Lexis:** Synonyms, Antonyms, and Idioms (look for context clues).\n• **Oral:** Stress patterns and vowel/consonant sounds."
+    },
+    {
+      "topic": "Registers",
+      "content": "JAMB frequently tests vocabulary related to Law, Medicine, Agriculture, and Information Technology."
+    }
+  ],
+  "Mathematics": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Calculus:** Differentiation and Integration of simple functions.\n• **Statistics:** Mean, Median, Mode, and standard deviation.\n• **Matrices:** Determinants and Inverse of 2x2 matrices."
+    },
+    {
+      "topic": "Logarithms",
+      "content": "Understand the Laws of Logarithms: $$log(AB) = log A + log B$$ and $$log(A^n) = n \cdot log A$$."
+    }
+  ],
+  "Physics": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Mechanics:** Projectiles, Circular Motion, and Newton's Laws.\n• **Electricity:** Ohm’s Law and Resistors in series/parallel.\n• **Modern Physics:** Radioactivity and Half-life calculations."
+    },
+    {
+      "topic": "Optics",
+      "content": "Study Mirror and Lens formulas: $$\\frac{1}{f} = \frac{1}{u} + \frac{1}{v}$$. Also, focus on Total Internal Reflection."
+    }
+  ],
+  "Chemistry": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Organic Chemistry:** Alkanes, Alkenes, Alkynes, and Alkanols.\n• **Electrolysis:** Faraday’s Laws of Electrolysis.\n• **Gas Laws:** Boyle’s, Charles’, and Ideal Gas Law ($$PV = nRT$$)."
+    },
+    {
+      "topic": "Separation Techniques",
+      "content": "Know when to use Chromatography, Distillation, and Fractional Crystallization."
+    }
+  ],
+  "Biology": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Genetics:** Mendelian laws, monohybrid/dihybrid crosses.\n• **Ecology:** Biomes, food chains, and energy flow.\n• **Form & Function:** Digestive and Respiratory systems in mammals."
+    },
+    {
+      "topic": "Evolution",
+      "content": "Study Darwinism and Lamarckism (Natural Selection vs. Use and Disuse)."
+    }
+  ],
+  "Government": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Constitutional Development:** Clifford, Richards, Macpherson, and Lyttleton constitutions.\n• **International Orgs:** ECOWAS, AU, UN, and Commonwealth.\n• **Public Admin:** Civil Service and Public Corporations."
+    }
+  ],
+  "Literature-In-English": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Literary Terms:** Pun, Irony, Paradox, Oxymoron, and Enjambment.\n• **Prose/Drama:** Characterization and Themes in the current set books.\n• **General Text:** Comprehensive knowledge of 'The Life Changer'."
+    }
+  ],
+  "Financial Accounting": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Partnership:** Goodwill, profit-sharing, and dissolution.\n• **Final Accounts:** Trading, Profit & Loss, and Balance Sheets.\n• **Bank Reconciliation:** Correcting the difference between Cash Book and Bank Statement."
+    }
+  ],
+  "Economics": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Price Theory:** Interaction of Demand and Supply.\n• **National Income:** GDP, GNP, and NNP calculations.\n• **Inflation:** Causes, types, and control measures."
+    }
+  ],
+  "Agricultural Science": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Soil Science:** Soil pH, texture, and nutrient cycles (Nitrogen cycle).\n• **Crop Production:** Cultivation and storage of cereals and legumes.\n• **Livestock:** Management of Poultry, Cattle, and Pigs."
+    }
+  ],
+  "Geography": [
+    {
+      "topic": "JAMB Focus Areas",
+      "content": "• **Map Reading:** Calculation of scales, distances, and gradients.\n• **Physical Geo:** Weathering, Erosion, and Vulcanicity.\n• **Human Geo:** Population distribution and Industrialization in Nigeria."
+    }
+  ]
+    }
+      
