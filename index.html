@@ -40,7 +40,6 @@
 </head>
 <body>
 <div class="app-container">
-    <!-- Dashboard -->
     <div id="dashboard-view" class="app-section">
         <div class="header-box">
             <div class="d-flex justify-content-between align-items-center">
@@ -57,7 +56,6 @@
         </div>
     </div>
 
-    <!-- Exam Hall -->
     <div id="exam-hall-view" class="app-section">
         <div class="navbar-top">
             <div id="subjects-nav" class="d-flex gap-2"></div>
@@ -73,7 +71,7 @@
                 <span class="badge bg-secondary" id="q-counter">Q1</span>
                 <button class="btn btn-warning btn-sm" onclick="flagQuestion()">Flag</button>
             </div>
-            <div id="question-text" class="fs-5 fw-semibold mb-4">Loading...</div>
+            <div id="question-text" class="fs-5 fw-semibold mb-4">Select a subject to begin...</div>
             <div id="options-container"></div>
             <div id="explanation" class="explanation">
                 <strong>Explanation:</strong> <span id="exp-text"></span>
@@ -87,14 +85,13 @@
         </div>
     </div>
 
-    <!-- Results -->
     <div id="result-view" class="app-section text-center px-4">
         <div class="py-5">
             <i class="fas fa-trophy text-warning" style="font-size: 5rem;"></i>
             <h2 class="fw-bold mb-2">Excellent Performance!</h2>
             <h3 id="result-subject-name" class="text-primary mb-4">Subject</h3>
-            <div class="display-3 fw-bold mb-3" id="final-score" style="color:var(--primary);">85%</div>
-            <p id="result-stats" class="mb-4">Time: 1h 45m | Correct: 68/80</p>
+            <div class="display-3 fw-bold mb-3" id="final-score" style="color:var(--primary);">0%</div>
+            <p id="result-stats" class="mb-4">Time: 0m | Correct: 0/0</p>
             <canvas id="score-chart" class="score-chart"></canvas>
         </div>
         <div class="d-grid gap-3">
@@ -105,7 +102,6 @@
         </div>
     </div>
 
-    <!-- Stats (New Pro Feature) -->
     <div id="stats-view" class="app-section">
         <h5 class="fw-bold mb-4"><i class="fas fa-chart-bar text-info"></i> Practice History</h5>
         <canvas id="history-chart" width="400" height="200"></canvas>
@@ -113,7 +109,6 @@
         <button class="btn btn-secondary mt-4 w-100" onclick="showSection('dashboard-view')">Back</button>
     </div>
 
-    <!-- Bottom Nav -->
     <div class="nav-bottom">
         <a class="nav-link active" onclick="showSection('dashboard-view')"><i class="fas fa-home d-block fs-2"></i><span>Home</span></a>
         <a class="nav-link" onclick="showSection('stats-view')"><i class="fas fa-chart-line d-block fs-2"></i><span>Stats</span></a>
@@ -123,28 +118,27 @@
 </div>
 
 <script>
-    // Embedded Sample Data (Pro: No external files needed)
-    const SAMPLE_DATA = {
-        "English Language": [
-            {"q": "Choose the word opposite in meaning to 'ABUNDANT':", "options": ["Plenty", "Scarce", "Surplus", "Excess"], "answer": "b", "exp": "Scarce means insufficient."},
-            {"q": "He ___ to school yesterday.", "options": ["go", "goes", "went", "going"], "answer": "c", "exp": "Past tense."},
-            // Add 48 more from past papers...
-        ],
-        "Mathematics": [
-            {"q": "ax² + bx = 6 when x=1, 10 when x=2. Value at x=5?", "options": ["10", "12", "6", "-10"], "answer": "b", "exp": "Solve system: a+b=6, 4a+2b=10 → a=-2, b=8 → -50+40=-10? Wait, recalculate."},
-            // Add more...
-        ]
-        // Embed all subjects similarly for pro offline use
-    };
-
-    const allSubjects = Object.keys(SAMPLE_DATA).map(id => ({id, icon: "fas fa-book", color: "#0d6efd"}));
+    // List of subjects based on your GitHub file structure
+    const allSubjects = [
+        { id: "accounting", name: "Accounting", icon: "fas fa-file-invoice-dollar", color: "#4caf50" },
+        { id: "biology", name: "Biology", icon: "fas fa-dna", color: "#8bc34a" },
+        { id: "chemistry", name: "Chemistry", icon: "fas fa-flask", color: "#00bcd4" },
+        { id: "commerce", name: "Commerce", icon: "fas fa-store", color: "#ff9800" },
+        { id: "crk", name: "CRK", icon: "fas fa-cross", color: "#795548" },
+        { id: "economics", name: "Economics", icon: "fas fa-chart-pie", color: "#3f51b5" },
+        { id: "english", name: "English Language", icon: "fas fa-spell-check", color: "#9c27b0" },
+        { id: "government", name: "Government", icon: "fas fa-university", color: "#607d8b" },
+        { id: "literature", name: "Literature", icon: "fas fa-feather-alt", color: "#e91e63" },
+        { id: "mathematics", name: "Mathematics", icon: "fas fa-calculator", color: "#f44336" },
+        { id: "physics", name: "Physics", icon: "fas fa-atom", color: "#2196f3" }
+    ];
 
     let currentQuestions = [], currentSubject = '', currentQuestionIndex = 0, examTimer, timeLeft = 7200,
         userSelections = {}, flags = {}, scoresHistory = JSON.parse(localStorage.getItem('jambScores') || '[]'),
         isReviewMode = false;
 
-    // Init
     window.onload = initApp;
+
     function initApp() {
         populateSubjects();
         loadHistoryChart();
@@ -154,30 +148,40 @@
     function populateSubjects() {
         document.getElementById('subject-grid').innerHTML = allSubjects.map(s => `
             <div class="subject-card" onclick="startExam('${s.id}')">
-                <i class="${s.icon}" style="color:${s.color}; font-size:2rem;"></i>
-                <h6 class="mt-2 mb-0">${s.id}</h6>
+                <i class="${s.icon}" style="color:${s.color}; font-size:2.5rem;"></i>
+                <h6 class="mt-3 mb-0 fw-bold">${s.name}</h6>
             </div>
         `).join('');
     }
 
     async function startExam(subjectId) {
-        currentSubject = subjectId;
-        currentQuestions = SAMPLE_DATA[subjectId] || []; // Fallback to embedded
-        if (currentQuestions.length === 0) { alert('Add more questions to JSON!'); showSection('dashboard-view'); return; }
-        showSection('exam-hall-view');
-        resetExam();
-        buildSubjectsNav();
-        buildPalette();
-        loadQuestion();
-        startTimer();
+        try {
+            // Fetch questions from the specific JSON file in your repo
+            const response = await fetch(`${subjectId}.json`);
+            if (!response.ok) throw new Error('Subject file not found');
+            
+            currentQuestions = await response.json();
+            const subjectObj = allSubjects.find(s => s.id === subjectId);
+            currentSubject = subjectObj ? subjectObj.name : subjectId;
+
+            showSection('exam-hall-view');
+            resetExam();
+            buildSubjectsNav();
+            buildPalette();
+            loadQuestion();
+            startTimer();
+        } catch (error) {
+            alert("Could not load " + subjectId + ".json. Please ensure the file is in the same directory.");
+            console.error(error);
+        }
     }
 
     function resetExam() {
         currentQuestionIndex = 0; isReviewMode = false; userSelections = {}; flags = {}; timeLeft = 7200;
-        document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('answered', 'current', 'flagged'));
+        document.querySelectorAll('.palette-btn').forEach(b => b.className = 'palette-btn unanswered');
     }
 
-    function buildSubjectsNav() { document.getElementById('subjects-nav').innerHTML = `<span>${currentSubject}</span>`; }
+    function buildSubjectsNav() { document.getElementById('subjects-nav').innerHTML = `<span class="badge bg-primary">${currentSubject}</span>`; }
 
     function buildPalette() {
         const palette = document.getElementById('question-palette');
@@ -191,21 +195,26 @@
             if (userSelections[i]) btn.classList.add('answered');
             if (flags[i]) btn.classList.add('flagged');
             if (i === currentQuestionIndex) btn.classList.add('current');
-            if (!userSelections[i]) btn.classList.add('unanswered');
+            if (!userSelections[i] && !flags[i]) btn.classList.add('unanswered');
         });
     }
 
     function goToQuestion(index) { currentQuestionIndex = index; loadQuestion(); }
 
     function loadQuestion() {
+        if (!currentQuestions.length) return;
         const q = currentQuestions[currentQuestionIndex];
         document.getElementById('question-text').innerHTML = q.q;
         document.getElementById('q-counter').innerText = `Q${currentQuestionIndex + 1}/${currentQuestions.length}`;
         const container = document.getElementById('options-container');
-        container.innerHTML = q.options.map((opt, i) => 
-            `<button class="option-btn ${userSelections[currentQuestionIndex] === String.fromCharCode(97+i) ? 'active' : ''}" 
-                    onclick="selectOption(${i}, this)">${String.fromCharCode(97+i).toUpperCase()}. ${opt}</button>`
-        ).join('');
+        
+        container.innerHTML = q.options.map((opt, i) => {
+            const letter = String.fromCharCode(97 + i);
+            const isActive = userSelections[currentQuestionIndex] === letter;
+            return `<button class="option-btn ${isActive ? 'active' : ''}" 
+                    onclick="selectOption(${i}, this)">${letter.toUpperCase()}. ${opt}</button>`;
+        }).join('');
+
         document.getElementById('explanation').style.display = isReviewMode ? 'block' : 'none';
         if (isReviewMode) showExplanation();
         updatePalette();
@@ -214,21 +223,22 @@
     function selectOption(index, btn) {
         if (isReviewMode) return;
         userSelections[currentQuestionIndex] = String.fromCharCode(97 + index);
-        loadQuestion(); // Refresh highlights
+        loadQuestion(); 
     }
 
     function showExplanation() {
         const q = currentQuestions[currentQuestionIndex];
-        const correct = q.answer.toLowerCase();
+        const correct = (q.answer || '').toLowerCase().trim();
         const user = userSelections[currentQuestionIndex];
-        document.getElementById('exp-text').innerText = q.exp || 'No explanation available.';
-        // Highlight correct/wrong on load in review
+        document.getElementById('exp-text').innerText = q.exp || 'No explanation provided for this question.';
+        
         setTimeout(() => {
             document.querySelectorAll('.option-btn').forEach((b, i) => {
-                if (String.fromCharCode(97 + i) === correct) b.classList.add('correct');
-                else if (user === String.fromCharCode(97 + i) && user !== correct) b.classList.add('wrong');
+                const letter = String.fromCharCode(97 + i);
+                if (letter === correct) b.classList.add('correct');
+                else if (user === letter && user !== correct) b.classList.add('wrong');
             });
-        }, 100);
+        }, 50);
     }
 
     function flagQuestion() { flags[currentQuestionIndex] = !flags[currentQuestionIndex]; updatePalette(); }
@@ -247,29 +257,32 @@
     function prevQuestion() { if (currentQuestionIndex > 0) currentQuestionIndex--; loadQuestion(); }
 
     function submitExam(force = false) {
-        if (!force && !confirm('Submit exam? Unanswered questions will be marked 0.')) return;
+        if (!force && !confirm('Submit exam?')) return;
         clearInterval(examTimer);
         let score = 0, total = currentQuestions.length;
         currentQuestions.forEach((q, i) => {
-            const correct = (q.answer || '').toLowerCase().trim();
-            if (userSelections[i] === correct) score++;
+            if (userSelections[i] === (q.answer || '').toLowerCase().trim()) score++;
         });
-        const percent = Math.round((score / total) * 100);
+        const percent = total > 0 ? Math.round((score / total) * 100) : 0;
+        
         document.getElementById('final-score').textContent = `${percent}%`;
         document.getElementById('result-subject-name').textContent = currentSubject;
-        document.getElementById('result-stats').textContent = `Correct: ${score}/${total} | Time: ${Math.floor((7200 - timeLeft)/60)}m`;
+        document.getElementById('result-stats').textContent = `Correct: ${score}/${total} | Time Used: ${Math.floor((7200 - timeLeft)/60)}m`;
+        
         scoresHistory.push({subject: currentSubject, score: percent, date: new Date().toLocaleDateString()});
         localStorage.setItem('jambScores', JSON.stringify(scoresHistory));
+        
         drawScoreChart(score, total - score);
-        document.getElementById('retake-btn').onclick = () => startExam(currentSubject);
+        document.getElementById('retake-btn').onclick = () => startExam(allSubjects.find(s => s.name === currentSubject).id);
         showSection('result-view');
     }
 
     function drawScoreChart(correct, wrong) {
-        const ctx = document.getElementById('score-chart').getContext('2d');
-        new Chart(ctx, {
+        const canvas = document.getElementById('score-chart');
+        if (window.myChart) window.myChart.destroy();
+        window.myChart = new Chart(canvas.getContext('2d'), {
             type: 'doughnut',
-            data: { labels: ['Correct', 'Wrong'], datasets: [{ data: [correct, wrong], backgroundColor: ['var(--success)', 'var(--danger)'] }] },
+            data: { labels: ['Correct', 'Wrong'], datasets: [{ data: [correct, wrong], backgroundColor: ['#198754', '#dc3545'] }] },
             options: { responsive: true }
         });
     }
@@ -277,45 +290,47 @@
     function startReview() {
         isReviewMode = true;
         showSection('exam-hall-view');
+        currentQuestionIndex = 0;
         loadQuestion();
     }
 
     function loadHistoryChart() {
         const ctx = document.getElementById('history-chart').getContext('2d');
-        const labels = scoresHistory.map(s => s.subject.slice(0,3));
-        new Chart(ctx, {
+        const labels = scoresHistory.slice(-10).map(s => s.subject.substring(0,5));
+        if (window.historyChartInstance) window.historyChartInstance.destroy();
+        window.historyChartInstance = new Chart(ctx, {
             type: 'bar',
-            data: { labels, datasets: [{ label: 'Scores', data: scoresHistory.map(s => s.score), backgroundColor: 'rgba(13,110,253,0.6)' }] },
+            data: { labels, datasets: [{ label: 'Score %', data: scoresHistory.slice(-10).map(s => s.score), backgroundColor: '#0d6efd' }] },
             options: { scales: { y: { beginAtZero: true, max: 100 } } }
         });
-        document.getElementById('history-list').innerHTML = scoresHistory.slice(-5).map(s => `<div class="alert alert-info mt-2">${s.subject}: ${s.score}% (${s.date})</div>`).join('');
+        document.getElementById('history-list').innerHTML = scoresHistory.slice(-5).reverse().map(s => `
+            <div class="d-flex justify-content-between alert alert-dark py-2 px-3 mb-2" style="font-size:0.85rem">
+                <span>${s.subject}</span><strong>${s.score}%</strong><span>${s.date}</span>
+            </div>
+        `).join('');
     }
 
     function downloadPDF() {
         const element = document.getElementById('result-view');
-        html2pdf().from(element).set({ filename: `${currentSubject}_Result_${new Date().toISOString().slice(0,10)}.pdf` }).save();
+        html2pdf().from(element).set({ filename: `JAMB_Result_${currentSubject}.pdf` }).save();
     }
 
     function showSection(id) {
         document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
         document.getElementById(id).style.display = 'block';
         window.scrollTo(0,0);
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        event?.target?.classList.add('active');
         if (id === 'stats-view') loadHistoryChart();
     }
 
     function handleKeys(e) {
-        if (document.hidden) return;
-        switch(e.key.toLowerCase()) {
-            case 'a': selectOption(0, document.querySelector('.option-btn:nth-child(1)')); break;
-            case 'b': selectOption(1, document.querySelector('.option-btn:nth-child(2)')); break;
-            case 'c': selectOption(2, document.querySelector('.option-btn:nth-child(3)')); break;
-            case 'd': selectOption(3, document.querySelector('.option-btn:nth-child(4)')); break;
-            case 'n': nextQuestion(); break;
-            case 'p': prevQuestion(); break;
-            case 's': submitExam(); break;
-        }
+        if (document.getElementById('exam-hall-view').style.display !== 'block') return;
+        const key = e.key.toLowerCase();
+        if (['a','b','c','d'].includes(key)) {
+            const idx = key.charCodeAt(0) - 97;
+            selectOption(idx);
+        } else if (key === 'n') nextQuestion();
+        else if (key === 'p') prevQuestion();
+        else if (key === 's') submitExam();
     }
 </script>
 </body>
