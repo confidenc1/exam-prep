@@ -41,9 +41,8 @@
         #calc-modal {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             z-index: 3000; background: #1e1f2b; border: 2px solid var(--primary); 
-            border-radius: 15px; padding: 15px; width: 300px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 15px; padding: 15px; width: 280px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .calc-btn { height: 50px; font-weight: bold; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -94,34 +93,28 @@
     </div>
 
     <div id="calc-modal">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="mb-0 text-primary fw-bold">JAMB Calculator</h6>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold text-primary">Calculator</span>
             <button class="btn-close btn-close-white" onclick="toggleCalc()"></button>
         </div>
-        <input type="text" id="calc-display" class="form-control mb-3 text-end fs-4 bg-dark text-white border-0" value="0" readonly>
-        <div class="row g-2">
-            <div class="col-3"><button class="btn btn-danger w-100 calc-btn" onclick="clearCalc()">C</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 calc-btn" onclick="pressCalc('/')">/</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 calc-btn" onclick="pressCalc('*')">×</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 calc-btn" onclick="backspaceCalc()">⌫</button></div>
-            
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('7')">7</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('8')">8</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('9')">9</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 calc-btn" onclick="pressCalc('-')">-</button></div>
-            
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('4')">4</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('5')">5</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('6')">6</button></div>
-            <div class="col-3"><button class="btn btn-secondary w-100 calc-btn" onclick="pressCalc('+')">+</button></div>
-            
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('1')">1</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('2')">2</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('3')">3</button></div>
-            <div class="col-3"><button class="btn btn-primary w-100 calc-btn" onclick="solveCalc()">=</button></div>
-            
-            <div class="col-9"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('0')">0</button></div>
-            <div class="col-3"><button class="btn btn-outline-light w-100 calc-btn" onclick="pressCalc('.')">.</button></div>
+        <input type="text" id="calc-display" class="form-control mb-2 text-end bg-dark text-white border-0 fs-4" value="0" readonly>
+        <div class="row g-1">
+            <div class="col-3"><button class="btn btn-danger w-100 py-2" onclick="clearCalc()">C</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100 py-2" onclick="pressCalc('/')">/</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100 py-2" onclick="pressCalc('*')">×</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100 py-2" onclick="pressCalc('-')">-</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('7')">7</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('8')">8</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('9')">9</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100 py-2" onclick="pressCalc('+')">+</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('4')">4</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('5')">5</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('6')">6</button></div>
+            <div class="col-3"><button class="btn btn-primary w-100 py-2" onclick="solveCalc()">=</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('1')">1</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('2')">2</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('3')">3</button></div>
+            <div class="col-3"><button class="btn btn-outline-light w-100 py-2" onclick="pressCalc('0')">0</button></div>
         </div>
     </div>
 
@@ -157,7 +150,6 @@
 </div>
 
 <script>
-    // List of subjects
     const allSubjects = [
         { id: "accounting", name: "Accounting", icon: "fas fa-file-invoice-dollar", color: "#4caf50" },
         { id: "biology", name: "Biology", icon: "fas fa-dna", color: "#8bc34a" },
@@ -184,28 +176,30 @@
         document.addEventListener('keydown', handleKeys);
     }
 
-    // Calculator Logic
-    let calcValue = "0";
+    /* Calculator Logic */
+    let calcStr = "0";
     function toggleCalc() {
-        const modal = document.getElementById('calc-modal');
-        modal.style.display = (modal.style.display === 'block') ? 'none' : 'block';
+        const m = document.getElementById('calc-modal');
+        m.style.display = m.style.display === 'block' ? 'none' : 'block';
     }
-    function pressCalc(val) {
-        if (calcValue === "0") calcValue = val;
-        else calcValue += val;
-        updateCalcDisplay();
+    function pressCalc(v) {
+        if (calcStr === "0") calcStr = v;
+        else calcStr += v;
+        document.getElementById('calc-display').value = calcStr;
     }
-    function clearCalc() { calcValue = "0"; updateCalcDisplay(); }
-    function backspaceCalc() {
-        calcValue = calcValue.length > 1 ? calcValue.slice(0, -1) : "0";
-        updateCalcDisplay();
+    function clearCalc() {
+        calcStr = "0";
+        document.getElementById('calc-display').value = calcStr;
     }
     function solveCalc() {
-        try { calcValue = String(eval(calcValue)); }
-        catch { calcValue = "Error"; }
-        updateCalcDisplay();
+        try {
+            calcStr = String(eval(calcStr));
+            document.getElementById('calc-display').value = calcStr;
+        } catch(e) {
+            document.getElementById('calc-display').value = "Error";
+            calcStr = "0";
+        }
     }
-    function updateCalcDisplay() { document.getElementById('calc-display').value = calcValue; }
 
     function populateSubjects() {
         document.getElementById('subject-grid').innerHTML = allSubjects.map(s => `
@@ -220,11 +214,9 @@
         try {
             const response = await fetch(`${subjectId}.json`);
             if (!response.ok) throw new Error('Subject file not found');
-            
             currentQuestions = await response.json();
             const subjectObj = allSubjects.find(s => s.id === subjectId);
             currentSubject = subjectObj ? subjectObj.name : subjectId;
-
             showSection('exam-hall-view');
             resetExam();
             buildSubjectsNav();
@@ -233,13 +225,11 @@
             startTimer();
         } catch (error) {
             alert("Could not load " + subjectId + ".json. Please ensure the file is in the same directory.");
-            console.error(error);
         }
     }
 
     function resetExam() {
         currentQuestionIndex = 0; isReviewMode = false; userSelections = {}; flags = {}; timeLeft = 7200;
-        document.querySelectorAll('.palette-btn').forEach(b => b.className = 'palette-btn unanswered');
     }
 
     function buildSubjectsNav() { document.getElementById('subjects-nav').innerHTML = `<span class="badge bg-primary">${currentSubject}</span>`; }
@@ -265,27 +255,14 @@
     function loadQuestion() {
         if (!currentQuestions.length) return;
         const q = currentQuestions[currentQuestionIndex];
-        
-        // Handle Passages
-        const passageBox = document.getElementById('passage-container');
-        if (q.passage) {
-            passageBox.innerHTML = `<strong>Passage:</strong><br>${q.passage}`;
-            passageBox.style.display = 'block';
-        } else {
-            passageBox.style.display = 'none';
-        }
-
         document.getElementById('question-text').innerHTML = q.q;
         document.getElementById('q-counter').innerText = `Q${currentQuestionIndex + 1}/${currentQuestions.length}`;
         const container = document.getElementById('options-container');
-        
         container.innerHTML = q.options.map((opt, i) => {
             const letter = String.fromCharCode(97 + i);
             const isActive = userSelections[currentQuestionIndex] === letter;
-            return `<button class="option-btn ${isActive ? 'active' : ''}" 
-                    onclick="selectOption(${i}, this)">${letter.toUpperCase()}. ${opt}</button>`;
+            return `<button class="option-btn ${isActive ? 'active' : ''}" onclick="selectOption(${i}, this)">${letter.toUpperCase()}. ${opt}</button>`;
         }).join('');
-
         document.getElementById('explanation').style.display = isReviewMode ? 'block' : 'none';
         if (isReviewMode) showExplanation();
         updatePalette();
@@ -301,8 +278,7 @@
         const q = currentQuestions[currentQuestionIndex];
         const correct = (q.answer || '').toLowerCase().trim();
         const user = userSelections[currentQuestionIndex];
-        document.getElementById('exp-text').innerText = q.exp || 'No explanation provided for this question.';
-        
+        document.getElementById('exp-text').innerText = q.exp || 'No explanation provided.';
         setTimeout(() => {
             document.querySelectorAll('.option-btn').forEach((b, i) => {
                 const letter = String.fromCharCode(97 + i);
@@ -331,13 +307,35 @@
         if (!force && !confirm('Submit exam?')) return;
         clearInterval(examTimer);
         let score = 0, total = currentQuestions.length;
-        currentQuestions.forEach((q, i) => {
-            if (userSelections[i] === (q.answer || '').toLowerCase().trim()) score++;
-        });
+        currentQuestions.forEach((q, i) => { if (userSelections[i] === (q.answer || '').toLowerCase().trim()) score++; });
         const percent = total > 0 ? Math.round((score / total) * 100) : 0;
-        
         document.getElementById('final-score').textContent = `${percent}%`;
         document.getElementById('result-subject-name').textContent = currentSubject;
         document.getElementById('result-stats').textContent = `Correct: ${score}/${total} | Time Used: ${Math.floor((7200 - timeLeft)/60)}m`;
-        
-        scoresHistory.push({subject: cur
+        scoresHistory.push({subject: currentSubject, score: percent, date: new Date().toLocaleDateString()});
+        localStorage.setItem('jambScores', JSON.stringify(scoresHistory));
+        drawScoreChart(score, total - score);
+        document.getElementById('retake-btn').onclick = () => startExam(allSubjects.find(s => s.name === currentSubject).id);
+        showSection('result-view');
+    }
+
+    function drawScoreChart(correct, wrong) {
+        const canvas = document.getElementById('score-chart');
+        if (window.myChart) window.myChart.destroy();
+        window.myChart = new Chart(canvas.getContext('2d'), {
+            type: 'doughnut',
+            data: { labels: ['Correct', 'Wrong'], datasets: [{ data: [correct, wrong], backgroundColor: ['#198754', '#dc3545'] }] },
+            options: { responsive: true }
+        });
+    }
+
+    function startReview() {
+        isReviewMode = true;
+        showSection('exam-hall-view');
+        currentQuestionIndex = 0;
+        loadQuestion();
+    }
+
+    function loadHistoryChart() {
+        const canvas = document.getElementById('history-chart');
+        if(!canvas) re
