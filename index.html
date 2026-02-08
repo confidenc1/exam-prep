@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="px-3">
-            <div class="section-title"><i class="fas fa-fire text-danger"></i> My Subject</div>
+            <div class="section-title"><i class="fas fa-fire text-danger"></i> My Subjects</div>
             <div id="horizontal-list" class="subject-scroll"></div>
             <div class="section-title"><i class="fas fa-rocket text-primary"></i> Quick access</div>
             <div class="grid-container">
@@ -62,7 +62,6 @@
             <button class="btn text-white p-0 me-3" onclick="showDashboard()"><i class="fas fa-arrow-left fs-4"></i></button>
             <h4 class="fw-bold mb-0">CBT Mock Exam</h4>
         </div>
-        <p class="text-muted text-center small">Select your subjects (max 4) to start the practice hall.</p>
         <div id="practice-subject-grid" class="grid-container mb-4"></div>
         <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold" onclick="goToExamHall()">Start Practice Session</button>
     </div>
@@ -73,8 +72,8 @@
             <div class="badge bg-danger p-2" id="exam-timer">02:00:00</div>
         </div>
         <div class="question-box">
-            <span class="badge bg-dark mb-2" id="q-counter">Question 1 of 40</span>
-            <p id="question-text">Fetching questions from JSON...</p>
+            <span class="badge bg-dark mb-2" id="q-counter">Question 1</span>
+            <p id="question-text">Loading Questions...</p>
         </div>
         <div id="options-container">
             <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text"></span></button>
@@ -84,7 +83,7 @@
         </div>
         <div class="d-flex justify-content-between mt-4">
             <button class="btn btn-outline-light rounded-pill px-4" onclick="prevQuestion()">Previous</button>
-            <button class="btn btn-primary rounded-pill px-4" onclick="showDashboard()">Submit</button>
+            <button class="btn btn-primary rounded-pill px-4" onclick="showDashboard()">Exit</button>
             <button class="btn btn-outline-light rounded-pill px-4" onclick="nextQuestion()">Next</button>
         </div>
     </div>
@@ -99,44 +98,22 @@
 
 <script>
     const allSubjects = [
-        { id: "English Language", icon: "fas fa-book", color: "#bc743c" },
-        { id: "Mathematics", icon: "fas fa-calculator", color: "#1d9086" },
-        { id: "Physics", icon: "fas fa-broadcast-tower", color: "#3b7d4f" },
-        { id: "Chemistry", icon: "fas fa-flask", color: "#bc743c" },
-        { id: "Biology", icon: "fas fa-lungs", color: "#bc743c" },
-        { id: "Government", icon: "fas fa-landmark", color: "#8a2be2" },
-        { id: "Economics", icon: "fas fa-chart-line", color: "#1d9086" },
-        { id: "Financial Accounting", icon: "fas fa-balance-scale", color: "#1d9086" },
-        { id: "Literature-In-English", icon: "fas fa-book-open", color: "#8a2be2" },
-        { id: "Commerce", icon: "fas fa-shopping-cart", color: "#bc743c" },
-        { id: "CRS", icon: "fas fa-cross", color: "#1d9086" }
+        { id: "English Language", file: "english.json", icon: "fas fa-book", color: "#bc743c" },
+        { id: "Mathematics", file: "mathematics.json", icon: "fas fa-calculator", color: "#1d9086" },
+        { id: "Physics", file: "physics.json", icon: "fas fa-broadcast-tower", color: "#3b7d4f" },
+        { id: "Chemistry", file: "chemistry.json", icon: "fas fa-flask", color: "#bc743c" },
+        { id: "Biology", file: "biology.json", icon: "fas fa-lungs", color: "#bc743c" },
+        { id: "Government", file: "government.json", icon: "fas fa-landmark", color: "#8a2be2" },
+        { id: "Economics", file: "economics.json", icon: "fas fa-chart-line", color: "#1d9086" },
+        { id: "Financial Accounting", file: "accounting.json", icon: "fas fa-balance-scale", color: "#1d9086" },
+        { id: "Literature-In-English", file: "literature.json", icon: "fas fa-book-open", color: "#8a2be2" },
+        { id: "Commerce", file: "commerce.json", icon: "fas fa-shopping-cart", color: "#bc743c" },
+        { id: "CRS", file: "crk.json", icon: "fas fa-cross", color: "#1d9086" }
     ];
 
     let selectedSubjects = [];
-    let allData = {};
     let currentQuestions = [];
     let currentQuestionIndex = 0;
-
-    // 1. Automatically fetch your JSON when the page loads
-    async function initData() {
-        try {
-            const res = await fetch('study_guide.json?v=' + Date.now());
-            allData = await res.json();
-        } catch (e) {
-            console.error("Could not load your JSON file.");
-        }
-    }
-
-    function startTimer(duration, displayId) {
-        let timer = duration, h, m, s;
-        setInterval(() => {
-            h = parseInt(timer / 3600, 10);
-            m = parseInt((timer % 3600) / 60, 10);
-            s = parseInt(timer % 60, 10);
-            document.getElementById(displayId).textContent = `${h<10?"0"+h:h}:${m<10?"0"+m:m}:${s<10?"0"+s:s}`;
-            if (--timer < 0) timer = duration;
-        }, 1000);
-    }
 
     function showSection(id) {
         document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
@@ -164,26 +141,33 @@
         }
     }
 
-    // 2. Load questions from your JSON's "Questions" key
-    function goToExamHall() {
-        if(selectedSubjects.length === 0) return alert("Please select a subject!");
+    async function goToExamHall() {
+        if(selectedSubjects.length === 0) return alert("Select a subject!");
         
-        const subject = selectedSubjects[0];
-        
-        // Ensure your JSON has a "Questions" object containing the subjects
-        if(allData.Questions && allData.Questions[subject]) {
-            currentQuestions = allData.Questions[subject];
+        const subjObj = allSubjects.find(s => s.id === selectedSubjects[0]);
+        document.getElementById('question-text').innerText = "Loading " + subjObj.id + "...";
+        showSection('exam-hall-view');
+
+        try {
+            const res = await fetch(subjObj.file + '?v=' + Date.now());
+            const data = await res.json();
             
-            // Limit to 60 for English, 40 for others
-            const limit = (subject === "English Language") ? 60 : 40;
-            currentQuestions = currentQuestions.slice(0, limit);
+            // This pulls the list from your specific files like biology.json
+            currentQuestions = data.questions || data.Questions || [];
             
-            currentQuestionIndex = 0;
-            showSection('exam-hall-view');
-            document.getElementById('exam-subject-title').innerText = subject;
-            loadQuestion();
-        } else {
-            alert("No questions found in JSON for " + subject + ". Check your file structure.");
+            if(currentQuestions.length > 0) {
+                const limit = (subjObj.id === "English Language") ? 60 : 40;
+                currentQuestions = currentQuestions.slice(0, limit);
+                currentQuestionIndex = 0;
+                document.getElementById('exam-subject-title').innerText = subjObj.id;
+                loadQuestion();
+            } else {
+                alert("Empty file: " + subjObj.file);
+                showDashboard();
+            }
+        } catch(e) {
+            alert("Could not find " + subjObj.file + " on your GitHub.");
+            showDashboard();
         }
     }
 
@@ -202,14 +186,11 @@
     function showDashboard() { showSection('dashboard-view'); }
 
     window.onload = () => {
-        initData();
         document.getElementById('horizontal-list').innerHTML = allSubjects.slice(0,6).map(s => `
             <div class="mini-card" style="border-color:${s.color}">
                 <i class="${s.icon}" style="color:${s.color}"></i>
                 <span style="font-size:0.7rem">${s.id}</span>
             </div>`).join('');
-        startTimer(7200, 'timer-display');
-        startTimer(7200, 'exam-timer');
     };
 </script>
 </body>
