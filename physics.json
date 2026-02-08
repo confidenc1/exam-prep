@@ -1,5 +1,5 @@
 [
-  { "q": "In the circuit diagram shown, if $R_1=5\Omega$ and $R_2=10\Omega$ are in series, calculate the total resistance.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Resistors_in_series.svg/220px-Resistors_in_series.svg.png", "options": ["2Ω", "5Ω", "15Ω", "50Ω"], "a": 2 },
+  { "q": "In the circuit diagram shown, if R1=5Ω and R2=10Ω are in series, calculate the total resistance.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Resistors_in_series.svg/220px-Resistors_in_series.svg.png", "options": ["2Ω", "5Ω", "15Ω", "50Ω"], "a": 2 },
   { "q": "Identify the type of lens shown and the defect it corrects.", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Converging_Lens.png/300px-Converging_Lens.png", "options": ["Concave (Myopia)", "Convex (Hypermetropia)", "Bifocal (Presbyopia)", "Cylindrical (Astigmatism)"], "a": 1 },
   { "q": "What is the reading on the Vernier Calipers shown in the image?", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Vernier_caliper.svg/1024px-Vernier_caliper.svg.png", "options": ["2.34 cm", "2.40 cm", "2.51 cm", "3.10 cm"], "a": 0 },
   { "q": "The graph of Velocity against Time for an object with constant acceleration is represented by:", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Kinematic_Graph_Constant_Acceleration.png/300px-Kinematic_Graph_Constant_Acceleration.png", "options": ["A curved line", "A horizontal line", "A straight line through origin", "A vertical line"], "a": 2 },
@@ -7,7 +7,7 @@
   { "q": "Which of the following is a fundamental quantity?", "options": ["Velocity", "Luminous Intensity", "Force", "Pressure"], "a": 1 },
   { "q": "The process of heat transfer in a vacuum is known as:", "options": ["Conduction", "Convection", "Radiation", "Evaporation"], "a": 2 },
   { "q": "A wave that travels in a direction perpendicular to the direction of vibration is called:", "options": ["Longitudinal wave", "Transverse wave", "Sound wave", "Stationary wave"], "a": 1 },
-  { "q": "In the diagram of a hydraulic press, if a force of 10N is applied to a small piston of area $2m^2$, what force is produced on a large piston of area $10m^2$?", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Hydraulic_Force_Pascals_Law.svg/300px-Hydraulic_Force_Pascals_Law.svg.png", "options": ["20N", "50N", "100N", "200N"], "a": 1 },
+  { "q": "In the diagram of a hydraulic press, if a force of 10N is applied to a small piston of area 2m², what force is produced on a large piston of area 10m²?", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Hydraulic_Force_Pascals_Law.svg/300px-Hydraulic_Force_Pascals_Law.svg.png", "options": ["20N", "50N", "100N", "200N"], "a": 1 },
   { "q": "The angle between the geographic meridian and the magnetic meridian is called:", "options": ["Angle of dip", "Magnetic declination", "Magnetic inclination", "Horizontal component"], "a": 1 },
   { "q": "The SI unit of magnetic flux density is:", "options": ["Weber", "Tesla", "Henry", "Farad"], "a": 1 },
   { "q": "A simple pendulum has a period of 2 seconds. What happens to the period if the length is quadrupled?", "options": ["It doubles", "It triples", "It halves", "It stays the same"], "a": 0 },
@@ -38,5 +38,5 @@
   { "q": "The energy stored in a stretched spring is:", "options": ["Kinetic energy", "Chemical energy", "Elastic potential energy", "Nuclear energy"], "a": 2 },
   { "q": "Which law states that the current flowing through a conductor is proportional to the potential difference?", "options": ["Hooke's Law", "Ohm's Law", "Newton's Law", "Pascal's Law"], "a": 1 },
   { "q": "The process where a heavy nucleus splits into two lighter nuclei is:", "options": ["Nuclear fusion", "Nuclear fission", "Radioactive decay", "Ionization"], "a": 1 },
-  { "q": "Calculate the density of a substance with a mass of 500g and volume of $100cm^3$.", "options": ["0.2 $g/cm^3$", "5 $g/cm^3$", "50 $g/cm^3$", "5000 $g/cm^3$"], "a": 1 }
+  { "q": "Calculate the density of a substance with a mass of 500g and volume of 100cm³.", "options": ["0.2 g/cm³", "5 g/cm³", "50 g/cm³", "5000 g/cm³"], "a": 1 }
 ]
