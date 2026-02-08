@@ -6,193 +6,157 @@
 <title>FSA JAMB CBT PRO</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
 <style>
 body{
   background:#0f111a;
-  color:white;
-  font-family:Segoe UI,sans-serif;
+  color:#fff;
+  font-family:system-ui,Segoe UI,sans-serif;
 }
-.section{display:none;padding:20px}
-.section.active{display:block}
-.card-ui{
+.screen{display:none;padding:20px}
+.screen.active{display:block}
+
+.card-box{
   background:#1e1f2b;
-  border-radius:18px;
+  border-radius:20px;
   padding:25px;
+  box-shadow:0 10px 25px rgba(0,0,0,.4);
+}
+
+.subject{
+  background:#161722;
+  padding:20px;
+  border-radius:15px;
   text-align:center;
   cursor:pointer;
   transition:.3s;
 }
-.card-ui:hover{transform:translateY(-5px);border:1px solid #0d6efd}
-.option{
+.subject:hover{background:#0d6efd}
+
+.flashcard{
   background:#161722;
-  padding:15px;
+  border-radius:20px;
+  padding:25px;
+  min-height:220px;
+}
+
+.option{
+  background:#1e1f2b;
   border-radius:12px;
-  margin:8px 0;
+  padding:14px;
+  margin:10px 0;
   cursor:pointer;
 }
 .option:hover{background:#0d6efd}
+
+.progress{
+  height:8px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- HOME / LOCK SCREEN -->
-<section id="home" class="section active">
-  <h3 class="fw-bold">FSA JAMB CBT PRO</h3>
+<!-- LOCK SCREEN -->
+<div id="lock" class="screen active">
+  <div class="card-box">
+    <h4>FSA JAMB CBT PRO</h4>
+    <p>Enter activation key to unlock</p>
 
-  <div class="alert alert-warning" id="lockBox">
-    <b>Access Locked</b><br>
-    Enter activation key to unlock full CBT practice
+    <input id="key" class="form-control mb-2" placeholder="Activation key">
 
-    <input id="keyInput" class="form-control mt-2" placeholder="Enter activation key">
+    <button class="btn btn-success w-100 mb-2" onclick="activate()">Activate</button>
 
-    <button class="btn btn-success mt-2 w-100" onclick="activate()">
-      Activate
-    </button>
-
-    <a href="https://wa.me/2349131546480" target="_blank"
-       class="btn btn-outline-success w-100 mt-2">
-      <i class="fab fa-whatsapp"></i> Message Admin (09131546480)
+    <a class="btn btn-outline-success w-100"
+       href="https://wa.me/2349131546480" target="_blank">
+       WhatsApp Admin (09131546480)
     </a>
   </div>
+</div>
 
-  <div class="row mt-3" id="subjects"></div>
-</section>
+<!-- SUBJECTS -->
+<div id="subjects" class="screen">
+  <h5>Select Subject</h5>
+  <div class="row g-3" id="subList"></div>
+</div>
 
-<!-- EXAM SCREEN -->
-<section id="exam" class="section">
-  <h5 id="subjectTitle"></h5>
-  <div id="questionText" class="fw-bold my-3"></div>
-  <div id="options"></div>
+<!-- PRACTICE -->
+<div id="practice" class="screen">
+  <div class="progress mb-3">
+    <div id="bar" class="progress-bar bg-success"></div>
+  </div>
 
-  <button class="btn btn-secondary mt-3" onclick="nextQuestion()">Next</button>
-</section>
+  <div class="flashcard">
+    <div id="qText" class="fw-bold mb-3"></div>
+    <div id="opts"></div>
+  </div>
 
-<!-- RESULT -->
-<section id="result" class="section text-center">
-  <h3>Result</h3>
-  <h1 id="finalScore"></h1>
-  <button class="btn btn-primary" onclick="show('home')">Back Home</button>
-</section>
+  <div class="d-flex justify-content-between mt-3">
+    <button class="btn btn-secondary" onclick="prev()">Prev</button>
+    <button class="btn btn-secondary" onclick="next()">Next</button>
+  </div>
+</div>
 
 <script>
-/* ================= CONFIG ================= */
+/* CONFIG */
+const MASTER_KEY="FSA-JAMB-2026";
+const DAYS=30;
+const SUBJECTS=["english","mathematics","biology","chemistry","physics","government","economics"];
 
-const SUBJECTS = [
-  "english",
-  "mathematics",
-  "biology",
-  "chemistry",
-  "physics",
-  "government",
-  "economics"
-];
+/* STATE */
+let q=[],i=0;
 
-const MASTER_KEY = "FSA-JAMB-2026";   // 🔑 ACTIVATION KEY
-const ACCESS_DAYS = 30;               // ⏳ VALIDITY
-
-/* ================ VARIABLES ================ */
-
-let questions = [];
-let index = 0;
-let score = 0;
-let currentSubject = "";
-
-/* ================= FUNCTIONS ================= */
-
+/* FUNCTIONS */
 function show(id){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
 }
 
 function activate(){
-  const key = document.getElementById("keyInput").value.trim();
-
-  if(key === MASTER_KEY){
-    const expiry = Date.now() + ACCESS_DAYS*24*60*60*1000;
-    localStorage.setItem("fsa_access","true");
-    localStorage.setItem("fsa_expiry",expiry);
-    alert("Activation successful");
-    loadSubjects();
-  }else{
-    alert("Invalid activation key");
-    window.open("https://wa.me/2349131546480");
-  }
+ if(document.getElementById('key').value===MASTER_KEY){
+   localStorage.setItem('fsa',Date.now()+DAYS*86400000);
+   loadSubjects();
+ }else{
+   alert("Wrong key");
+   window.open("https://wa.me/2349131546480");
+ }
 }
 
-function checkAccess(){
-  const ok = localStorage.getItem("fsa_access");
-  const exp = Number(localStorage.getItem("fsa_expiry"));
-  if(ok && Date.now() < exp) return true;
-  localStorage.clear();
-  return false;
+function valid(){
+ const t=localStorage.getItem('fsa');
+ return t && Date.now()<t;
 }
 
 function loadSubjects(){
-  if(!checkAccess()) return;
-
-  document.getElementById("lockBox").style.display="none";
-
-  document.getElementById("subjects").innerHTML =
-    SUBJECTS.map(s=>`
-      <div class="col-6 mb-3">
-        <div class="card-ui" onclick="startExam('${s}')">
-          ${s.toUpperCase()}
-        </div>
-      </div>
-    `).join("");
+ if(!valid())return;
+ show('subjects');
+ document.getElementById('subList').innerHTML=
+ SUBJECTS.map(s=>`
+  <div class="col-6">
+   <div class="subject" onclick="start('${s}')">${s.toUpperCase()}</div>
+  </div>`).join('');
 }
 
-async function startExam(sub){
-  currentSubject = sub;
-  index = 0;
-  score = 0;
-
-  const res = await fetch(sub + ".json");
-  questions = await res.json();
-
-  document.getElementById("subjectTitle").innerText = sub.toUpperCase();
-  show("exam");
-  loadQuestion();
+async function start(s){
+ const r=await fetch(s+'.json');
+ q=await r.json();
+ i=0;
+ show('practice');
+ load();
 }
 
-function loadQuestion(){
-  const q = questions[index];
-  document.getElementById("questionText").innerHTML =
-    `Q${index+1}. ${q.q}`;
-
-  document.getElementById("options").innerHTML =
-    q.options.map((o,i)=>`
-      <div class="option"
-           onclick="select('${String.fromCharCode(97+i)}')">
-        ${o}
-      </div>
-    `).join("");
+function load(){
+ const item=q[i];
+ document.getElementById('qText').innerHTML=item.q;
+ document.getElementById('opts').innerHTML=
+ item.options.map(o=>`<div class="option">${o}</div>`).join('');
+ document.getElementById('bar').style.width=((i+1)/q.length*100)+'%';
 }
 
-function select(ans){
-  if(ans === questions[index].answer) score++;
-  nextQuestion();
-}
+function next(){ if(i<q.length-1){i++;load();} }
+function prev(){ if(i>0){i--;load();} }
 
-function nextQuestion(){
-  index++;
-  if(index >= questions.length){
-    endExam();
-  }else{
-    loadQuestion();
-  }
-}
-
-function endExam(){
-  const percent = Math.round((score/questions.length)*100);
-  document.getElementById("finalScore").innerText = percent + "%";
-  show("result");
-}
-
-window.onload = loadSubjects;
+window.onload=()=>{ if(valid())loadSubjects(); }
 </script>
 
 </body>
