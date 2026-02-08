@@ -2,310 +2,206 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FSA JAMB PRACTICES APP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root {
-            --primary-bg: #2d2a70;
-            --body-bg: #0f111a;
-            --card-bg: #1e1f2b;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --accent: #ff8c00;
-            --border: rgba(255, 255, 255, 0.08);
-            --passage-bg: #1e293b;
-        }
-
-        body {
-            background-color: var(--body-bg);
-            color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            margin: 0; padding-bottom: 90px;
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        .app-header {
-            background: var(--primary-bg);
-            padding: 45px 20px 65px 20px;
-            border-radius: 0 0 35px 35px;
-            position: relative;
-        }
+        /* --- ORIGINAL DESIGN THEME --- */
+        body { background-color: #0f111a; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
         
-        .brand-tag {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            font-size: 0.65rem;
-            letter-spacing: 1.5px;
-            color: rgba(255,255,255,0.5);
-            font-weight: 800;
-        }
+        .app-section { display: none; padding: 20px; min-height: 100vh; }
+        #dashboard-view { display: block; }
 
-        .profile-img {
-            width: 50px; height: 50px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.3);
-            background: #4a47a3; display: flex; align-items: center; justify-content: center;
-        }
+        /* Top Navigation Bar Style */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .timer-text { font-weight: bold; font-size: 1.2rem; color: #ffffff; opacity: 0.8; }
 
-        /* Subject Scroller */
-        .subject-scroller {
-            display: flex; gap: 12px; overflow-x: auto;
-            padding: 10px 20px; margin-top: -30px;
-            scrollbar-width: none;
-        }
-        .sub-item {
-            min-width: 130px; background: var(--card-bg);
-            border: 1.5px solid var(--border);
-            padding: 15px; border-radius: 20px;
-            text-align: center; transition: 0.3s;
-        }
-        .sub-item.selected { border-color: var(--accent); background: rgba(255, 140, 0, 0.1); }
-
-        /* Quick Access Cards */
-        .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .q-card {
-            height: 130px; border-radius: 24px; padding: 20px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            font-weight: 700; cursor: pointer; transition: 0.2s;
-        }
-        .q-card:active { transform: scale(0.95); }
-        .card-purple { background: linear-gradient(135deg, #6a5af9, #d66efd); }
-        .card-orange { background: linear-gradient(135deg, #ff6b6b, #ff9e6d); }
-        .card-teal { background: linear-gradient(135deg, #12cbc4, #06b6d4); }
-        .card-grey { background: linear-gradient(135deg, #718093, #2f3640); }
-
-        /* Exam Box */
-        .passage-box {
-            background: var(--passage-bg) !important;
-            color: #f1f5f9 !important;
-            padding: 20px; border-radius: 18px; margin-bottom: 20px;
-            line-height: 1.7; border-left: 4px solid var(--accent);
-        }
-        .option-box {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 16px; padding: 18px; margin-bottom: 12px;
-            display: flex; align-items: center; cursor: pointer;
-        }
-        .option-box.active { border-color: var(--accent); background: rgba(255, 140, 0, 0.1); }
-
-        /* Modals */
-        #results-screen, #custom-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.97); z-index: 10000;
-            display: none; align-items: center; justify-content: center;
-        }
-        .result-card {
-            background: var(--card-bg); padding: 30px; border-radius: 30px;
-            text-align: center; border: 1px solid var(--border);
-            max-width: 380px; width: 90%;
-        }
-        .progress-ring {
-            width: 140px; height: 140px; border-radius: 50%;
-            border: 8px solid var(--accent);
+        /* Subject Selection Grid (Horizontal Scroll) */
+        .subject-grid { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; margin-bottom: 30px; scrollbar-width: none; }
+        .subject-grid::-webkit-scrollbar { display: none; }
+        
+        .subject-card { 
+            min-width: 100px; height: 100px; background: #161722; border-radius: 15px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin: 0 auto 20px;
+            border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s;
+        }
+        .subject-card.active { border: 1px solid #ff8c00; background: rgba(255,140,0,0.05); }
+        .subject-card i { font-size: 1.2rem; margin-bottom: 8px; color: #ff8c00; }
+        .subject-card span { font-size: 0.75rem; font-weight: 500; }
+
+        /* Main Action Cards (CBT & Study Guide) */
+        .action-card { 
+            border-radius: 20px; padding: 25px; height: 160px; border: none; 
+            cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;
+            margin-bottom: 20px; transition: transform 0.2s;
+        }
+        .action-card:active { transform: scale(0.96); }
+        .btn-purple { background: linear-gradient(135deg, #4e2a84, #311b92); }
+        .btn-orange { background: linear-gradient(135deg, #e65100, #ff8f00); opacity: 0.9; }
+        .action-card h6 { font-size: 1.1rem; font-weight: bold; line-height: 1.3; }
+
+        /* Vertical List View for Study Guide */
+        .guide-item {
+            background: #1e1f2b; border-radius: 14px; padding: 18px;
+            margin-bottom: 15px; display: flex; align-items: center;
+            border: 1px solid rgba(255,255,255,0.05); cursor: pointer;
+        }
+        .guide-icon-box {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; margin-right: 15px;
+        }
+        .guide-item span { font-weight: 600; font-size: 0.95rem; }
+
+        /* Note Content Display */
+        .note-card { 
+            background: #1e1f2b; border-radius: 15px; padding: 20px; 
+            margin-bottom: 20px; border-left: 5px solid #ff8c00; 
         }
 
-        /* Bottom Nav */
+        /* Bottom Menu */
         .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: #181921;
-            display: flex; justify-content: space-around; padding: 12px 0;
-            border-top: 1px solid var(--border);
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #0f111a;
+            display: flex; justify-content: space-around; padding: 15px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
-        .nav-item { color: var(--text-muted); text-align: center; font-size: 0.75rem; text-decoration: none; }
-        .nav-item.active { color: #6a5af9; }
+        .nav-link { color: #4d4f5c; text-decoration: none; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; }
+        .nav-link.active { color: #6a11cb; }
+        .nav-link i { font-size: 1.2rem; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-<div id="dashboard-view">
-    <header class="app-header">
-        <div class="brand-tag">FSA JAMB PRACTICES APP</div>
-        <div class="d-flex justify-content-between align-items-center mt-3">
+    <div id="dashboard-view" class="app-section">
+        <div class="top-nav">
             <div class="d-flex align-items-center">
-                <div class="profile-img"><i class="fas fa-user-graduate text-white fs-4"></i></div>
-                <div class="ms-3">
-                    <h5 class="mb-0 fw-bold">Hello Candidate 👋</h5>
-                    <small class="text-white-50">Your success starts here</small>
+                <div class="rounded-circle bg-secondary me-3" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold">Hello Candidate 👋</h6>
+                    <small class="text-muted" style="font-size: 0.7rem;">Your success starts here</small>
                 </div>
             </div>
-            <div id="timer-display" class="fw-bold text-white fs-5" style="font-family: monospace;">02:00:00</div>
+            <div class="timer-text">02:00:00</div>
         </div>
-    </header>
 
-    <div class="px-3 mt-4"><h6 class="fw-bold text-muted small text-uppercase">Study Subjects</h6></div>
-    <div class="subject-scroller" id="subject-list"></div>
+        <div class="subject-grid">
+            <div class="subject-card active"><i class="fas fa-book"></i><span>English</span></div>
+            <div class="subject-card"><i class="fas fa-calculator"></i><span>Mathematics</span></div>
+            <div class="subject-card"><i class="fas fa-flask"></i><span>Physics</span></div>
+            <div class="subject-card"><i class="fas fa-vial"></i><span>Chemistry</span></div>
+        </div>
 
-    <div class="quick-grid mt-3">
-        <div class="q-card card-purple" onclick="beginExam()">
-            <i class="fas fa-laptop-code fs-3"></i><span>CBT Mock<br>Exam</span>
-        </div>
-        <div class="q-card card-orange" onclick="alert('Study Guide Coming Soon!')">
-            <i class="fas fa-book-reader fs-3"></i><span>Study<br>Guide</span>
-        </div>
-        <div class="q-card card-teal" onclick="alert('Literature Summaries Coming Soon!')">
-            <i class="fas fa-pen-nib fs-3"></i><span>Novel<br>Summaries</span>
-        </div>
-        <div class="q-card card-grey" onclick="alert('Official Syllabus Coming Soon!')">
-            <i class="fas fa-clipboard-list fs-3"></i><span>JAMB<br>Syllabus</span>
+        <div class="row">
+            <div class="col-6">
+                <div class="action-card btn-purple" onclick="alert('Starting Practice Mode...')">
+                    <i class="fas fa-laptop-code fs-2"></i>
+                    <h6>CBT Mock<br>Exam</h6>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="action-card btn-orange" onclick="openStudyGuide()">
+                    <i class="fas fa-book-open fs-2"></i>
+                    <h6>Study<br>Guide</h6>
+                </div>
+            </div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active"><i class="fas fa-home d-block fs-4 mb-1"></i>Home</a>
-        <a href="#" class="nav-item"><i class="fas fa-key d-block fs-4 mb-1"></i>Activate</a>
-        <a href="#" class="nav-item"><i class="fas fa-user-circle d-block fs-4 mb-1"></i>Profile</a>
-        <a href="#" class="nav-item"><i class="fas fa-info-circle d-block fs-4 mb-1"></i>Help</a>
-    </nav>
-</div>
-
-<div id="exam-view" style="display:none; padding: 20px;">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <button class="btn btn-dark rounded-circle" onclick="location.reload()"><i class="fas fa-arrow-left"></i></button>
-        <div class="text-center"><h6 id="current-sub-label" class="fw-bold mb-0">English</h6><div id="q-count" class="small text-muted">1 / 60</div></div>
-        <div class="badge bg-danger p-2 px-3 rounded-pill" id="exam-timer">02:00:00</div>
-    </div>
-    <div id="q-container"></div>
-    <div class="d-flex gap-2 mt-4">
-        <button class="btn btn-dark flex-grow-1 py-3 rounded-4 fw-bold" onclick="moveQ(-1)">PREV</button>
-        <button class="btn btn-dark flex-grow-1 py-3 rounded-4 fw-bold" onclick="moveQ(1)">NEXT</button>
-    </div>
-    <button class="btn btn-success w-100 mt-3 py-3 rounded-4 fw-bold shadow" onclick="showSubmitModal()">SUBMIT ANSWERS</button>
-</div>
-
-<div id="results-screen">
-    <div class="result-card">
-        <h3 class="fw-800 mb-4">MOCK SUMMARY</h3>
-        <div class="progress-ring">
-            <span id="final-total" style="font-size: 2.5rem; line-height: 1;">0</span>
-            <small class="text-muted" style="font-size: 0.7rem;">/ 400</small>
+    <div id="study-guide-view" class="app-section">
+        <div class="d-flex align-items-center mb-4">
+            <button class="btn text-white p-0 me-3" onclick="showView('dashboard-view')">
+                <i class="fas fa-arrow-left fs-4"></i>
+            </button>
+            <h4 class="fw-bold mb-0">Notes</h4>
         </div>
-        <div id="score-breakdown" class="text-start mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.03);"></div>
-        <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold" onclick="location.reload()">TRY AGAIN</button>
+        
+        <p class="text-muted small mb-3 text-uppercase fw-bold">My Subjects</p>
+        <div id="guide-list-container">
+            </div>
     </div>
-</div>
 
-<div id="custom-modal">
-    <div class="bg-dark p-4 rounded-5 text-center border border-secondary" style="max-width: 320px; width: 90%;">
-        <h5 class="fw-bold mb-3">Submit Exam?</h5>
-        <p class="text-muted small">Ready to see your score?</p>
-        <div class="d-flex gap-2"><button class="btn btn-secondary flex-grow-1 rounded-pill" onclick="closeModal()">Back</button><button class="btn btn-primary flex-grow-1 rounded-pill" onclick="confirmSubmit()">Submit</button></div>
+    <div id="note-viewer" class="app-section">
+        <div class="d-flex align-items-center mb-4">
+            <button class="btn text-white p-0 me-3" onclick="showView('study-guide-view')">
+                <i class="fas fa-arrow-left fs-4"></i>
+            </button>
+            <h4 id="active-subject-title" class="fw-bold mb-0 text-warning">Subject Name</h4>
+        </div>
+        <div id="note-content-body">
+            </div>
     </div>
-</div>
 
-<script>
-    const allSubs = [
-        {id:"English", icon:"fas fa-book"}, 
-        {id:"Mathematics", icon:"fas fa-calculator"}, 
-        {id:"Physics", icon:"fas fa-atom"}, 
-        {id:"Chemistry", icon:"fas fa-flask"}, 
-        {id:"Biology", icon:"fas fa-dna"}, 
-        {id:"Literature", icon:"fas fa-pen-nib"}, 
-        {id:"Government", icon:"fas fa-university"}, 
-        {id:"Economics", icon:"fas fa-chart-line"}, 
-        {id:"Commerce", icon:"fas fa-shopping-cart"},
-        {id:"Crk", icon:"fas fa-bible"}, 
-        {id:"Accounting", icon:"fas fa-briefcase"}
-    ];
+    <div class="bottom-nav">
+        <a href="#" class="nav-link active"><i class="fas fa-home"></i>Home</a>
+        <a href="#" class="nav-link"><i class="fas fa-key"></i>Activate</a>
+        <a href="#" class="nav-link"><i class="fas fa-user-circle"></i>Profile</a>
+        <a href="#" class="nav-link"><i class="fas fa-info-circle"></i>Help</a>
+    </div>
 
-    let selected = ["English"], examData = {}, activeSub = "English", activeIdx = 0, userAns = {}, timeLeft = 7200, timerInterval;
+    <script>
+        // All subjects for the vertical list
+        const subjectData = [
+            { name: "English Language", icon: "fas fa-book", color: "#8b5e3c" },
+            { name: "Mathematics", icon: "fas fa-calculator", color: "#2d8a7d" },
+            { name: "Physics", icon: "fas fa-broadcast-tower", color: "#3b7d4f" },
+            { name: "Chemistry", icon: "fas fa-flask", color: "#a67c52" },
+            { name: "Biology", icon: "fas fa-lungs", color: "#3b7d4f" },
+            { name: "Government", icon: "fas fa-landmark", color: "#8a2be2" },
+            { name: "Literature-In-English", icon: "fas fa-book-open", color: "#8a2be2" },
+            { name: "Financial Accounting", icon: "fas fa-chart-pie", color: "#2d8a7d" },
+            { name: "Economics", icon: "fas fa-chart-line", color: "#2d8a7d" }
+        ];
 
-    function initDashboard() {
-        const list = document.getElementById('subject-list');
-        list.innerHTML = allSubs.map(s => `
-            <div class="sub-item ${selected.includes(s.id)?'selected':''}" onclick="toggleSub('${s.id}')">
-                <i class="${s.icon} ${selected.includes(s.id)?'text-warning':'text-muted'}"></i>
-                <div class="small fw-bold mt-2">${s.id}</div>
-            </div>`).join('');
-    }
+        let studyData = {};
 
-    function toggleSub(id) {
-        if(id === "English") return;
-        const i = selected.indexOf(id);
-        if(i > -1) selected.splice(i, 1);
-        else if(selected.length < 4) selected.push(id);
-        initDashboard();
-    }
-
-    function startTimer() {
-        timerInterval = setInterval(() => {
-            if(timeLeft <= 0) { clearInterval(timerInterval); processResults(); }
-            else {
-                timeLeft--;
-                const h = Math.floor(timeLeft/3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60;
-                const timeStr = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-                document.getElementById('timer-display').innerText = timeStr;
-                document.getElementById('exam-timer').innerText = timeStr;
-            }
-        }, 1000);
-    }
-
-    async function beginExam() {
-        if(selected.length < 4) return alert("Select English + 3 Subjects");
-        for (let s of selected) {
+        // Fetch Study Guide JSON
+        async function loadContent() {
             try {
-                const res = await fetch(`${s.toLowerCase()}.json`);
-                examData[s] = await res.json();
-                userAns[s] = new Array(examData[s].length).fill(null);
-            } catch(e) { alert(`Error: Make sure ${s.toLowerCase()}.json exists in your folder.`); return; }
+                const response = await fetch('study_guide.json');
+                studyData = await response.json();
+            } catch (err) { console.log("JSON not found yet."); }
         }
-        document.getElementById('dashboard-view').style.display = 'none';
-        document.getElementById('exam-view').style.display = 'block';
-        startTimer();
-        render();
-    }
 
-    function render() {
-        const q = examData[activeSub][activeIdx];
-        const user = userAns[activeSub][activeIdx];
-        document.getElementById('q-count').innerText = `${activeIdx + 1} / ${examData[activeSub].length}`;
-        document.getElementById('current-sub-label').innerText = activeSub;
-        let html = q.p ? `<div class="passage-box"><b>Comprehension:</b><br>${q.p}</div>` : '';
-        html += `<h5 class="fw-bold mb-4" style="line-height:1.6">${q.q}</h5>`;
-        q.options.forEach((opt, i) => {
-            html += `<div class="option-box ${user === i ? 'active' : ''}" onclick="pick(${i})">
-                <div class="me-3 fw-bold">${String.fromCharCode(65+i)}.</div><div>${opt}</div>
-            </div>`;
-        });
-        document.getElementById('q-container').innerHTML = html;
-    }
-
-    function pick(i) { userAns[activeSub][activeIdx] = i; render(); }
-    function moveQ(d) {
-        if(examData[activeSub][activeIdx+d]) { activeIdx += d; render(); }
-        else {
-            let sIdx = selected.indexOf(activeSub);
-            if(d > 0 && selected[sIdx+1]) { activeSub = selected[sIdx+1]; activeIdx = 0; render(); }
-            else if(d < 0 && selected[sIdx-1]) { activeSub = selected[sIdx-1]; activeIdx = examData[activeSub].length -1; render(); }
+        function showView(viewId) {
+            document.querySelectorAll('.app-section').forEach(section => section.style.display = 'none');
+            document.getElementById(viewId).style.display = 'block';
         }
-    }
 
-    function showSubmitModal() { document.getElementById('custom-modal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('custom-modal').style.display = 'none'; }
-    function confirmSubmit() { closeModal(); processResults(); }
+        function openStudyGuide() {
+            showView('study-guide-view');
+            const container = document.getElementById('guide-list-container');
+            container.innerHTML = subjectData.map(s => `
+                <div class="guide-item" onclick="viewSubjectNotes('${s.name}')">
+                    <div class="guide-icon-box" style="background: ${s.color}22">
+                        <i class="${s.icon}" style="color: ${s.color}"></i>
+                    </div>
+                    <span>${s.name}</span>
+                </div>
+            `).join('');
+        }
 
-    function processResults() {
-        clearInterval(timerInterval);
-        let totalScore = 0, breakdownHtml = "";
-        selected.forEach(sub => {
-            let correct = 0;
-            examData[sub].forEach((q, i) => { if(userAns[sub][i] === q.a) correct++; });
-            let weighted = Math.round((correct / examData[sub].length) * 100);
-            totalScore += weighted;
-            breakdownHtml += `<div class="d-flex justify-content-between mb-2"><span>${sub}</span><span class="text-warning fw-bold">${weighted}/100</span></div>`;
-        });
-        document.getElementById('final-total').innerText = totalScore;
-        document.getElementById('score-breakdown').innerHTML = breakdownHtml;
-        document.getElementById('exam-view').style.display = 'none';
-        document.getElementById('results-screen').style.display = 'flex';
-    }
+        function viewSubjectNotes(subjectName) {
+            showView('note-viewer');
+            document.getElementById('active-subject-title').innerText = subjectName;
+            const body = document.getElementById('note-content-body');
+            
+            const content = studyData[subjectName];
+            if(content) {
+                body.innerHTML = content.map(t => `
+                    <div class="note-card">
+                        <h5 class="fw-bold mb-2">${t.topic}</h5>
+                        <div class="text-white-50 small" style="white-space: pre-wrap; line-height: 1.6;">${t.content}</div>
+                    </div>
+                `).join('');
+            } else {
+                body.innerHTML = `<div class="text-center mt-5 text-muted">No notes found for ${subjectName} yet.</div>`;
+            }
+        }
 
-    window.onload = initDashboard;
-</script>
+        window.onload = loadContent;
+    </script>
 </body>
 </html>
