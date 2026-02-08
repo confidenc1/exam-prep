@@ -133,18 +133,14 @@
     }
 
     async function startExam() {
-        document.getElementById('start-btn').innerText = "Loading Questions...";
+        document.getElementById('start-btn').innerText = "Loading...";
         for (let sName of selected) {
             const sObj = subjectsList.find(s => s.id === sName);
             try {
                 const res = await fetch(sObj.file + '?v=' + Date.now());
-                if(!res.ok) throw new Error();
                 examData[sName] = await res.json();
                 answers[sName] = {};
-            } catch (e) {
-                alert("Missing file: " + sObj.file + ". Make sure you uploaded all .json files!");
-                location.reload(); return;
-            }
+            } catch (e) { alert("Error loading " + sName); }
         }
         document.getElementById('dash-screen').style.display = 'none';
         document.getElementById('exam-screen').style.display = 'block';
@@ -156,48 +152,29 @@
         const q = examData[activeS][activeI];
         document.getElementById('sub-title').innerText = activeS;
         document.getElementById('q-count').innerText = `Q ${activeI + 1} of ${examData[activeS].length}`;
-        
         let html = q.p ? `<div class="passage-box">${q.p}</div>` : "";
-        if(q.img) html += `<div class="text-center mb-3"><img src="${q.img}" class="img-fluid rounded border" style="max-height:200px"></div>`;
         html += `<h5 class="mb-4">${q.q}</h5>`;
-        
         q.options.forEach((opt, idx) => {
             const isSel = answers[activeS][activeI] === idx;
-            html += `<button class="option ${isSel?'selected':''}" onclick="pick(${idx})">
-                <b>${String.fromCharCode(65+idx)}.</b> ${opt}
-            </button>`;
+            html += `<button class="option ${isSel?'selected':''}" onclick="pick(${idx})"><b>${String.fromCharCode(65+idx)}.</b> ${opt}</button>`;
         });
         document.getElementById('q-area').innerHTML = html;
     }
 
     function pick(idx) { answers[activeS][activeI] = idx; renderQ(); }
     function changeQ(dir) { if(activeI+dir >= 0 && activeI+dir < examData[activeS].length) { activeI += dir; renderQ(); } }
-
-    function confirmSubmit() { if(confirm("Are you sure you want to submit?")) finishExam(); }
+    function confirmSubmit() { if(confirm("Submit Exam?")) finishExam(); }
 
     function finishExam() {
         let totalAggregate = 0;
-        let analysisHtml = "<h3>Performance Analysis:</h3><div class='list-group mt-3'>";
-        
+        let analysisHtml = "<h5>Breakdown:</h5><div class='list-group'>";
         selected.forEach(sName => {
             let correct = 0;
             examData[sName].forEach((q, i) => { if(answers[sName][i] === q.a) correct++; });
-            let scorePercent = (correct / examData[sName].length) * 100;
-            totalAggregate += scorePercent;
-
-            let tip = scorePercent < 50 ? "Focus on this subject!" : "Strong performance!";
-            let color = scorePercent < 50 ? "text-danger" : "text-success";
-
-            analysisHtml += `
-                <div class="list-group-item">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="mb-1">${sName}</h5>
-                        <span class="fw-bold ${color}">${correct} / ${examData[sName].length}</span>
-                    </div>
-                    <small class="text-muted">${tip}</small>
-                </div>`;
+            let percent = (correct / examData[sName].length) * 100;
+            totalAggregate += percent;
+            analysisHtml += `<div class='list-group-item'><b>${sName}:</b> ${correct}/${examData[sName].length}</div>`;
         });
-
         document.getElementById('total-score').innerText = Math.round(totalAggregate);
         document.getElementById('analysis-box').innerHTML = analysisHtml + "</div>";
         document.getElementById('exam-screen').style.display = 'none';
@@ -205,12 +182,10 @@
     }
 
     function startTimer(sec) {
-        const timerEl = document.getElementById('timer');
-        const interval = setInterval(() => {
+        setInterval(() => {
             sec--;
             let h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
-            timerEl.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            if(sec <= 0) { clearInterval(interval); finishExam(); }
+            document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }, 1000);
     }
 
@@ -221,13 +196,10 @@
 
     function calcInput(v) {
         const d = document.getElementById('calc-display');
-        if(v === 'C') d.value = "";
-        else if(v === '=') { try { d.value = eval(d.value); } catch(e) { d.value = "Error"; } }
-        else d.value += v;
+        if(v === 'C') d.value = ""; else if(v === '=') d.value = eval(d.value); else d.value += v;
     }
 
     initDash();
 </script>
 </body>
-            </html>
-            
+</html>
