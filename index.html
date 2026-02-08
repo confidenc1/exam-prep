@@ -2,225 +2,209 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSA PRO | Elite CBT Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FSA-JAMB PRO v11.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root {
-            --bg-body: #05060a;
-            --surface: #0f111a;
-            --surface-light: #161925;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.2);
-            --text-main: #f8fafc;
+            --primary-bg: #2d2a70;
+            --body-bg: #0f111a;
+            --card-bg: #1e1f2b;
+            --text-main: #ffffff;
             --text-muted: #94a3b8;
+            --accent: #ff8c00;
             --border: rgba(255, 255, 255, 0.08);
-            --success: #10b981;
-            --danger: #ef4444;
+            --passage-bg: #1e293b;
         }
 
         body {
-            background-color: var(--bg-body);
+            background-color: var(--body-bg);
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0; padding-bottom: 90px;
             overflow-x: hidden;
-            margin: 0;
         }
 
-        .app-wrapper { display: flex; min-height: 100vh; }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            width: 320px; background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 2rem; position: sticky; top: 0; height: 100vh;
-            display: flex; flex-direction: column;
+        /* Header & Profile */
+        .app-header {
+            background: var(--primary-bg);
+            padding: 40px 20px 60px 20px;
+            border-radius: 0 0 35px 35px;
+        }
+        .profile-img {
+            width: 50px; height: 50px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: #4a47a3; display: flex; align-items: center; justify-content: center;
         }
 
-        .main-content { flex-grow: 1; padding: 2.5rem 5%; background: var(--bg-body); }
-
-        /* Dashboard Components */
-        .glass-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 25px; }
-        .chart-box { background: var(--surface-light); border-radius: 20px; padding: 25px; border: 1px solid var(--border); }
-
-        /* Subject Selection */
-        .sub-pill {
-            background: var(--surface-light);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px;
-            cursor: pointer;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
+        /* Subject Scroller */
+        .subject-scroller {
+            display: flex; gap: 12px; overflow-x: auto;
+            padding: 10px 20px; margin-top: -30px;
+            scrollbar-width: none;
         }
-        .sub-pill:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .sub-pill.selected { border-color: var(--accent); background: rgba(59, 130, 246, 0.1); box-shadow: 0 0 15px var(--accent-glow); }
+        .sub-item {
+            min-width: 130px; background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            padding: 15px; border-radius: 20px;
+            text-align: center; transition: 0.3s;
+        }
+        .sub-item.selected { border-color: var(--accent); background: rgba(255, 140, 0, 0.1); }
+
+        /* Quick Access Cards */
+        .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .q-card {
+            height: 130px; border-radius: 24px; padding: 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            font-weight: 700; cursor: pointer;
+        }
+        .card-purple { background: linear-gradient(135deg, #6a5af9, #d66efd); }
+        .card-orange { background: linear-gradient(135deg, #ff6b6b, #ff9e6d); }
+        .card-teal { background: linear-gradient(135deg, #12cbc4, #06b6d4); }
+        .card-grey { background: linear-gradient(135deg, #718093, #2f3640); }
 
         /* Exam Interface */
-        .exam-shell {
-            max-width: 950px; margin: 0 auto;
-            background: var(--surface);
-            border-radius: 30px; border: 1px solid var(--border);
-            overflow: hidden;
+        .passage-box {
+            background: var(--passage-bg) !important;
+            color: #f1f5f9 !important;
+            padding: 20px; border-radius: 18px; margin-bottom: 20px;
+            line-height: 1.7; border-left: 4px solid var(--accent);
         }
-
-        .sub-bar { display: flex; overflow-x: auto; background: var(--surface-light); border-bottom: 1px solid var(--border); }
-        .sub-tab { padding: 18px 25px; color: var(--text-muted); cursor: pointer; font-weight: 600; white-space: nowrap; transition: 0.2s; }
-        .sub-tab.active { color: var(--accent); background: rgba(59, 130, 246, 0.05); border-bottom: 3px solid var(--accent); }
-
         .option-box {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 16px; padding: 18px 25px;
-            margin-bottom: 12px; cursor: pointer;
-            display: flex; align-items: center; transition: 0.2s;
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 16px; padding: 18px; margin-bottom: 12px;
+            display: flex; align-items: center; cursor: pointer;
         }
-        .option-box:hover { background: rgba(255,255,255,0.06); }
-        .option-box.active { background: var(--accent); border-color: var(--accent); color: white; }
-        .option-box.correct { background: var(--success); border-color: var(--success); color: white; }
-        .option-box.wrong { background: var(--danger); border-color: var(--danger); color: white; }
+        .option-box.active { border-color: var(--accent); background: rgba(255, 140, 0, 0.1); }
 
-        .btn-premium {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            color: white; border: none; padding: 16px 40px;
-            border-radius: 50px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+        /* Modals & Results */
+        #custom-modal, #results-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 10000;
+            display: none; align-items: center; justify-content: center;
         }
-        .btn-premium:disabled { opacity: 0.5; cursor: not-allowed; }
+        .progress-circle {
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 10px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: 800; margin: 0 auto 20px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: #181921;
+            display: flex; justify-content: space-around; padding: 12px 0;
+            border-top: 1px solid var(--border);
+        }
+        .nav-item { color: var(--text-muted); text-align: center; font-size: 0.75rem; text-decoration: none; }
+        .nav-item.active { color: #6a5af9; }
     </style>
 </head>
 <body>
 
-<div class="app-wrapper">
-    <aside class="sidebar d-none d-lg-flex">
-        <div class="text-center mb-5">
-            <div class="h3 fw-800 mb-4">FSA <span class="text-primary">PRO</span></div>
-            <div class="rounded-circle bg-primary mx-auto mb-3" style="width:70px; height:70px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:bold;">C</div>
-            <h5 class="fw-bold mb-0">Confidence</h5>
-            <small class="text-muted">Global Ranking: #12</small>
-        </div>
-
-        <h6 class="small fw-bold text-muted mb-3 text-uppercase">Leaderboard Top 3</h6>
-        <div id="leaderboard" class="small mb-5">
-            <div class="d-flex justify-content-between mb-3"><span class="text-muted">1. Tunde J.</span> <b class="text-success">342</b></div>
-            <div class="d-flex justify-content-between mb-3"><span class="text-muted">2. Grace E.</span> <b class="text-success">318</b></div>
-            <div class="d-flex justify-content-between mb-3"><span class="text-muted">3. Amaka O.</span> <b class="text-success">305</b></div>
-            <hr class="border-secondary opacity-25">
-            <div class="d-flex justify-content-between text-primary fw-bold"><span>12. You</span> <b id="user-current-rank">-</b></div>
-        </div>
-        
-        <div class="mt-auto">
-            <div class="p-3 bg-dark rounded-4 small border border-secondary">
-                <i class="fas fa-info-circle me-2"></i> Version 10.1 (Enterprise)
-            </div>
-        </div>
-    </aside>
-
-    <main class="main-content">
-        <div id="dashboard-view">
-            <div class="d-flex justify-content-between align-items-center mb-5">
-                <h2 class="fw-800">CBT Dashboard</h2>
-                <div id="timer-display" class="h4 fw-bold text-danger d-none">02:00:00</div>
-            </div>
-
-            <div class="chart-box mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h6 class="fw-bold text-muted mb-0">Performance Trend</h6>
-                    <span class="badge bg-primary px-3">Last 5 Exams</span>
-                </div>
-                <canvas id="historyChart" height="100"></canvas>
-            </div>
-
-            <h4 class="fw-bold mb-4">Subject Selection</h4>
-            <div class="row g-3 mb-5" id="subject-grid"></div>
-            
-            <button id="start-btn" class="btn btn-premium btn-lg w-100 disabled shadow-lg" onclick="beginExam()">Initialize Mock Session</button>
-        </div>
-
-        <div id="exam-view" style="display:none;">
-            <div id="review-tag" class="text-center d-none mb-3">
-                <span class="badge bg-warning text-dark p-2 px-5 rounded-pill fw-800"><i class="fas fa-check-double me-2"></i>REVIEW MODE ACTIVE</span>
-            </div>
-            <div class="exam-shell">
-                <div class="sub-bar" id="tab-container"></div>
-                <div class="p-4 p-md-5">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 id="current-sub-label" class="fw-800 mb-0">Subject</h4>
-                        <div id="q-count" class="badge bg-dark border border-secondary p-2"></div>
-                    </div>
-                    <div id="q-container" style="min-height: 300px;"></div>
-                    <div class="d-flex justify-content-between mt-5">
-                        <button class="btn btn-dark rounded-pill px-5 fw-bold" onclick="moveQ(-1)">PREV</button>
-                        <button class="btn btn-dark rounded-pill px-5 fw-bold" onclick="moveQ(1)">NEXT</button>
-                    </div>
+<div id="dashboard-view">
+    <header class="app-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="profile-img"><i class="fas fa-user text-white fs-4"></i></div>
+                <div class="ms-3">
+                    <h5 class="mb-0 fw-bold">Hello Confidenc 👋</h5>
+                    <small class="text-white-50">Let's start learning</small>
                 </div>
             </div>
-            <button id="submit-btn" class="btn btn-success w-100 mt-4 py-4 rounded-4 fw-800 shadow-lg" onclick="finish()">FINISH & SUBMIT</button>
-            <button id="exit-review" class="btn btn-danger w-100 mt-4 py-3 rounded-4 d-none fw-bold" onclick="location.reload()">EXIT REVIEW MODE</button>
+            <div id="timer-display" class="fw-bold text-white fs-5" style="font-family: monospace;">02:00:00</div>
         </div>
+    </header>
 
-        <div id="result-view" style="display:none;" class="text-center py-5">
-            <div class="glass-card p-5">
-                <h3 class="text-muted fw-bold">TOTAL SCORE</h3>
-                <div style="font-size: 7.5rem; font-weight: 900; color: var(--accent); line-height: 1;" id="final-score-val">0</div>
-                <div id="breakdown" class="row g-3 mt-5"></div>
-                <div class="mt-5 pt-4">
-                    <button class="btn btn-outline-info rounded-pill px-5 me-2 py-3 fw-bold" onclick="startReview()">REVIEW CORRECTIONS</button>
-                    <button class="btn btn-premium rounded-pill px-5 py-3 fw-bold" onclick="location.reload()">RETAKE EXAM</button>
-                </div>
-            </div>
+    <div class="px-3 mt-4"><h6 class="fw-bold text-muted small text-uppercase">Select 4 Subjects</h6></div>
+    <div class="subject-scroller" id="subject-list"></div>
+
+    <div class="quick-grid mt-3">
+        <div class="q-card card-purple" onclick="beginExam()">
+            <i class="fas fa-desktop fs-3"></i><span>Practice<br>Questions</span>
         </div>
-    </main>
+        <div class="q-card card-orange">
+            <i class="fas fa-file-alt fs-3"></i><span>Study<br>Notes</span>
+        </div>
+        <div class="q-card card-teal">
+            <i class="fas fa-book-open fs-3"></i><span>Literary<br>Texts</span>
+        </div>
+        <div class="q-card card-grey">
+            <i class="fas fa-list fs-3"></i><span>Syllabus</span>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active"><i class="fas fa-home d-block fs-4 mb-1"></i>Home</a>
+        <a href="#" class="nav-item"><i class="fas fa-trophy d-block fs-4 mb-1"></i>Activate</a>
+        <a href="#" class="nav-item"><i class="fas fa-user-circle d-block fs-4 mb-1"></i>Account</a>
+        <a href="#" class="nav-item"><i class="fas fa-cog d-block fs-4 mb-1"></i>Settings</a>
+    </nav>
+</div>
+
+<div id="exam-view" style="display:none; padding: 20px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-dark rounded-circle" onclick="location.reload()"><i class="fas fa-times"></i></button>
+        <div class="text-center">
+            <h6 id="current-sub-label" class="fw-bold mb-0">English</h6>
+            <div id="q-count" class="small text-muted">1 / 60</div>
+        </div>
+        <div class="badge bg-danger p-2" id="exam-timer">02:00:00</div>
+    </div>
+    
+    <div id="q-container"></div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button class="btn btn-dark flex-grow-1 py-3 rounded-4 fw-bold" onclick="moveQ(-1)">PREV</button>
+        <button class="btn btn-dark flex-grow-1 py-3 rounded-4 fw-bold" onclick="moveQ(1)">NEXT</button>
+    </div>
+    <button class="btn btn-success w-100 mt-3 py-3 rounded-4 fw-bold" onclick="showSubmitModal()">FINISH & SUBMIT</button>
+</div>
+
+<div id="results-screen">
+    <div class="bg-dark p-4 rounded-5 text-center shadow-lg border border-secondary" style="max-width: 400px; width: 92%;">
+        <h2 class="fw-800 mb-4">YOUR RESULTS</h2>
+        <div class="progress-circle" id="final-total">0</div>
+        <div id="score-breakdown" class="text-start mb-4 small text-muted"></div>
+        <button class="btn btn-premium w-100 py-3 rounded-pill fw-bold" onclick="location.reload()">RETAKE EXAM</button>
+    </div>
+</div>
+
+<div id="custom-modal">
+    <div class="bg-dark p-4 rounded-5 text-center border border-secondary" style="max-width: 340px; width: 90%;">
+        <i class="fas fa-question-circle text-warning mb-3" style="font-size: 3rem;"></i>
+        <h4 class="fw-bold">Submit Exam?</h4>
+        <p class="text-muted small">Are you sure you want to end this session?</p>
+        <div class="d-flex gap-2">
+            <button class="btn btn-secondary flex-grow-1 rounded-pill" onclick="closeModal()">Review</button>
+            <button class="btn btn-primary flex-grow-1 rounded-pill" onclick="confirmSubmit()">Yes, Submit</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    let examHistory = JSON.parse(localStorage.getItem('fsa_scores')) || [180, 220, 210, 265, 290];
     const allSubs = [
-        {id:"English", icon:"📚", req: true}, {id:"Mathematics", icon:"📐"}, 
-        {id:"Physics", icon:"⚛️"}, {id:"Chemistry", icon:"🧪"}, 
-        {id:"Biology", icon:"🧬"}, {id:"Government", icon:"🏛️"}, 
-        {id:"Economics", icon:"📈"}, {id:"Commerce", icon:"🛒"},
-        {id:"Crk", icon:"📖"}, {id:"Accounting", icon:"💼"}
+        {id:"English", icon:"fas fa-book"}, {id:"Mathematics", icon:"fas fa-calculator"}, 
+        {id:"Physics", icon:"fas fa-atom"}, {id:"Chemistry", icon:"fas fa-flask"}, 
+        {id:"Biology", icon:"fas fa-dna"}, {id:"Government", icon:"fas fa-university"}, 
+        {id:"Economics", icon:"fas fa-chart-line"}, {id:"Commerce", icon:"fas fa-shopping-cart"},
+        {id:"Crk", icon:"fas fa-bible"}, {id:"Accounting", icon:"fas fa-briefcase"}
     ];
-    let selected = ["English"], examData = {}, activeSub = "English", activeIdx = 0, userAns = {}, isReview = false, timerInterval;
-
-    function initChart() {
-        const ctx = document.getElementById('historyChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: examHistory.map((_, i) => `Attempt ${i+1}`),
-                datasets: [{
-                    data: examHistory,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 6,
-                    pointBackgroundColor: '#3b82f6'
-                }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } } }
-        });
-    }
+    let selected = ["English"], examData = {}, activeSub = "English", activeIdx = 0, userAns = {}, timeLeft = 7200, timerInterval;
 
     function initDashboard() {
-        const grid = document.getElementById('subject-grid');
-        grid.innerHTML = allSubs.map(s => `
-            <div class="col-md-3 col-6">
-                <div class="sub-pill ${selected.includes(s.id)?'selected':''}" onclick="toggle('${s.id}')">
-                    <div class="fs-2 mb-2">${s.icon}</div>
-                    <div class="fw-bold small">${s.id}</div>
-                </div>
+        const list = document.getElementById('subject-list');
+        list.innerHTML = allSubs.map(s => `
+            <div class="sub-item ${selected.includes(s.id)?'selected':''}" onclick="toggleSub('${s.id}')">
+                <i class="${s.icon} ${selected.includes(s.id)?'text-warning':'text-muted'}"></i>
+                <div class="small fw-bold mt-2">${s.id}</div>
             </div>`).join('');
-        document.getElementById('start-btn').classList.toggle('disabled', selected.length < 4);
-        initChart();
     }
 
-    function toggle(id) {
+    function toggleSub(id) {
         if(id === "English") return;
         const i = selected.indexOf(id);
         if(i > -1) selected.splice(i, 1);
@@ -228,98 +212,79 @@
         initDashboard();
     }
 
-    async function beginExam() {
-        for (let s of selected) {
-            try {
-                const res = await fetch(`${s.toLowerCase()}.json`);
-                if (!res.ok) throw new Error();
-                examData[s] = await res.json();
-                userAns[s] = new Array(examData[s].length).fill(null);
-            } catch (e) {
-                alert(`Error: ${s.toLowerCase()}.json is missing or corrupted!`);
-                return;
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(timeLeft <= 0) { clearInterval(timerInterval); processResults(); }
+            else {
+                timeLeft--;
+                const h = Math.floor(timeLeft / 3600), m = Math.floor((timeLeft%3600)/60), s = timeLeft%60;
+                const timeStr = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                document.getElementById('timer-display').innerText = timeStr;
+                document.getElementById('exam-timer').innerText = timeStr;
             }
+        }, 1000);
+    }
+
+    async function beginExam() {
+        if(selected.length < 4) return alert("Select English + 3 Subjects");
+        for (let s of selected) {
+            const res = await fetch(`${s.toLowerCase()}.json`);
+            examData[s] = await res.json();
+            userAns[s] = new Array(examData[s].length).fill(null);
         }
         document.getElementById('dashboard-view').style.display = 'none';
         document.getElementById('exam-view').style.display = 'block';
-        document.getElementById('tab-container').innerHTML = selected.map(s => 
-            `<div class="sub-tab" id="tab-${s}" onclick="switchTab('${s}')">${s}</div>`).join('');
-        switchTab("English");
-    }
-
-    function switchTab(s) {
-        activeSub = s; activeIdx = 0;
-        document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(`tab-${s}`).classList.add('active');
+        startTimer();
         render();
     }
 
     function render() {
         const q = examData[activeSub][activeIdx];
-        const correct = q.a;
         const user = userAns[activeSub][activeIdx];
-        
         document.getElementById('q-count').innerText = `${activeIdx + 1} / ${examData[activeSub].length}`;
         document.getElementById('current-sub-label').innerText = activeSub;
-        
-        let html = q.p ? `<div class="p-3 bg-dark rounded-4 mb-4 border border-secondary small text-muted">${q.p}</div>` : '';
-        html += `<h4 class="mb-5 fw-bold" style="line-height: 1.6;">${q.q}</h4>`;
-        
+        let html = q.p ? `<div class="passage-box"><b>Passage:</b><br>${q.p}</div>` : '';
+        html += `<h5 class="fw-bold mb-4">${q.q}</h5>`;
         q.options.forEach((opt, i) => {
-            let cls = "";
-            if (isReview) {
-                if (i === correct) cls = "correct";
-                else if (i === user) cls = "wrong";
-                else cls = "opacity-25";
-            } else if (user === i) cls = "active";
-
-            html += `<div class="option-box ${cls}" ${isReview ? '' : `onclick="pick(${i})"`}>
-                <div class="me-3 fw-bold">${String.fromCharCode(65+i)}.</div> 
-                <div class="flex-grow-1">${opt}</div>
-                ${isReview && i===correct ? '<i class="fas fa-check-circle ms-auto text-white"></i>' : ''}
-                ${isReview && i===user && user!==correct ? '<i class="fas fa-times-circle ms-auto text-white"></i>' : ''}
+            html += `<div class="option-box ${user === i ? 'active' : ''}" onclick="pick(${i})">
+                <div class="me-3 fw-bold">${String.fromCharCode(65+i)}.</div><div>${opt}</div>
             </div>`;
         });
         document.getElementById('q-container').innerHTML = html;
     }
 
     function pick(i) { userAns[activeSub][activeIdx] = i; render(); }
-    function moveQ(d) { if(examData[activeSub][activeIdx+d]) { activeIdx += d; render(); } }
+    
+    function moveQ(d) {
+        if(examData[activeSub][activeIdx+d]) { activeIdx += d; render(); }
+        else {
+            let sIdx = selected.indexOf(activeSub);
+            if(d > 0 && selected[sIdx+1]) { activeSub = selected[sIdx+1]; activeIdx = 0; render(); }
+            else if(d < 0 && selected[sIdx-1]) { activeSub = selected[sIdx-1]; activeIdx = examData[activeSub].length -1; render(); }
+        }
+    }
 
-    function finish() {
-        if(!confirm("Are you sure you want to submit?")) return;
-        let total = 0, breakdownHtml = "";
-        selected.forEach(s => {
-            let correctCount = 0;
-            examData[s].forEach((q, i) => { if(userAns[s][i] === q.a) correctCount++; });
-            let scaledScore = Math.round((correctCount/examData[s].length)*100);
-            total += scaledScore;
-            breakdownHtml += `<div class="col-6 col-md-3"><div class="p-3 bg-dark rounded-4 border border-secondary">
-                <small class="text-muted fw-bold">${s}</small><br><span class="h5 fw-bold text-primary">${scaledScore}</span></div></div>`;
+    function showSubmitModal() { document.getElementById('custom-modal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('custom-modal').style.display = 'none'; }
+    
+    function processResults() {
+        clearInterval(timerInterval);
+        let totalScore = 0, breakdownHtml = "";
+        selected.forEach(sub => {
+            let correct = 0;
+            examData[sub].forEach((q, i) => { if(userAns[sub][i] === q.a) correct++; });
+            let weighted = Math.round((correct / examData[sub].length) * 100);
+            totalScore += weighted;
+            breakdownHtml += `<div class="d-flex justify-content-between mb-1"><span>${sub}</span><span>${weighted}/100</span></div>`;
         });
-        
-        examHistory.push(total);
-        if(examHistory.length > 10) examHistory.shift();
-        localStorage.setItem('fsa_scores', JSON.stringify(examHistory));
-        
-        document.getElementById('final-score-val').innerText = total;
-        document.getElementById('breakdown').innerHTML = breakdownHtml;
+        document.getElementById('final-total').innerText = totalScore;
+        document.getElementById('score-breakdown').innerHTML = breakdownHtml;
         document.getElementById('exam-view').style.display = 'none';
-        document.getElementById('result-view').style.display = 'block';
+        document.getElementById('results-screen').style.display = 'flex';
     }
 
-    function startReview() {
-        isReview = true;
-        document.getElementById('result-view').style.display = 'none';
-        document.getElementById('exam-view').style.display = 'block';
-        document.getElementById('review-tag').classList.remove('d-none');
-        document.getElementById('submit-btn').classList.add('d-none');
-        document.getElementById('exit-review').classList.remove('d-none');
-        switchTab(selected[0]);
-    }
-
+    function confirmSubmit() { closeModal(); processResults(); }
     window.onload = initDashboard;
 </script>
 </body>
-    </html>
-    
+</html>
