@@ -23,7 +23,11 @@
         .bg-grey { background: linear-gradient(135deg, #5b757b, #465a5f); }
         .subject-select-card { background: #1e1f2b; border: 2px solid transparent; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
         .subject-select-card.selected { border-color: #0d6efd; background: rgba(13, 110, 253, 0.1); }
-        .question-box { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 20px; min-height: 120px; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Passage Style */
+        .passage-box { background: #252736; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #0d6efd; font-size: 0.9rem; display: none; max-height: 200px; overflow-y: auto; }
+        
+        .question-box { background: #1e1f2b; border-radius: 15px; padding: 20px; margin-bottom: 20px; min-height: 100px; border: 1px solid rgba(255,255,255,0.1); }
         .option-btn { background: #161722; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; width: 100%; text-align: left; color: white; transition: 0.2s; position: relative; }
         .option-btn.active { border-color: #0d6efd; background: rgba(13, 110, 253, 0.2); }
         .option-btn.correct { background: rgba(25, 135, 84, 0.3) !important; border-color: #198754 !important; }
@@ -74,9 +78,12 @@
             <h5 id="exam-subject-title" class="fw-bold mb-0 text-primary">Subject</h5>
             <div class="badge bg-danger p-2" id="exam-timer">02:00:00</div>
         </div>
+
+        <div id="passage-container" class="passage-box"></div>
+
         <div class="question-box">
             <span class="badge bg-dark mb-2" id="q-counter">Question 1</span>
-            <p id="question-text">Loading Questions...</p>
+            <p id="question-text">Loading...</p>
         </div>
         <div id="options-container">
             <button class="option-btn" onclick="selectOption(this)">A. <span class="opt-text"></span></button>
@@ -90,7 +97,7 @@
             <span id="explanation-text" style="font-size: 0.85rem;"></span>
         </div>
 
-        <div class="d-flex justify-content-between mt-4" id="exam-controls">
+        <div class="d-flex justify-content-between mt-4">
             <button class="btn btn-outline-light rounded-pill px-4" onclick="prevQuestion()">Prev</button>
             <button class="btn btn-success rounded-pill px-4" id="submit-btn" onclick="submitExam()">Submit</button>
             <button class="btn btn-outline-light rounded-pill px-4" onclick="nextQuestion()">Next</button>
@@ -102,7 +109,6 @@
             <i class="fas fa-trophy text-warning" style="font-size: 4rem;"></i>
             <h2 class="mt-3 fw-bold">Finished!</h2>
             <div class="display-4 fw-bold my-3" id="final-score">0/0</div>
-            <p class="text-muted">Review your performance below</p>
             <div class="d-grid gap-2 mt-4">
                 <button class="btn btn-primary rounded-pill py-3" onclick="startReview()">Review Answers</button>
                 <button class="btn btn-outline-light rounded-pill py-3" onclick="location.reload()">Back to Home</button>
@@ -133,13 +139,13 @@
         { id: "CRS", file: "crk.json", icon: "fas fa-cross", color: "#1d9086" }
     ];
 
-    let selectedSubjects = [];
     let currentQuestions = [];
     let currentQuestionIndex = 0;
     let examTimer = null;
     let timeLeft = 120 * 60; 
     let userSelections = {}; 
     let isReviewMode = false;
+    let currentPassage = "";
 
     function showSection(id) {
         document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
@@ -155,55 +161,34 @@
     function setupPracticeSelection() {
         const grid = document.getElementById('practice-subject-grid');
         grid.innerHTML = allSubjects.map(s => `
-            <div class="subject-select-card ${selectedSubjects.includes(s.id)?'selected':''}" 
-                 onclick="toggleSelect('${s.id}')" id="sel-${s.id.replace(/\s+/g,'')}">
+            <div class="subject-select-card" onclick="startExam('${s.id}')">
                 <i class="${s.icon}" style="color:${s.color}"></i><br>
                 <span style="font-size:0.7rem">${s.id}</span>
             </div>`).join('');
     }
 
-    function toggleSelect(id) {
-        const el = document.getElementById('sel-'+id.replace(/\s+/g,''));
-        if(selectedSubjects.includes(id)) {
-            selectedSubjects = selectedSubjects.filter(s => s !== id);
-            el.classList.remove('selected');
-        } else if(selectedSubjects.length < 4) {
-            selectedSubjects.push(id);
-            el.classList.add('selected');
-        }
-    }
-
-    async function goToExamHall() {
-        if(selectedSubjects.length === 0) return alert("Select a subject first!");
-        const subjObj = allSubjects.find(s => s.id === selectedSubjects[0]);
+    async function startExam(subjectId) {
+        const subjObj = allSubjects.find(s => s.id === subjectId);
         showSection('exam-hall-view');
-        
-        document.getElementById('question-text').innerText = "Loading " + subjObj.id + "...";
+        document.getElementById('question-text').innerText = "Loading " + subjectId + "...";
 
         try {
-            // Updated fetch logic to handle your GitHub structure
             const res = await fetch(subjObj.file + '?v=' + Date.now());
             const data = await res.json();
             
-            // Checks if data is an array directly or has a "questions" key
-            let rawList = Array.isArray(data) ? data : (data.questions || data.Questions || []);
-
-            if(rawList.length > 0) {
-                const limit = (subjObj.id === "English Language") ? 60 : 40;
-                currentQuestions = rawList.slice(0, limit);
+            // Filter your specific JSON format
+            currentPassage = data.find(item => item.p)?.p || "";
+            currentQuestions = data.filter(item => item.q);
+            
+            if(currentQuestions.length > 0) {
                 currentQuestionIndex = 0;
                 isReviewMode = false;
-                document.getElementById('explanation-container').style.display = 'none';
-                document.getElementById('exam-subject-title').innerText = subjObj.id;
+                userSelections = {};
+                document.getElementById('exam-subject-title').innerText = subjectId;
                 loadQuestion();
                 startTimer();
-            } else {
-                document.getElementById('question-text').innerText = "Error: No questions found in " + subjObj.file;
             }
-        } catch(e) { 
-            document.getElementById('question-text').innerText = "Failed to load " + subjObj.file;
-            console.error(e);
-        }
+        } catch(e) { console.error(e); }
     }
 
     function startTimer() {
@@ -214,40 +199,39 @@
             const hrs = Math.floor(timeLeft / 3600);
             const mins = Math.floor((timeLeft % 3600) / 60);
             const secs = timeLeft % 60;
-            const f = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-            document.getElementById('exam-timer').innerText = f;
+            document.getElementById('exam-timer').innerText = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
             if(timeLeft <= 0) submitExam(true);
         }, 1000);
     }
 
     function loadQuestion() {
         const qData = currentQuestions[currentQuestionIndex];
+        const pCont = document.getElementById('passage-container');
         
-        // Handles both "q" (from your file) or "question" keys
-        const questionText = qData.q || qData.question || "No text available";
-        document.getElementById('question-text').innerHTML = questionText;
+        // Show passage if it exists and we are in the first few questions
+        if(currentPassage && currentQuestionIndex < 10) {
+            pCont.innerHTML = `<strong>Passage:</strong><br>${currentPassage}`;
+            pCont.style.display = "block";
+        } else {
+            pCont.style.display = "none";
+        }
+
+        document.getElementById('question-text').innerHTML = qData.q;
         document.getElementById('q-counter').innerText = `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
         
         const opts = document.querySelectorAll('.opt-text');
         const btns = document.querySelectorAll('.option-btn');
-        const optionsData = qData.options || [];
         const letters = ['a', 'b', 'c', 'd'];
 
         btns.forEach((btn, i) => {
             btn.className = "option-btn"; 
-            if(optionsData[i]) {
-                btn.style.display = "block";
-                opts[i].innerText = optionsData[i];
-            } else {
-                btn.style.display = "none";
-            }
+            opts[i].innerText = qData.options[i] || "";
             
             if(!isReviewMode && userSelections[currentQuestionIndex] === letters[i]) {
                 btn.classList.add('active');
             }
 
             if(isReviewMode) {
-                // Handles "answer" or "a" keys for correct response
                 const correctLetter = (qData.answer || qData.a || "").toLowerCase();
                 const userLetter = userSelections[currentQuestionIndex];
                 if(letters[i] === correctLetter) btn.classList.add('correct');
@@ -255,33 +239,31 @@
             }
         });
 
-        if(isReviewMode) {
-            const expBox = document.getElementById('explanation-container');
-            const expText = document.getElementById('explanation-text');
-            const explanation = qData.explanation || qData.ex || "";
-            if(explanation) {
-                expBox.style.display = 'block';
-                expText.innerText = explanation;
-            } else {
-                expBox.style.display = 'none';
-            }
+        // Explanation Logic
+        const expBox = document.getElementById('explanation-container');
+        if(isReviewMode && (qData.explanation || qData.ex)) {
+            expBox.style.display = 'block';
+            document.getElementById('explanation-text').innerText = qData.explanation || qData.ex;
+        } else {
+            expBox.style.display = 'none';
         }
     }
 
     function selectOption(btn) {
         if(isReviewMode) return;
-        const btns = document.querySelectorAll('.option-btn');
-        const index = Array.from(btns).indexOf(btn);
+        const btns = Array.from(document.querySelectorAll('.option-btn'));
+        const index = btns.indexOf(btn);
         const letters = ['a', 'b', 'c', 'd'];
         userSelections[currentQuestionIndex] = letters[index];
-        loadQuestion();
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
     }
 
     function nextQuestion() { if(currentQuestionIndex < currentQuestions.length-1) { currentQuestionIndex++; loadQuestion(); } }
     function prevQuestion() { if(currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(); } }
 
     function submitExam(isAuto = false) {
-        if(!isAuto && !confirm("Submit your answers?")) return;
+        if(!isAuto && !confirm("Are you sure you want to submit?")) return;
         clearInterval(examTimer);
         let score = 0;
         currentQuestions.forEach((q, i) => { 
@@ -295,8 +277,8 @@
     function startReview() {
         isReviewMode = true;
         currentQuestionIndex = 0;
-        document.getElementById('exam-timer').innerText = "REVIEW MODE";
-        document.getElementById('submit-btn').innerText = "Exit Review";
+        document.getElementById('exam-timer').innerText = "REVIEW";
+        document.getElementById('submit-btn').innerText = "Exit";
         document.getElementById('submit-btn').onclick = () => location.reload();
         showSection('exam-hall-view');
         loadQuestion();
@@ -311,4 +293,5 @@
     };
 </script>
 </body>
-</html>
+    </html>
+    
