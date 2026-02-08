@@ -1,55 +1,62 @@
 [
-  {
-    "p": "<b>PASSAGE I: THE DILEMMA OF MODERN EDUCATION</b><br>Education today is often viewed merely as a meal ticket. Students are more concerned with obtaining certificates than acquiring knowledge...",
-    "q": "The author's main concern in the passage is:",
-    "options": ["The cost of education", "The loss of true educational values", "The importance of certificates", "The rise of literacy"],
-    "a": 1
-  },
-  {
-    "p": "<b>PASSAGE I (Continued)</b>",
-    "q": "What does the author mean by 'learned illiterates'?",
-    "options": ["People who cannot read", "Degree holders without competence", "Teachers who are not trained", "Students who drop out"],
-    "a": 1
-  },
-  {
-    "p": "<b>PASSAGE I (Continued)</b>",
-    "q": "According to the text, 'certificate syndrome' directly encourages:",
-    "options": ["Hard work", "Integrity", "Examination malpractice", "Social problem solving"],
-    "a": 2
-  },
-  {
-    "q": "Choose the option nearest in meaning to the underlined word: The manager was <u>sacked</u> for gross misconduct.",
-    "options": ["Promoted", "Dismissed", "Warned", "Transferred"],
-    "a": 1
-  },
-  {
-    "q": "Choose the option opposite in meaning: The witness gave a <u>vague</u> account of the accident.",
-    "options": ["Clear", "Uncertain", "Dirty", "Long"],
-    "a": 0
-  },
-  {
-    "q": "The students were asked to <u>keep an eye on</u> the equipment.",
-    "options": ["Repair", "Watch closely", "Ignore", "Clean"],
-    "a": 1
-  },
-  {
-    "q": "Choose the most appropriate option: Neither the teacher nor the students ______ present at the lecture.",
-    "options": ["is", "was", "were", "has been"],
-    "a": 2
-  },
-  {
-    "q": "Select the correctly stressed word: RE-pre-sent",
-    "options": ["represent", "REpresent", "repreSENT", "rePREsent"],
-    "a": 2
-  },
-  {
-    "q": "The <u>scintillating</u> performance of the team earned them a standing ovation.",
-    "options": ["Dull", "Brilliant", "Average", "Poor"],
-    "a": 1
-  },
-  {
-    "q": "He is a <u>vocal</u> critic of the new government policy.",
-    "options": ["Silent", "Outspoken", "Weak", "Indifferent"],
-    "a": 1
-  }
-]
+  { "p": "COMPREHENSION: Read the passage below carefully and answer the questions that follow\n\nPASSAGE I: It is not possible to admit that there is life of any sort on the moon. It is a world that is completely and utterly dead, a sterile mountainous waste on which, during the heat of the day, the sun blazes down with relentless fury, but where during the long night the cold is so intense that it far surpasses anything ever experienced on earth. These hard facts are conveniently ignored by those who believe that it would be possible to shoot a rocket containing human beings to the moon, from which the human explorers could land and explore some portion of the moon's surface. The explorers would need to be encased in airtight suits and provided with oxygen apparatus to enable them to breathe. Even supposing that they could protect themselves against the great heat by day and extreme cold at night, a worse fate might be in store for them unless their suits were completely bullet-proof. For they would be in danger of being shot by a shooting star. The average shooting star or meteor, which gives so strongly the impression of a star falling from the sky, is a small fragment of matter, usually smaller than a pea and often no longer than a grain of sand. Space is not empty but contains great numbers of such fragments. The earth, in its motion round the sun, meets many of these fragments, which enter the atmosphere at a speed many times greater than that of a rifle bullet. The meteor, rushing through the air, becomes intensely heated by friction and is usually completely vapourised before it penetrates within a distance of twenty miles from the surface of the earth. Many millions of these fragments enter our atmosphere in the course of a day, but the atmosphere protects us from them. On the moon, however, they fall to the surface and so great is their number that the lunar explorers would run a considerable risk of being hit. The difficulties that would have to be encountered by anyone who attempted to explore the moon - assuming that it was possible to there - would be incomparably greater than those that have to be faced in the endeavour to reach the summit of Mount Everest. In two respects only would the lunar explorers have the advantage. In the first place, movement would be less fatiguing because gravitational pull of the moon is not very great, the weight of the moon being only about one eightieth of that of the earth. The second advantage the lunar explorer would have over the climbers on Mount Everest would be the absence of strong winds to contend with. The moon having no atmosphere, there can be no wind; nor, of course, can there be any noise, for sound is carried by the air. The moon is a world that is completely still and where utter silence prevails.", "q": "According to the passage, why is the moon described as a 'dead world'?", "options": ["Because of the silence", "Because it cannot support any form of life", "Because it is far from the sun", "Because of the shooting stars"], "a": 1 },
+  { "q": "The atmosphere of the earth is compared to a shield because:", "options": ["It provides oxygen", "It vaporizes meteors before they hit the surface", "It creates wind", "It reflects the sun's heat"], "a": 1 },
+  { "q": "A lunar explorer would find movement easier than an Everest climber because:", "options": ["There is no snow", "The moon is smaller", "Gravity is much weaker on the moon", "They wear special suits"], "a": 2 },
+  { "q": "The term 'sterile' as used in the passage means:", "options": ["Clean", "Barren", "Mountainous", "Bright"], "a": 1 },
+  { "q": "What is the 'worse fate' mentioned by the author?", "options": ["Running out of oxygen", "Freezing at night", "Being hit by a meteor", "Getting lost in space"], "a": 2 },
+  { "q": "The speed of a meteor in space is compared to:", "options": ["A rocket", "A rifle bullet", "The wind", "A falling star"], "a": 1 },
+  { "q": "Why is there 'utter silence' on the moon?", "options": ["Explorers must be quiet", "There is no air to carry sound waves", "The moon is too far to hear Earth", "Meteors destroy sound"], "a": 1 },
+  { "q": "Which of these is an advantage the moon has over Mount Everest?", "options": ["Higher temperature", "Presence of water", "Absence of strong winds", "Breathable air"], "a": 2 },
+  { "q": "The weight of the moon is what fraction of the Earth's?", "options": ["1/8th", "1/80th", "1/100th", "1/20th"], "a": 1 },
+  { "q": "The writer's attitude towards moon exploration in the passage is one of:", "options": ["Optimism", "Excitement", "Caution and realism", "Total disbelief"], "a": 2 },
+  { "q": "Neither the boy nor his parents ______ present at the party.", "options": ["was", "were", "is", "has been"], "a": 1 },
+  { "q": "The jury ______ reaching a verdict.", "options": ["is", "are", "were", "have been"], "a": 0 },
+  { "q": "I have been waiting for you ______ three hours.", "options": ["since", "for", "from", "ago"], "a": 1 },
+  { "q": "He is one of the players who ______ always on time.", "options": ["is", "are", "was", "has been"], "a": 1 },
+  { "q": "The news ______ so shocking that I couldn't speak.", "options": ["were", "are", "was", "have been"], "a": 2 },
+  { "q": "By the time the doctor arrived, the patient ______.", "options": ["died", "has died", "had died", "is dying"], "a": 2 },
+  { "q": "I prefer tea ______ coffee.", "options": ["than", "more than", "to", "over"], "a": 2 },
+  { "q": "He works hard so that he ______ pass the exam.", "options": ["can", "could", "might", "should"], "a": 0 },
+  { "q": "You ______ better see a doctor immediately.", "options": ["would", "should", "had", "did"], "a": 2 },
+  { "q": "If I ______ a bird, I would fly to you.", "options": ["am", "was", "were", "be"], "a": 2 },
+  { "q": "The house was ______ small for the large family.", "options": ["too", "so", "very", "much"], "a": 0 },
+  { "q": "She is lookng forward to ______ her grandmother.", "options": ["see", "saw", "seeing", "be seeing"], "a": 2 },
+  { "q": "The man ______ stole the money has been caught.", "options": ["which", "who", "whom", "whose"], "a": 1 },
+  { "q": "This is the boy ______ father won the lottery.", "options": ["who", "whom", "whose", "which"], "a": 2 },
+  { "q": "I have only ______ bread left.", "options": ["little", "a little", "few", "a few"], "a": 1 },
+  { "q": "SYNONYMS: The teacher was <u>furious</u> with the class.", "options": ["Happy", "Angry", "Calm", "Sad"], "a": 1 },
+  { "q": "SYNONYMS: The lawyer's argument was <u>lucid</u>.", "options": ["Confusing", "Clear", "Long", "Weak"], "a": 1 },
+  { "q": "SYNONYMS: She gave a <u>curt</u> reply to the question.", "options": ["Polite", "Brief", "Long", "Kind"], "a": 1 },
+  { "q": "SYNONYMS: The evidence was <u>conclusive</u>.", "options": ["Doubtful", "Final", "Weak", "Missing"], "a": 1 },
+  { "q": "SYNONYMS: He is a <u>diligent</u> worker.", "options": ["Lazy", "Hardworking", "Slow", "Rich"], "a": 1 },
+  { "q": "ANTONYMS: The path was <u>crooked</u>.", "options": ["Bent", "Straight", "Long", "Narrow"], "a": 1 },
+  { "q": "ANTONYMS: He is <u>arrogant</u>.", "options": ["Proud", "Humble", "Rich", "Clever"], "a": 1 },
+  { "q": "ANTONYMS: The weather was <u>turbulent</u>.", "options": ["Rough", "Calm", "Stormy", "Wet"], "a": 1 },
+  { "q": "ANTONYMS: The witness was <u>consistent</u>.", "options": ["Steady", "Unreliable", "Truthful", "Agreed"], "a": 1 },
+  { "q": "ANTONYMS: This liquid is <u>opaque</u>.", "options": ["Dark", "Transparent", "Cloudy", "Thick"], "a": 1 },
+  { "q": "IDIOMS: To 'kick the bucket' means to:", "options": ["Play football", "Die", "Be angry", "Work hard"], "a": 1 },
+  { "q": "IDIOMS: To 'smell a rat' means to:", "options": ["Have a bad sense of smell", "Be suspicious", "Kill a rodent", "Be dirty"], "a": 1 },
+  { "q": "IDIOMS: 'Once in a blue moon' means:", "options": ["Every night", "Very rarely", "During a storm", "Monthly"], "a": 1 },
+  { "q": "IDIOMS: To 'beat around the bush' means:", "options": ["To be direct", "To avoid the main topic", "To clear a forest", "To be violent"], "a": 1 },
+  { "q": "IDIOMS: 'A piece of cake' means:", "options": ["Something very easy", "A delicious snack", "A difficult task", "A birthday gift"], "a": 0 },
+  { "q": "Which of these words has the same vowel sound as 'seat'?", "options": ["sit", "beat", "set", "sat"], "a": 1 },
+  { "q": "Which of these words has the same vowel sound as 'pool'?", "options": ["pull", "fool", "pot", "full"], "a": 1 },
+  { "q": "Which of these words has the same consonant sound as 'think'?", "options": ["this", "thank", "then", "there"], "a": 1 },
+  { "q": "Which of these words has the same consonant sound as 'church'?", "options": ["ship", "chemist", "cheap", "machine"], "a": 2 },
+  { "q": "Identify the word that has the primary stress on the first syllable.", "options": ["export (verb)", "table", "important", "release"], "a": 1 },
+  { "q": "Choose the word that rhymes with 'fight'.", "options": ["fit", "eight", "site", "fate"], "a": 2 },
+  { "q": "Choose the word that rhymes with 'days'.", "options": ["dice", "gaze", "dance", "race"], "a": 1 },
+  { "q": "The boy is a <u>black sheep</u> in the family. This means:", "options": ["He is a farmer", "He is a disgrace", "He is a favorite", "He is dark-skinned"], "a": 1 },
+  { "q": "The meeting ended in a <u>fiasco</u>.", "options": ["Success", "Disaster", "Joy", "Conflict"], "a": 1 },
+  { "q": "He is <u>at loggerheads</u> with his wife.", "options": ["In agreement", "In disagreement", "In love", "In debt"], "a": 1 },
+  { "q": "Choose the correctly spelled word.", "options": ["Accomodation", "Accommodation", "Acomodation", "Accommadation"], "a": 1 },
+  { "q": "Choose the correctly spelled word.", "options": ["Maintenance", "Maintenence", "Maintainance", "Maintainence"], "a": 0 },
+  { "q": "The strike was <u>called off</u>.", "options": ["Postponed", "Cancelled", "Started", "Delayed"], "a": 1 },
+  { "q": "He <u>takes after</u> his father.", "options": ["Follows him", "Resembles him", "Disobeys him", "Loves him"], "a": 1 },
+  { "q": "The car <u>broke down</u> on the highway.", "options": ["Stopped working", "Crashed", "Was stolen", "Sped up"], "a": 0 },
+  { "q": "She is as <u>busy as a bee</u>.", "options": ["Very lazy", "Very hardworking", "Very fast", "Very small"], "a": 1 },
+  { "q": "He has a <u>heart of gold</u>.", "options": ["He is rich", "He is very kind", "He is selfish", "He is brave"], "a": 1 },
+  { "q": "Don't <u>cry over spilt milk</u>.", "options": ["Don't waste food", "Don't regret the past", "Don't be careless", "Don't be sad"], "a": 1 },
+  { "q": "It is <u>raining cats and dogs</u>.", "options": ["Animals are falling", "It is raining heavily", "It is a dry season", "There is a flood"], "a": 1 },
+  { "q": "The students are <u>all ears</u>.", "options": ["They are listening closely", "They have big ears", "They are confused", "They are sleeping"], "a": 0 }
+    ]
