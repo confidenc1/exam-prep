@@ -40,4 +40,3 @@
   { "q": "The process where a heavy nucleus splits into two lighter nuclei is:", "options": ["Nuclear fusion", "Nuclear fission", "Radioactive decay", "Ionization"], "a": 1 },
   { "q": "Calculate the density of a substance with a mass of 500g and volume of $100cm^3$.", "options": ["0.2 $g/cm^3$", "5 $g/cm^3$", "50 $g/cm^3$", "5000 $g/cm^3$"], "a": 1 }
 ]
-  
