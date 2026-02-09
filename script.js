@@ -1,9 +1,9 @@
 /**
- * FSA JAMB PRO v5.1 - MASTER ENGINE
- * Includes: 10 Subjects, Timer, Calculator, JAMB 8-Key, and Review Mode
+ * FSA JAMB PRO v5.1 - MASTER ENGINE (Optimized)
  */
 
 // 1. DATA CONFIGURATION
+const GITHUB_RAW_BASE = "https://raw.githubusercontent.com";
 const allSubs = [
     {id:"English", icon:"📚", required: true}, 
     {id:"Mathematics", icon:"📐"}, 
@@ -31,12 +31,10 @@ function init() {
     if(!grid) return;
     
     grid.innerHTML = allSubs.map(s => `
-        <div class="col-xl-3 col-lg-4 col-6 mb-3">
-            <div class="subject-card ${selectedSubjects.includes(s.id)?'selected':''}" onclick="toggleSubject('${s.id}')">
-                <div class="fs-1 mb-2">${s.icon}</div>
-                <div class="fw-bold">${s.id}</div>
-                ${s.required ? '<small class="badge bg-success">Mandatory</small>' : ''}
-            </div>
+        <div class="subject-card ${selectedSubjects.includes(s.id)?'border-primary':''}" onclick="toggleSubject('${s.id}')" style="cursor:pointer">
+            <div class="fs-1 mb-2">${s.icon}</div>
+            <div class="fw-bold">${s.id}</div>
+            ${s.required ? '<small class="badge bg-success">Mandatory</small>' : ''}
         </div>`).join('');
     
     updateStartButton();
@@ -56,71 +54,70 @@ function toggleSubject(id) {
 }
 
 function updateStartButton() {
-    const btn = document.getElementById('start-btn');
-    if(btn) {
-        btn.classList.toggle('disabled', selectedSubjects.length < 4);
-        document.getElementById('selection-count').innerText = `${selectedSubjects.length}/4 subjects selected`;
+    // Injecting a Start Button if it doesn't exist
+    let startBtn = document.getElementById('start-btn');
+    if(!startBtn) {
+        const dashboard = document.getElementById('dashboard-view');
+        dashboard.innerHTML += `<div class="p-4"><button id="start-btn" class="btn btn-primary w-100 py-3 rounded-pill fw-bold" onclick="beginExam()">BEGIN EXAM (<span id="selection-count">1/4</span>)</button></div>`;
     }
+    document.getElementById('selection-count').innerText = `${selectedSubjects.length}/4`;
 }
 
 // 3. EXAM CORE
 async function beginExam() {
+    if(selectedSubjects.length < 4) return alert("Select 4 subjects!");
+    
     const btn = document.getElementById('start-btn');
     btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Loading Questions...`;
     
     for (let sub of selectedSubjects) {
         try {
-            const response = await fetch(`${sub.toLowerCase()}.json`);
-            if (!response.ok) throw new Error();
-            examData[sub] = await response.json();
+            const response = await fetch(`${GITHUB_RAW_BASE}${sub.toLowerCase()}.json`);
+            const data = await response.json();
+            examData[sub] = data.questions || data;
             userAnswers[sub] = new Array(examData[sub].length).fill(null);
         } catch (e) {
-            alert(`Error: ${sub.toLowerCase()}.json not found! Make sure filenames are lowercase on GitHub.`);
+            alert(`Error: ${sub}.json not found on GitHub! Check your GITHUB_RAW_BASE URL.`);
             location.reload();
             return;
         }
     }
 
-    document.getElementById('setup-screen').style.display = 'none';
-    document.getElementById('exam-screen').style.display = 'block';
-    
+    showSection('exam-hall-view');
     setupTabs();
     switchTab("English");
     startTimer();
 }
 
 function setupTabs() {
-    const container = document.getElementById('tab-container');
-    container.innerHTML = selectedSubjects.map(s => 
-        `<div class="tab-item" id="tab-${s}" onclick="switchTab('${s}')">${s}</div>`
+    const nav = document.getElementById('exam-sub-name'); // Using navbar title area for tabs
+    nav.innerHTML = selectedSubjects.map(s => 
+        `<span class="badge ${currentSubject === s ? 'bg-white text-dark':'bg-dark'}" onclick="switchTab('${s}')" style="cursor:pointer; margin-right:5px;">${s}</span>`
     ).join('');
 }
 
 function switchTab(sName) {
     currentSubject = sName;
     currentQIdx = 0;
-    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-    document.getElementById(`tab-${sName}`).classList.add('active');
+    setupTabs();
     renderQuestion();
 }
 
 function renderQuestion() {
     const q = examData[currentSubject][currentQIdx];
-    const container = document.getElementById('q-container');
+    const container = document.getElementById('options-container');
     
-    document.getElementById('current-sub-label').innerText = currentSubject;
-    document.getElementById('q-count').innerText = `Question ${currentQIdx + 1} of ${examData[currentSubject].length}`;
+    document.getElementById('q-counter').innerText = `Q${currentQIdx + 1}`;
+    document.getElementById('question-text').innerText = q.q;
 
-    let html = q.p ? `<div class="passage-box p-3 mb-3 bg-light border-start border-4 border-warning" style="max-height:200px; overflow-y:auto;">${q.p}</div>` : '';
-    html += `<div class="mb-4 fs-5 fw-bold">${q.q}</div>`;
-    
+    container.innerHTML = '';
     q.options.forEach((opt, i) => {
         const isSelected = userAnswers[currentSubject][currentQIdx] === i;
-        html += `<button class="option ${isSelected ? 'selected' : ''}" onclick="saveAnswer(${i})">
-            <strong>${String.fromCharCode(65+i)}.</strong> ${opt}
-        </button>`;
+        container.innerHTML += `
+            <button class="option-btn ${isSelected ? 'active' : ''}" onclick="saveAnswer(${i})">
+                <strong>${String.fromCharCode(65+i)}.</strong> ${opt}
+            </button>`;
     });
-    container.innerHTML = html;
 }
 
 function saveAnswer(optIdx) {
@@ -136,79 +133,42 @@ function moveQ(step) {
     }
 }
 
-// 4. TIMER & CALCULATOR
+// 4. TIMER
 function startTimer() {
     timerInterval = setInterval(() => {
         timeLeft--;
-        let h = Math.floor(timeLeft / 3600);
-        let m = Math.floor((timeLeft % 3600) / 60);
-        let s = timeLeft % 60;
-        document.getElementById('timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        let h = Math.floor(timeLeft / 3600), m = Math.floor((timeLeft % 3600) / 60), s = timeLeft % 60;
+        document.getElementById('exam-timer').innerText = `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         if(timeLeft <= 0) finish();
     }, 1000);
 }
 
-function toggleCalc() {
-    document.getElementById('calc-panel').classList.toggle('open');
-}
-
-function calcInput(val) {
-    const display = document.getElementById('calc-display');
-    if(val === 'C') display.value = '';
-    else if(val === '=') { try { display.value = eval(display.value); } catch { display.value = "Error"; } }
-    else display.value += val;
-}
-
-// 5. JAMB 8-KEY NAVIGATION
+// 5. KEYBOARD SHORTCUTS
 document.addEventListener('keydown', (e) => {
-    if (document.getElementById('exam-screen').style.display === 'block') {
-        const key = e.key.toLowerCase();
-        if (['a', 'b', 'c', 'd'].includes(key)) saveAnswer(['a', 'b', 'c', 'd'].indexOf(key));
-        if (key === 'n') moveQ(1);
-        if (key === 'p') moveQ(-1);
-        if (key === 's') finish();
-    }
+    const key = e.key.toLowerCase();
+    if (['a', 'b', 'c', 'd'].includes(key)) saveAnswer(['a', 'b', 'c', 'd'].indexOf(key));
+    if (key === 'n') moveQ(1);
+    if (key === 'p') moveQ(-1);
+    if (key === 's') submitExam();
 });
 
-// 6. FINISH & REVIEW
-function finish() {
-    if(!confirm("Are you sure you want to submit?")) return;
+// Use the existing submitExam from previous turn but update it for multi-subject
+function submitExam() {
+    if(!confirm("Submit Exam?")) return;
     clearInterval(timerInterval);
     
-    let totalScore = 0;
-    let reportHtml = '';
-
+    let totalCorrect = 0, totalQuestions = 0;
     selectedSubjects.forEach(s => {
-        let correct = 0;
-        examData[s].forEach((q, i) => { if(userAnswers[s][i] === q.a) correct++; });
-        let subScore = Math.round((correct / examData[s].length) * 100);
-        totalScore += subScore;
-        reportHtml += `<div class="d-flex justify-content-between border-bottom py-2"><span>${s}</span><b>${correct}/${examData[s].length}</b></div>`;
-    });
-
-    document.getElementById('exam-screen').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'block';
-    document.getElementById('total-score').innerText = Math.round((totalScore / 400) * 400); // Scale to JAMB 400
-    document.getElementById('breakdown').innerHTML = reportHtml;
-}
-
-function showCorrections() {
-    const list = document.getElementById('correction-list');
-    document.getElementById('correction-area').style.display = 'block';
-    list.innerHTML = '';
-
-    selectedSubjects.forEach(s => {
-        list.innerHTML += `<h4 class="mt-4 text-primary">${s}</h4>`;
         examData[s].forEach((q, i) => {
-            const isCorrect = userAnswers[s][i] === q.a;
-            list.innerHTML += `
-                <div class="p-2 mb-2 border-start border-4 ${isCorrect?'border-success bg-light':'border-danger bg-light'}">
-                    <p class="mb-1"><b>Q${i+1}:</b> ${q.q}</p>
-                    <small>Correct: <b class="text-success">${q.options[q.a]}</b> | Your Answer: <b class="${isCorrect?'text-success':'text-danger'}">${userAnswers[s][i] !== null ? q.options[userAnswers[s][i]] : 'Skipped'}</b></small>
-                </div>`;
+            totalQuestions++;
+            if(userAnswers[s][i] === (q.correct !== undefined ? q.correct : q.a)) totalCorrect++;
         });
     });
+
+    const finalScore = Math.round((totalCorrect / totalQuestions) * 400);
+    document.getElementById('final-score').innerText = finalScore;
+    document.getElementById('result-stats').innerText = `Total Correct: ${totalCorrect} / ${totalQuestions}`;
+    showSection('result-view');
 }
 
 window.onload = init;
-    
