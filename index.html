@@ -4,58 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FSA JAMB CBT Pro - 2026 Edition</title>
-    <!-- Frameworks -->
+    
+    <!-- FIXED EXTERNAL DEPENDENCIES -->
+    <!-- Bootstrap for Layout -->
     <link href="https://cdn.jsdelivr.net" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <!-- html2pdf for Result Downloads -->
     <script src="https://cdnjs.cloudflare.com"></script>
+    <!-- Chart.js for Analytics -->
     <script src="https://cdn.jsdelivr.net"></script>
-    <style>
-        :root { --primary: #0d6efd; --success: #198754; --danger: #dc3545; --dark: #0f111a; --card: #1e1f2b; }
-        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
-        .app-container { min-height: 100vh; padding-bottom: 100px; }
-        .app-section { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        #dashboard-view { display: block; }
-        
-        /* UI Components */
-        .header-box { padding: 25px 20px; background: linear-gradient(135deg, #2e3075, #1a1d4f); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; margin: -20px -20px 20px -20px; }
-        .navbar-top { background: #198754; padding: 12px 20px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.1); }
-        
-        /* Exam Hall Styling */
-        .question-palette { background: var(--card); padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; max-height: 180px; overflow-y: auto; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .palette-btn { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; font-size: 0.85rem; color: white; background: #3a3b4a; transition: 0.2s; }
-        .palette-btn.answered { background: var(--success); }
-        .palette-btn.current { border: 2px solid white; box-shadow: 0 0 10px var(--primary); }
-        .palette-btn.flagged { background: #ffc107; color: #000; }
-        
-        .question-box { background: var(--card); border-radius: 15px; padding: 25px; margin: 20px 0; border-left: 6px solid var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .option-btn { background: #161722; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px; margin: 10px 0; width: 100%; text-align: left; color: white; transition: 0.25s; cursor: pointer; }
-        .option-btn:hover { border-color: var(--primary); background: #1c1d2b; }
-        .option-btn.active { background: rgba(13,110,253,0.3); border-color: var(--primary); border-width: 2px; }
-        .option-btn.correct { background: rgba(25,135,84,0.3) !important; border-color: var(--success) !important; }
-        .option-btn.wrong { background: rgba(220,53,69,0.3) !important; border-color: var(--danger) !important; }
-        
-        .explanation { background: rgba(25,135,84,0.15); border-left: 4px solid var(--success); padding: 15px; border-radius: 10px; margin-top: 20px; display: none; border: 1px solid rgba(25,135,84,0.3); }
-        
-        /* Navigation */
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #14151f; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        .nav-link { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.75rem; text-align: center; cursor: pointer; }
-        .nav-link.active { color: #0d6efd; font-weight: bold; }
-        
-        /* Dashboard & Stats */
-        .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .subject-card { background: var(--card); border-radius: 20px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
-        .subject-card:active { transform: scale(0.95); }
-        
-        /* Result/PDF Styles */
-        #pdf-header { display: none; color: black; border-bottom: 3px solid #222; padding: 20px; text-align: center; }
-        .score-display { font-size: 4rem; font-weight: 900; color: var(--primary); text-shadow: 0 5px 15px rgba(13,110,253,0.3); }
-    </style>
+
+    <!-- YOUR EXTERNAL STYLE FILE -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app-container">
-    <!-- 1. DASHBOARD -->
+    <!-- 1. DASHBOARD VIEW -->
     <div id="dashboard-view" class="app-section">
         <div class="header-box">
             <div class="d-flex justify-content-between align-items-center">
@@ -63,10 +29,11 @@
                     <h5 class="mb-0 fw-bold">Hi, Future Scholar! 👋</h5>
                     <small class="opacity-75" id="user-goal-text">Your Goal: 300+</small>
                 </div>
-                <div class="rounded-circle bg-primary p-2" onclick="showSection('stats-view')"><i class="fas fa-chart-pie"></i></div>
+                <div class="rounded-circle bg-primary p-2" onclick="showSection('stats-view')">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
             </div>
         </div>
-
         <div class="px-2">
             <div class="alert alert-primary bg-primary border-0 text-white rounded-4 mb-4">
                 <small>Average Performance</small>
@@ -74,13 +41,12 @@
                     <div id="overall-progress-bar" class="progress-bar bg-white" style="width: 0%"></div>
                 </div>
             </div>
-
             <h6 class="fw-bold mb-3"><i class="fas fa-book-open text-primary me-2"></i>Choose Subject</h6>
             <div id="subject-grid" class="subject-grid"></div>
         </div>
     </div>
 
-    <!-- 2. EXAM HALL -->
+    <!-- 2. EXAM HALL VIEW -->
     <div id="exam-hall-view" class="app-section p-0">
         <div class="navbar-top">
             <div id="exam-sub-name" class="fw-bold">JAMB CBT</div>
@@ -89,24 +55,22 @@
                 <button class="btn btn-sm btn-outline-light" id="submit-btn" onclick="submitExam()">End</button>
             </div>
         </div>
-        
         <div class="px-3">
             <div class="question-box">
                 <div class="d-flex justify-content-between mb-3">
                     <span class="badge bg-secondary" id="q-counter">Q1</span>
-                    <button class="btn btn-warning btn-sm py-0" onclick="flagQuestion()"><i class="fas fa-flag"></i></button>
+                    <button class="btn btn-warning btn-sm py-0" onclick="flagQuestion()">
+                        <i class="fas fa-flag"></i>
+                    </button>
                 </div>
                 <div id="question-text" class="fs-5 fw-semibold mb-4">Connecting to exam engine...</div>
                 <div id="options-container"></div>
-                
                 <div id="explanation" class="explanation">
                     <h6 class="fw-bold"><i class="fas fa-lightbulb"></i> Explanation</h6>
                     <p id="exp-text" class="mb-0 small"></p>
                 </div>
             </div>
-
             <div class="question-palette" id="question-palette"></div>
-
             <div class="d-flex justify-content-between mt-4">
                 <button class="btn btn-dark border rounded-pill px-4" onclick="prevQuestion()">Previous</button>
                 <button class="btn btn-primary rounded-pill px-5" onclick="nextQuestion()">Next</button>
@@ -121,28 +85,29 @@
             <h5>2026 PRACTICE RESULT SLIP</h5>
             <hr>
         </div>
-
         <div class="text-center py-4">
             <i class="fas fa-medal text-warning mb-3" style="font-size: 3rem;"></i>
             <h4 id="result-subject-name" class="opacity-75">Subject</h4>
             <div class="score-display my-2" id="final-score">0%</div>
             <p id="result-stats" class="mb-4 text-info fw-bold"></p>
-            
             <div class="d-grid gap-3">
-                <button class="btn btn-success py-3 rounded-pill fw-bold" onclick="startReview()"><i class="fas fa-search me-2"></i>Review Corrections</button>
-                <button class="btn btn-outline-info py-3 rounded-pill" onclick="downloadPDF()"><i class="fas fa-file-pdf me-2"></i>Download Result Slip</button>
+                <button class="btn btn-success py-3 rounded-pill fw-bold" onclick="startReview()">
+                    <i class="fas fa-search me-2"></i>Review Corrections
+                </button>
+                <button class="btn btn-outline-info py-3 rounded-pill" onclick="downloadPDF()">
+                    <i class="fas fa-file-pdf me-2"></i>Download Result Slip
+                </button>
                 <button class="btn btn-outline-light py-3 rounded-pill" onclick="location.reload()">Return Home</button>
             </div>
         </div>
     </div>
 
-    <!-- 4. STATS / LEADERBOARD -->
+    <!-- 4. STATS VIEW -->
     <div id="stats-view" class="app-section">
         <div class="header-box mb-4">
             <h5 class="fw-bold mb-0">Performance Analytics</h5>
             <small class="opacity-75">Your progress over time</small>
         </div>
-
         <div class="question-box p-0 overflow-hidden border-0">
             <table class="table table-dark table-hover mb-0">
                 <thead class="table-primary">
@@ -156,183 +121,25 @@
                 <tbody id="leaderboard-body"></tbody>
             </table>
         </div>
-        
         <button class="btn btn-danger w-100 mt-4 rounded-pill opacity-50" onclick="clearHistory()">Clear History</button>
     </div>
 
-    <!-- NAVIGATION -->
+    <!-- NAVIGATION BAR -->
     <div class="nav-bottom">
-        <a class="nav-link active" onclick="showSection('dashboard-view', this)"><i class="fas fa-home d-block fs-3"></i><span>Home</span></a>
-        <a class="nav-link" onclick="showSection('stats-view', this)"><i class="fas fa-chart-line d-block fs-3"></i><span>History</span></a>
+        <a class="nav-link active" onclick="showSection('dashboard-view', this)">
+            <i class="fas fa-home d-block fs-3"></i><span>Home</span>
+        </a>
+        <a class="nav-link" onclick="showSection('stats-view', this)">
+            <i class="fas fa-chart-line d-block fs-3"></i><span>History</span>
+        </a>
     </div>
 </div>
 
-<script>
-    // --- SETTINGS (Change 'YourUsername/YourRepo' to yours) ---
-    const GITHUB_RAW_BASE = "https://raw.githubusercontent.com";
-    const config = {
-        'English': 'english.json',
-        'Mathematics': 'math.json',
-        'Physics': 'physics.json',
-        'Biology': 'biology.json'
-    };
+<!-- YOUR EXTERNAL JAVASCRIPT FILES -->
+<!-- Order matters: Load app.js first! -->
+<script src="app.js"></script>
+<script src="storage.js"></script>
 
-    // --- STATE ---
-    let questions = [], answers = {}, flagged = new Set();
-    let currentIdx = 0, currentSubject = "", timerInterval;
-    let isReviewMode = false;
-
-    // --- ENGINE ---
-    function showSection(id, element) {
-        document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-        if(element) {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            element.classList.add('active');
-        }
-    }
-
-    // Initialize Subjects
-    const grid = document.getElementById('subject-grid');
-    Object.keys(config).forEach(sub => {
-        grid.innerHTML += `
-            <div class="subject-card" onclick="fetchQuestions('${sub}')">
-                <div class="bg-primary rounded-circle mx-auto mb-2" style="width:50px; height:50px; line-height:50px;">
-                    <i class="fas fa-book-open"></i>
-                </div>
-                <h6 class="mb-0 fw-bold">${sub}</h6>
-            </div>`;
-    });
-
-    async function fetchQuestions(subject) {
-        currentSubject = subject;
-        showSection('exam-hall-view');
-        document.getElementById('question-text').innerText = "Loading " + subject + "...";
-        
-        try {
-            const response = await fetch(GITHUB_RAW_BASE + config[subject]);
-            const data = await response.json();
-            questions = data.questions || data;
-            startExam();
-        } catch (err) {
-            alert("Connection error. Check GitHub URL.");
-            showSection('dashboard-view');
-        }
-    }
-
-    function startExam() {
-        answers = {}; flagged.clear(); currentIdx = 0; isReviewMode = false;
-        document.getElementById('exam-sub-name').innerText = currentSubject;
-        document.getElementById('explanation').style.display = 'none';
-        document.getElementById('submit-btn').style.display = 'block';
-        initPalette();
-        renderQuestion();
-        startTimer();
-    }
-
-    function initPalette() {
-        const pal = document.getElementById('question-palette');
-        pal.innerHTML = '';
-        questions.forEach((_, i) => {
-            pal.innerHTML += `<button id="pal-${i}" class="palette-btn" onclick="currentIdx=${i};renderQuestion()">${i+1}</button>`;
-        });
-    }
-
-    function renderQuestion() {
-        const q = questions[currentIdx];
-        document.getElementById('q-counter').innerText = `Q${currentIdx + 1}`;
-        document.getElementById('question-text').innerText = q.q;
-        
-        document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('current'));
-        document.getElementById(`pal-${currentIdx}`).classList.add('current');
-
-        const container = document.getElementById('options-container');
-        container.innerHTML = '';
-        
-        q.options.forEach((opt, i) => {
-            let cls = isReviewMode ? getReviewClass(i, q.correct, answers[currentIdx]) : (answers[currentIdx] === i ? 'active' : '');
-            container.innerHTML += `<button class="option-btn ${cls}" onclick="pick(${i})" ${isReviewMode?'disabled':''}>${String.fromCharCode(65+i)}. ${opt}</button>`;
-        });
-
-        if(isReviewMode) {
-            document.getElementById('explanation').style.display = 'block';
-            document.getElementById('exp-text').innerText = q.explanation || "No explanation provided.";
-        }
-    }
-
-    function pick(i) {
-        if(isReviewMode) return;
-        answers[currentIdx] = i;
-        document.getElementById(`pal-${currentIdx}`).classList.add('answered');
-        renderQuestion();
-    }
-
-    function flagQuestion() {
-        flagged.has(currentIdx) ? flagged.delete(currentIdx) : flagged.add(currentIdx);
-        document.getElementById(`pal-${currentIdx}`).classList.toggle('flagged');
-    }
-
-    function nextQuestion() { if(currentIdx < questions.length - 1) { currentIdx++; renderQuestion(); } }
-    function prevQuestion() { if(currentIdx > 0) { currentIdx--; renderQuestion(); } }
-
-    function startTimer() {
-        let sec = 7200;
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-            sec--;
-            let h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
-            document.getElementById('exam-timer').innerText = `${h}:${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
-            if(sec <= 0) submitExam();
-        }, 1000);
-    }
-
-    function submitExam() {
-        if(!isReviewMode && !confirm("Submit now?")) return;
-        clearInterval(timerInterval);
-        let score = 0;
-        questions.forEach((q, i) => { if(answers[i] === q.correct) score++; });
-        let final = Math.round((score/questions.length)*100);
-        
-        document.getElementById('final-score').innerText = final + "%";
-        document.getElementById('result-stats').innerText = `Correct: ${score} / ${questions.length}`;
-        document.getElementById('result-subject-name').innerText = currentSubject;
-        
-        saveScore(currentSubject, final);
-        showSection('result-view');
-    }
-
-    function startReview() { isReviewMode = true; document.getElementById('submit-btn').style.display='none'; showSection('exam-hall-view'); renderQuestion(); }
-    function getReviewClass(i, correct, user) { if(i===correct) return 'correct'; if(i===user && user!==correct) return 'wrong'; return ''; }
-
-    // --- LEADERBOARD & PERSISTENCE ---
-    function saveScore(sub, val) {
-        let history = JSON.parse(localStorage.getItem('jamb_history') || '[]');
-        history.unshift({ sub, val, date: new Date().toLocaleDateString() });
-        localStorage.setItem('jamb_history', JSON.stringify(history));
-        loadHistory();
-    }
-
-    function loadHistory() {
-        let history = JSON.parse(localStorage.getItem('jamb_history') || '[]');
-        const body = document.getElementById('leaderboard-body');
-        body.innerHTML = '';
-        let total = 0;
-        history.forEach(item => {
-            total += item.val;
-            body.innerHTML += `<tr><td class="ps-3">${item.sub}</td><td class="text-info">${item.val}%</td><td class="small opacity-50">${item.date}</td><td></td></tr>`;
-        });
-        if(history.length > 0) document.getElementById('overall-progress-bar').style.width = (total/history.length) + "%";
-    }
-
-    function clearHistory() { if(confirm("Clear all data?")) { localStorage.clear(); loadHistory(); location.reload(); } }
-
-    function downloadPDF() {
-        document.getElementById('pdf-header').style.display = 'block';
-        const opt = { margin: 0.5, filename: 'JAMB_Result.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter' } };
-        html2pdf().set(opt).from(document.getElementById('result-view')).save().then(() => document.getElementById('pdf-header').style.display = 'none');
-    }
-
-    window.onload = loadHistory;
-</script>
 </body>
-</html>
+                </html>
+                
