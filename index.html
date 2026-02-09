@@ -5,23 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FSA JAMB CBT Pro - 2026 Edition</title>
     
-    <!-- FIXED EXTERNAL DEPENDENCIES -->
-    <!-- Bootstrap for Layout -->
+    <!-- External Dependencies -->
     <link href="https://cdn.jsdelivr.net" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
-    <!-- html2pdf for Result Downloads -->
     <script src="https://cdnjs.cloudflare.com"></script>
-    <!-- Chart.js for Analytics -->
     <script src="https://cdn.jsdelivr.net"></script>
 
-    <!-- YOUR EXTERNAL STYLE FILE -->
+    <!-- Link to your style.css -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app-container">
-    <!-- 1. DASHBOARD VIEW -->
+    <!-- DASHBOARD VIEW -->
     <div id="dashboard-view" class="app-section">
         <div class="header-box">
             <div class="d-flex justify-content-between align-items-center">
@@ -29,9 +25,7 @@
                     <h5 class="mb-0 fw-bold">Hi, Future Scholar! 👋</h5>
                     <small class="opacity-75" id="user-goal-text">Your Goal: 300+</small>
                 </div>
-                <div class="rounded-circle bg-primary p-2" onclick="showSection('stats-view')">
-                    <i class="fas fa-chart-pie"></i>
-                </div>
+                <div class="rounded-circle bg-primary p-2" onclick="showSection('stats-view')"><i class="fas fa-chart-pie"></i></div>
             </div>
         </div>
         <div class="px-2">
@@ -41,12 +35,67 @@
                     <div id="overall-progress-bar" class="progress-bar bg-white" style="width: 0%"></div>
                 </div>
             </div>
+
             <h6 class="fw-bold mb-3"><i class="fas fa-book-open text-primary me-2"></i>Choose Subject</h6>
-            <div id="subject-grid" class="subject-grid"></div>
+            
+            <!-- HARD-CODED SUBJECT GRID (All 10 Subjects) -->
+            <div id="subject-grid" class="subject-grid">
+                <!-- English -->
+                <div class="subject-card border-primary" onclick="fetchQuestions('English')">
+                    <div class="fs-1 mb-2">📚</div>
+                    <div class="fw-bold">English</div>
+                    <small class="badge bg-success">Mandatory</small>
+                </div>
+                <!-- Mathematics -->
+                <div class="subject-card" onclick="fetchQuestions('Mathematics')">
+                    <div class="fs-1 mb-2">📐</div>
+                    <div class="fw-bold">Mathematics</div>
+                </div>
+                <!-- Physics -->
+                <div class="subject-card" onclick="fetchQuestions('Physics')">
+                    <div class="fs-1 mb-2">⚛️</div>
+                    <div class="fw-bold">Physics</div>
+                </div>
+                <!-- Chemistry -->
+                <div class="subject-card" onclick="fetchQuestions('Chemistry')">
+                    <div class="fs-1 mb-2">🧪</div>
+                    <div class="fw-bold">Chemistry</div>
+                </div>
+                <!-- Biology -->
+                <div class="subject-card" onclick="fetchQuestions('Biology')">
+                    <div class="fs-1 mb-2">🧬</div>
+                    <div class="fw-bold">Biology</div>
+                </div>
+                <!-- Government -->
+                <div class="subject-card" onclick="fetchQuestions('Government')">
+                    <div class="fs-1 mb-2">🏛️</div>
+                    <div class="fw-bold">Government</div>
+                </div>
+                <!-- Literature -->
+                <div class="subject-card" onclick="fetchQuestions('Literature')">
+                    <div class="fs-1 mb-2">📖</div>
+                    <div class="fw-bold">Literature</div>
+                </div>
+                <!-- Economics -->
+                <div class="subject-card" onclick="fetchQuestions('Economics')">
+                    <div class="fs-1 mb-2">📈</div>
+                    <div class="fw-bold">Economics</div>
+                </div>
+                <!-- Commerce -->
+                <div class="subject-card" onclick="fetchQuestions('Commerce')">
+                    <div class="fs-1 mb-2">🛒</div>
+                    <div class="fw-bold">Commerce</div>
+                </div>
+                <!-- Accounting -->
+                <div class="subject-card" onclick="fetchQuestions('Accounting')">
+                    <div class="fs-1 mb-2">💼</div>
+                    <div class="fw-bold">Accounting</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 2. EXAM HALL VIEW -->
+    <!-- EXAM HALL VIEW -->
     <div id="exam-hall-view" class="app-section p-0">
         <div class="navbar-top">
             <div id="exam-sub-name" class="fw-bold">JAMB CBT</div>
@@ -59,9 +108,7 @@
             <div class="question-box">
                 <div class="d-flex justify-content-between mb-3">
                     <span class="badge bg-secondary" id="q-counter">Q1</span>
-                    <button class="btn btn-warning btn-sm py-0" onclick="flagQuestion()">
-                        <i class="fas fa-flag"></i>
-                    </button>
+                    <button class="btn btn-warning btn-sm py-0" onclick="flagQuestion()"><i class="fas fa-flag"></i></button>
                 </div>
                 <div id="question-text" class="fs-5 fw-semibold mb-4">Connecting to exam engine...</div>
                 <div id="options-container"></div>
@@ -78,7 +125,7 @@
         </div>
     </div>
 
-    <!-- 3. RESULT VIEW -->
+    <!-- RESULT VIEW -->
     <div id="result-view" class="app-section">
         <div id="pdf-header">
             <h3>JOINT ADMISSIONS AND MATRICULATION BOARD</h3>
@@ -91,18 +138,14 @@
             <div class="score-display my-2" id="final-score">0%</div>
             <p id="result-stats" class="mb-4 text-info fw-bold"></p>
             <div class="d-grid gap-3">
-                <button class="btn btn-success py-3 rounded-pill fw-bold" onclick="startReview()">
-                    <i class="fas fa-search me-2"></i>Review Corrections
-                </button>
-                <button class="btn btn-outline-info py-3 rounded-pill" onclick="downloadPDF()">
-                    <i class="fas fa-file-pdf me-2"></i>Download Result Slip
-                </button>
+                <button class="btn btn-success py-3 rounded-pill fw-bold" onclick="startReview()"><i class="fas fa-search me-2"></i>Review Corrections</button>
+                <button class="btn btn-outline-info py-3 rounded-pill" onclick="downloadPDF()"><i class="fas fa-file-pdf me-2"></i>Download Result Slip</button>
                 <button class="btn btn-outline-light py-3 rounded-pill" onclick="location.reload()">Return Home</button>
             </div>
         </div>
     </div>
 
-    <!-- 4. STATS VIEW -->
+    <!-- STATS VIEW -->
     <div id="stats-view" class="app-section">
         <div class="header-box mb-4">
             <h5 class="fw-bold mb-0">Performance Analytics</h5>
@@ -124,22 +167,15 @@
         <button class="btn btn-danger w-100 mt-4 rounded-pill opacity-50" onclick="clearHistory()">Clear History</button>
     </div>
 
-    <!-- NAVIGATION BAR -->
+    <!-- NAVIGATION -->
     <div class="nav-bottom">
-        <a class="nav-link active" onclick="showSection('dashboard-view', this)">
-            <i class="fas fa-home d-block fs-3"></i><span>Home</span>
-        </a>
-        <a class="nav-link" onclick="showSection('stats-view', this)">
-            <i class="fas fa-chart-line d-block fs-3"></i><span>History</span>
-        </a>
+        <a class="nav-link active" onclick="showSection('dashboard-view', this)"><i class="fas fa-home d-block fs-3"></i><span>Home</span></a>
+        <a class="nav-link" onclick="showSection('stats-view', this)"><i class="fas fa-chart-line d-block fs-3"></i><span>History</span></a>
     </div>
 </div>
 
-<!-- YOUR EXTERNAL JAVASCRIPT FILES -->
-<!-- Order matters: Load app.js first! -->
 <script src="app.js"></script>
 <script src="storage.js"></script>
 
 </body>
-                </html>
-                
+</html>
